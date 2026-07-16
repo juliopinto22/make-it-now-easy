@@ -35,7 +35,7 @@ export default function RootLayout({
         )}
       </head>
 
-      <body style={{ paddingTop: 41 }}>
+      <body>
         <TopBanner />
         {children}
         <HappySeedsWatermark />
