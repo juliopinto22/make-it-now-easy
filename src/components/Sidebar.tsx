@@ -50,8 +50,9 @@ export default function Sidebar({ active, onSelect }: SidebarProps) {
     <nav
       style={{
         width: 230,
-        background: 'var(--bg-menu)',
+        background: 'linear-gradient(180deg, #0e0e1e 0%, #080812 100%)',
         borderRight: '1px solid var(--border)',
+        boxShadow: '2px 0 20px rgba(155,89,245,0.08)',
         padding: '20px 0',
         position: 'fixed',
         top: 0,
@@ -151,9 +152,10 @@ function NavButton({
         gap: 12,
         padding: '13px 20px',
         width: '100%',
-        background: isActive ? 'rgba(255, 204, 0, 0.12)' : 'transparent',
+        background: isActive ? 'rgba(155, 89, 245, 0.15)' : 'transparent',
         border: 'none',
         borderLeft: `4px solid ${isActive ? 'var(--accent)' : 'transparent'}`,
+        boxShadow: isActive ? 'inset 0 0 20px rgba(155,89,245,0.05)' : 'none',
         color: isActive
           ? 'var(--accent)'
           : item.premium
@@ -169,7 +171,7 @@ function NavButton({
       onMouseEnter={(e) => {
         if (!isActive) {
           (e.currentTarget as HTMLButtonElement).style.background =
-            'rgba(255, 204, 0, 0.08)';
+            'rgba(155, 89, 245, 0.08)';
           (e.currentTarget as HTMLButtonElement).style.paddingLeft = '25px';
         }
       }}

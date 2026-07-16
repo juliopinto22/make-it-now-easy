@@ -14,13 +14,16 @@ export function Card({
   return (
     <div
       style={{
-        background: premium ? 'rgba(255, 215, 0, 0.05)' : 'var(--bg-card)',
-        border: `1px solid ${premium ? 'var(--premium)' : 'var(--border)'}`,
+        background: premium
+          ? 'linear-gradient(135deg, rgba(192,132,252,0.07) 0%, var(--bg-card) 100%)'
+          : 'linear-gradient(135deg, rgba(155,89,245,0.05) 0%, var(--bg-card) 100%)',
+        border: `1px solid ${premium ? 'rgba(192,132,252,0.4)' : 'var(--border)'}`,
         padding: 22,
         borderRadius: 12,
         marginBottom: 18,
         position: 'relative',
         overflow: 'hidden',
+        boxShadow: premium ? '0 0 20px rgba(192,132,252,0.05)' : '0 0 15px rgba(155,89,245,0.04)',
         ...style,
       }}
     >

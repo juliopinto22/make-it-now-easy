@@ -26,7 +26,7 @@ export default function Home() {
   const [active, setActive] = useState<ScreenId>('inicio');
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-total)' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-total)', position: 'relative' }}>
       <Sidebar active={active} onSelect={setActive} />
 
       <main
