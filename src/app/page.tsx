@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Sidebar, { type ScreenId } from '@/components/Sidebar';
+import AnimeBg from '@/components/AnimeBg';
 import HomeScreen from '@/components/screens/HomeScreen';
 import WindowsScreen from '@/components/screens/WindowsScreen';
 import DriversScreen from '@/components/screens/DriversScreen';
@@ -27,6 +28,7 @@ export default function Home() {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-total)' }}>
+      <AnimeBg />
       <Sidebar active={active} onSelect={setActive} />
 
       {/* Glow top-right corner */}

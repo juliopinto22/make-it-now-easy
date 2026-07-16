@@ -95,5 +95,11 @@ a { color: inherit; text-decoration: none; }
   50%      { transform: translateY(-4px); }
 }
 
+@keyframes floatAnime {
+  0%,100% { transform: translateY(0px) rotate(0deg); opacity: var(--op, 0.1); }
+  33%     { transform: translateY(-10px) rotate(3deg); opacity: calc(var(--op, 0.1) * 1.6); }
+  66%     { transform: translateY(-5px) rotate(-2deg); opacity: calc(var(--op, 0.1) * 0.7); }
+}
+
 nextjs-portal { display: none !important; }
 body { overflow-y: auto !important; overflow-x: hidden; }
