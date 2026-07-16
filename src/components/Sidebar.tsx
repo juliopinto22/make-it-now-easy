@@ -65,22 +65,77 @@ export default function Sidebar({ active, onSelect }: SidebarProps) {
       }}
     >
       {/* Logo */}
-      <div
-        style={{
-          padding: '18px 20px 24px',
-          fontSize: 14,
+      <div style={{
+        padding: '20px 16px 22px',
+        textAlign: 'center',
+        borderBottom: '1px solid var(--border-glow)',
+        marginBottom: 20,
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        {/* Background glow blob */}
+        <div style={{
+          position: 'absolute', top: -20, left: '50%', transform: 'translateX(-50%)',
+          width: 120, height: 80,
+          background: 'radial-gradient(ellipse, rgba(168,85,247,0.25) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+
+        {/* Icon */}
+        <div style={{
+          fontSize: 32,
+          marginBottom: 6,
+          filter: 'drop-shadow(0 0 8px rgba(168,85,247,0.8))',
+          animation: 'neonPulse 2.5s ease-in-out infinite',
+          display: 'inline-block',
+        }}>
+          ⚡
+        </div>
+
+        {/* MAKE IT */}
+        <div style={{
+          fontSize: 11,
           fontWeight: 900,
-          color: 'var(--accent-bright)',
-          textAlign: 'center',
-          borderBottom: '1px solid var(--border-glow)',
-          marginBottom: 20,
-          letterSpacing: '2px',
-          lineHeight: 1.4,
+          letterSpacing: '4px',
+          color: '#8888aa',
           textTransform: 'uppercase',
-          textShadow: '0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow)',
-        }}
-      >
-        MAKE IT NOW EASY 🚀
+          marginBottom: 2,
+        }}>
+          MAKE IT
+        </div>
+
+        {/* NOW EASY */}
+        <div style={{
+          fontSize: 20,
+          fontWeight: 900,
+          letterSpacing: '3px',
+          textTransform: 'uppercase',
+          background: 'linear-gradient(90deg, #c084fc, #e879f9, #a855f7)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          textShadow: 'none',
+          lineHeight: 1.1,
+          marginBottom: 8,
+        }}>
+          NOW EASY
+        </div>
+
+        {/* Badge */}
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 4,
+          background: 'rgba(168,85,247,0.15)',
+          border: '1px solid rgba(168,85,247,0.4)',
+          borderRadius: 20,
+          padding: '2px 10px',
+          fontSize: 10,
+          fontWeight: 800,
+          color: 'var(--accent-bright)',
+          letterSpacing: '1px',
+          textTransform: 'uppercase',
+        }}>
+          🎮 GAMER EDITION
+        </div>
       </div>
 
       {/* Free section label */}

@@ -75,14 +75,29 @@ export function PageTitle({ icon, children, premium }: {
   icon?: string; children: React.ReactNode; premium?: boolean;
 }) {
   return (
-    <h2 style={{
-      color: premium ? 'var(--premium)' : 'var(--accent)',
-      marginBottom: 25, fontSize: 26, fontWeight: 900,
-      display: 'flex', alignItems: 'center', gap: 12,
-      paddingBottom: 12, borderBottom: `1px solid ${premium ? 'var(--premium)' : 'var(--border)'}`,
-    }}>
-      {icon && <span>{icon}</span>}{children}
-    </h2>
+    <div style={{ marginBottom: 28, position: 'relative' }}>
+      {/* Glow line behind title */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: 1,
+        background: premium
+          ? 'linear-gradient(90deg, transparent, rgba(232,121,249,0.6), rgba(168,85,247,0.3), transparent)'
+          : 'linear-gradient(90deg, transparent, rgba(168,85,247,0.6), rgba(0,212,255,0.2), transparent)',
+      }} />
+      <h2 style={{
+        color: premium ? 'var(--premium)' : 'var(--accent-bright)',
+        fontSize: 26, fontWeight: 900,
+        display: 'flex', alignItems: 'center', gap: 12,
+        paddingBottom: 14,
+        textShadow: premium
+          ? '0 0 15px var(--premium-glow), 0 0 30px var(--premium-glow)'
+          : '0 0 15px var(--accent-glow), 0 0 30px var(--accent-glow)',
+        letterSpacing: '1px',
+        textTransform: 'uppercase',
+      }}>
+        {icon && <span style={{ filter: 'drop-shadow(0 0 6px var(--accent-glow))' }}>{icon}</span>}
+        {children}
+      </h2>
+    </div>
   );
 }
 
