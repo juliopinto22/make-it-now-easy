@@ -304,9 +304,6 @@ export function HappySeedsWatermark() {
           title={`${ariaLabel}. Drag to reposition.`}
           className="flex max-w-full items-center gap-1.5 px-3.5 py-2 text-sm no-underline hover:bg-neutral-50"
         >
-          {handle ? (
-            <span className="shrink-0 font-medium text-neutral-900">{handle}</span>
-          ) : null}
           <span className="shrink-0 text-neutral-500">{actionText}</span>
           <img
             src={HAPPYSEEDS_LOGO_URL}
