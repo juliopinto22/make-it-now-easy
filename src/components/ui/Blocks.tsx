@@ -44,20 +44,29 @@ export function Card({ children, premium, style }: {
 
 export function StepList({ steps }: { steps: string[] }) {
   return (
-    <ol style={{ marginTop: 12, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <ol style={{ marginTop: 14, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 0 }}>
       {steps.map((step, i) => (
-        <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 13, color: '#b8a8d0', lineHeight: 1.6, fontWeight: 500 }}>
+        <li key={i} style={{
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+          fontSize: 13, color: '#c4b0e0', lineHeight: 1.65, fontWeight: 500,
+          padding: '10px 12px', borderRadius: 10, marginBottom: 6,
+          background: 'rgba(168,85,247,0.04)',
+          border: '1px solid rgba(168,85,247,0.12)',
+          transition: 'all 0.2s',
+        }}>
+          {/* número destacado */}
           <span style={{
-            background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
-            color: '#fff', borderRadius: '50%',
-            width: 22, height: 22, minWidth: 22,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 11, fontWeight: 900, marginTop: 2,
-            boxShadow: '0 0 8px rgba(168,85,247,0.6)',
+            minWidth: 28, height: 28, borderRadius: 8,
+            background: 'linear-gradient(135deg, #c084fc 0%, #7c3aed 100%)',
+            color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 13, fontWeight: 900, flexShrink: 0, marginTop: 1,
+            boxShadow: '0 0 12px rgba(168,85,247,0.7), 0 2px 8px rgba(0,0,0,0.4)',
+            letterSpacing: '-0.5px',
+            border: '1px solid rgba(255,255,255,0.15)',
           }}>
             {i + 1}
           </span>
-          <span dangerouslySetInnerHTML={{ __html: step }} />
+          <span dangerouslySetInnerHTML={{ __html: step }} style={{ paddingTop: 4 }} />
         </li>
       ))}
     </ol>
