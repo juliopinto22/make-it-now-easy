@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Outfit, JetBrains_Mono } from 'next/font/google';
 import { HappySeedsWatermark } from '@/components/HappySeedsWatermark';
 import TopBanner from '@/components/TopBanner';
+import SecurityGuard from '@/components/SecurityGuard';
 import './globals.css';
 import jsonMetadata from '../../metadata.json';
 
@@ -36,6 +37,7 @@ export default function RootLayout({
       </head>
 
       <body>
+        <SecurityGuard />
         <TopBanner />
         {children}
         <HappySeedsWatermark />
