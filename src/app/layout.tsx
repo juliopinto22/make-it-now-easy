@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${outfit.variable} ${jetbrainsMono.variable}`}>
+    <html lang="pt-BR" className={`${outfit.variable} ${jetbrainsMono.variable}`}>
       <head>
         {process.env.NODE_ENV === 'production' && (
           <Script
