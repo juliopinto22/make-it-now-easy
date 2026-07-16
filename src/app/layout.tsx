@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Script from "next/script";
 import { Outfit, JetBrains_Mono } from 'next/font/google';
 import { HappySeedsWatermark } from '@/components/HappySeedsWatermark';
+import TopBanner from '@/components/TopBanner';
 import './globals.css';
 import jsonMetadata from '../../metadata.json';
 
@@ -34,7 +35,8 @@ export default function RootLayout({
         )}
       </head>
 
-      <body>
+      <body style={{ paddingTop: 41 }}>
+        <TopBanner />
         {children}
         <HappySeedsWatermark />
       </body>
