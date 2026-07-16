@@ -80,19 +80,6 @@ export default function PixModal({ open, onClose }: Props) {
           ✅ Após o pagamento, envie o comprovante pelo WhatsApp para liberar o acesso na hora!
         </div>
 
-        {/* WhatsApp */}
-        <a
-          href={`https://wa.me/${WA_NUMBER}?text=${WA_MSG}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={waBtn}
-          onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.opacity = '0.85')}
-          onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.opacity = '1')}
-        >
-          <WaIcon />
-          Enviar comprovante no WhatsApp
-        </a>
-
         <button onClick={onClose} style={doneBtn}>Fechar</button>
       </div>
     </div>
