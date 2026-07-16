@@ -2,102 +2,59 @@
 
 import React from 'react';
 
-export function Card({
-  children,
-  premium,
-  style,
-}: {
-  children: React.ReactNode;
-  premium?: boolean;
-  style?: React.CSSProperties;
+export function Card({ children, premium, style }: {
+  children: React.ReactNode; premium?: boolean; style?: React.CSSProperties;
 }) {
   return (
-    <div
-      style={{
-        background: premium
-          ? 'linear-gradient(135deg, rgba(232,121,249,0.08) 0%, #0a0a1e 100%)'
-          : 'linear-gradient(135deg, rgba(168,85,247,0.06) 0%, #0a0a1e 100%)',
-        border: `1px solid ${premium ? 'rgba(232,121,249,0.35)' : 'rgba(168,85,247,0.2)'}`,
-        padding: 22,
-        borderRadius: 12,
-        marginBottom: 18,
-        position: 'relative',
-        overflow: 'hidden',
-        boxShadow: premium
-          ? '0 0 25px rgba(232,121,249,0.08), inset 0 1px 0 rgba(232,121,249,0.1)'
-          : '0 0 20px rgba(168,85,247,0.06), inset 0 1px 0 rgba(168,85,247,0.08)',
-        transition: 'all 0.2s ease',
-        ...style,
-      }}
-    >
-      {/* Left accent bar */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: 5,
-          height: '100%',
-          background: premium
-            ? 'linear-gradient(180deg, #f0abfc, #e879f9)'
-            : 'linear-gradient(180deg, #c084fc, #a855f7)',
-          borderRadius: '12px 0 0 12px',
-          boxShadow: premium ? '0 0 10px var(--premium-glow)' : '0 0 8px var(--accent-glow)',
-        }}
-      />
-      {/* Top neon line */}
+    <div style={{
+      background: premium
+        ? 'linear-gradient(135deg, rgba(232,121,249,0.09) 0%, rgba(12,12,32,0.95) 100%)'
+        : 'linear-gradient(135deg, rgba(168,85,247,0.07) 0%, rgba(10,10,28,0.97) 100%)',
+      border: `1px solid ${premium ? 'rgba(232,121,249,0.3)' : 'rgba(168,85,247,0.22)'}`,
+      padding: '20px 22px',
+      borderRadius: 14,
+      marginBottom: 16,
+      position: 'relative',
+      overflow: 'hidden',
+      boxShadow: premium
+        ? '0 4px 30px rgba(232,121,249,0.08), inset 0 1px 0 rgba(232,121,249,0.1)'
+        : '0 4px 25px rgba(168,85,247,0.07), inset 0 1px 0 rgba(168,85,247,0.09)',
+      transition: 'all 0.2s ease',
+      ...style,
+    }}>
+      {/* Left neon bar */}
       <div style={{
-        position: 'absolute', top: 0, left: 5, right: 0, height: 1,
+        position: 'absolute', top: 0, left: 0, width: 4, height: '100%',
         background: premium
-          ? 'linear-gradient(90deg, transparent, rgba(232,121,249,0.4), transparent)'
-          : 'linear-gradient(90deg, transparent, rgba(168,85,247,0.3), transparent)',
+          ? 'linear-gradient(180deg, #f0abfc 0%, #e879f9 50%, #c084fc 100%)'
+          : 'linear-gradient(180deg, #e0aaff 0%, #a855f7 50%, #7c3aed 100%)',
+        boxShadow: premium ? '0 0 12px rgba(232,121,249,0.7)' : '0 0 10px rgba(168,85,247,0.6)',
       }} />
-      <div style={{ paddingLeft: 4 }}>{children}</div>
+      {/* Top shimmer line */}
+      <div style={{
+        position: 'absolute', top: 0, left: 4, right: 0, height: 1,
+        background: premium
+          ? 'linear-gradient(90deg, rgba(232,121,249,0.4), transparent 60%)'
+          : 'linear-gradient(90deg, rgba(168,85,247,0.35), transparent 60%)',
+      }} />
+      <div style={{ paddingLeft: 6 }}>{children}</div>
     </div>
   );
 }
 
 export function StepList({ steps }: { steps: string[] }) {
   return (
-    <ol
-      style={{
-        marginTop: 12,
-        paddingLeft: 0,
-        listStyle: 'none',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 8,
-      }}
-    >
+    <ol style={{ marginTop: 12, paddingLeft: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
       {steps.map((step, i) => (
-        <li
-          key={i}
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: 10,
-            fontSize: 14,
-            color: '#CCCCCC',
-            lineHeight: 1.6,
-            fontWeight: 500,
-          }}
-        >
-          <span
-            style={{
-              background: 'var(--accent)',
-              color: '#000',
-              borderRadius: '50%',
-              width: 22,
-              height: 22,
-              minWidth: 22,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 11,
-              fontWeight: 900,
-              marginTop: 2,
-            }}
-          >
+        <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 13, color: '#b8a8d0', lineHeight: 1.6, fontWeight: 500 }}>
+          <span style={{
+            background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+            color: '#fff', borderRadius: '50%',
+            width: 22, height: 22, minWidth: 22,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 11, fontWeight: 900, marginTop: 2,
+            boxShadow: '0 0 8px rgba(168,85,247,0.6)',
+          }}>
             {i + 1}
           </span>
           <span dangerouslySetInnerHTML={{ __html: step }} />
@@ -107,33 +64,19 @@ export function StepList({ steps }: { steps: string[] }) {
   );
 }
 
-export function AlertBox({
-  type,
-  children,
-}: {
-  type: 'warning' | 'danger';
-  children: React.ReactNode;
-}) {
+export function AlertBox({ type, children }: { type: 'warning' | 'danger'; children: React.ReactNode }) {
   const isWarning = type === 'warning';
   return (
-    <div
-      style={{
-        background: isWarning
-          ? 'rgba(255, 204, 0, 0.1)'
-          : 'rgba(255, 51, 51, 0.1)',
-        borderLeft: `5px solid ${isWarning ? 'var(--accent)' : 'var(--danger)'}`,
-        padding: '16px 18px',
-        borderRadius: '0 10px 10px 0',
-        margin: '20px 0',
-        fontSize: 14,
-        color: isWarning ? 'var(--accent)' : 'var(--danger)',
-        fontWeight: 700,
-        display: 'flex',
-        alignItems: 'flex-start',
-        gap: 10,
-        lineHeight: 1.5,
-      }}
-    >
+    <div style={{
+      background: isWarning ? 'rgba(168,85,247,0.08)' : 'rgba(255,68,68,0.08)',
+      borderLeft: `4px solid ${isWarning ? '#a855f7' : '#ff4444'}`,
+      padding: '14px 18px', borderRadius: '0 10px 10px 0',
+      margin: '18px 0', fontSize: 13,
+      color: isWarning ? '#d8b4fe' : '#ff8080',
+      fontWeight: 700, display: 'flex', alignItems: 'flex-start',
+      gap: 10, lineHeight: 1.5,
+      boxShadow: isWarning ? 'inset 0 0 20px rgba(168,85,247,0.04)' : 'inset 0 0 20px rgba(255,68,68,0.04)',
+    }}>
       {children}
     </div>
   );

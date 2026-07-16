@@ -1,21 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --bg-total: #05050f;
-  --bg-menu: #07071a;
-  --bg-card: #0a0a1e;
+  --bg-total: #06060f;
+  --bg-menu: #08081a;
+  --bg-card: #0c0c20;
+  --bg-card-hover: #0f0f28;
   --accent: #a855f7;
   --accent-bright: #c084fc;
-  --accent-glow: rgba(168, 85, 247, 0.5);
-  --text: #e8e8ff;
-  --text-muted: #8888aa;
-  --border: #1a1a3a;
-  --border-glow: rgba(168, 85, 247, 0.3);
+  --accent-soft: #d8b4fe;
+  --accent-glow: rgba(168, 85, 247, 0.55);
+  --accent-glow-soft: rgba(168, 85, 247, 0.2);
+  --text: #f0e8ff;
+  --text-muted: #8877aa;
+  --border: #1c1c3a;
+  --border-glow: rgba(168, 85, 247, 0.35);
   --premium: #e879f9;
-  --premium-glow: rgba(232, 121, 249, 0.4);
+  --premium-glow: rgba(232, 121, 249, 0.45);
   --danger: #ff4444;
-  --neon-green: #39ff14;
-  --neon-blue: #00d4ff;
+  --cyan: #22d3ee;
+  --cyan-glow: rgba(34, 211, 238, 0.3);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,7 +32,7 @@ html, body {
   overflow-x: hidden;
 }
 
-/* ── GAMER BACKGROUND ─────────────────────────────────── */
+/* ── GRID BACKGROUND ── */
 body::before {
   content: '';
   position: fixed;
@@ -37,11 +40,13 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(168,85,247,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(168,85,247,0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
+    linear-gradient(rgba(168,85,247,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168,85,247,0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
 }
 
+/* ── GLOW ORBS ── */
 body::after {
   content: '';
   position: fixed;
@@ -49,52 +54,46 @@ body::after {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 70% 50% at 10% 10%, rgba(168,85,247,0.15) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 90% 90%, rgba(232,121,249,0.1) 0%, transparent 55%),
-    radial-gradient(ellipse 30% 30% at 50% 50%, rgba(0,212,255,0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 55% at 15% 5%,  rgba(168,85,247,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 40% at 88% 92%, rgba(232,121,249,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 30% at 75% 10%, rgba(34,211,238,0.07)  0%, transparent 55%);
 }
 
 body > * { position: relative; z-index: 1; }
-
 a { color: inherit; text-decoration: none; }
 
-/* ── SCROLLBAR ────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-menu); }
-::-webkit-scrollbar-thumb {
-  background: #2a1a5a;
-  border-radius: 4px;
-}
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.4); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-/* ── NEON GLOW ANIMATIONS ─────────────────────────────── */
+/* ── ANIMATIONS ── */
 @keyframes neonPulse {
-  0%, 100% { box-shadow: 0 0 5px var(--accent-glow), 0 0 10px var(--accent-glow); }
-  50%       { box-shadow: 0 0 10px var(--accent-glow), 0 0 25px var(--accent-glow), 0 0 40px var(--accent-glow); }
+  0%,100% { opacity: 1; filter: drop-shadow(0 0 6px var(--accent-glow)); }
+  50%      { opacity: 0.85; filter: drop-shadow(0 0 14px var(--accent-glow)) drop-shadow(0 0 28px var(--accent-glow)); }
 }
 
-@keyframes scanline {
-  0%   { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
+@keyframes borderGlow {
+  0%,100% { box-shadow: 0 0 8px var(--accent-glow-soft), inset 0 0 8px rgba(168,85,247,0.04); }
+  50%      { box-shadow: 0 0 18px var(--accent-glow), inset 0 0 12px rgba(168,85,247,0.08); }
 }
 
 @keyframes screenIn {
-  from { opacity: 0; transform: translateX(15px); }
+  from { opacity: 0; transform: translateX(18px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
-@keyframes glitch {
-  0%, 100% { text-shadow: 2px 0 var(--accent), -2px 0 var(--neon-blue); }
-  25%       { text-shadow: -2px 0 var(--accent), 2px 0 var(--neon-blue); }
-  50%       { text-shadow: 2px 2px var(--premium), -2px -2px var(--neon-blue); }
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/* ── GAMER CARD HOVER ─────────────────────────────────── */
-.gamer-card:hover {
-  border-color: var(--accent) !important;
-  box-shadow: 0 0 15px var(--accent-glow), inset 0 0 15px rgba(168,85,247,0.03) !important;
-  transform: translateY(-1px);
-  transition: all 0.2s ease;
+@keyframes floatIcon {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
 }
 
 nextjs-portal { display: none !important; }
+body { overflow-y: auto !important; overflow-x: hidden; }

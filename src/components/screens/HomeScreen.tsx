@@ -75,28 +75,35 @@ export function PageTitle({ icon, children, premium }: {
   icon?: string; children: React.ReactNode; premium?: boolean;
 }) {
   return (
-    <div style={{ marginBottom: 28, position: 'relative' }}>
-      {/* Glow line behind title */}
+    <div style={{ marginBottom: 30, position: 'relative' }}>
+      <h2 style={{
+        fontSize: 24, fontWeight: 900, letterSpacing: '2px', textTransform: 'uppercase',
+        display: 'flex', alignItems: 'center', gap: 12, paddingBottom: 16,
+        background: premium
+          ? 'linear-gradient(90deg, #f0abfc, #e879f9, #c084fc)'
+          : 'linear-gradient(90deg, #e0aaff, #c084fc, #a855f7)',
+        WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+      }}>
+        {icon && (
+          <span style={{
+            WebkitTextFillColor: 'initial',
+            filter: premium ? 'drop-shadow(0 0 8px rgba(232,121,249,0.8))' : 'drop-shadow(0 0 8px rgba(168,85,247,0.8))',
+            animation: 'floatIcon 3s ease-in-out infinite',
+            display: 'inline-block',
+          }}>
+            {icon}
+          </span>
+        )}
+        {children}
+      </h2>
+      {/* Glow underline */}
       <div style={{
         position: 'absolute', bottom: 0, left: 0, right: 0, height: 1,
         background: premium
-          ? 'linear-gradient(90deg, transparent, rgba(232,121,249,0.6), rgba(168,85,247,0.3), transparent)'
-          : 'linear-gradient(90deg, transparent, rgba(168,85,247,0.6), rgba(0,212,255,0.2), transparent)',
+          ? 'linear-gradient(90deg, rgba(232,121,249,0.7), rgba(168,85,247,0.3), transparent)'
+          : 'linear-gradient(90deg, rgba(168,85,247,0.7), rgba(34,211,238,0.2), transparent)',
+        boxShadow: premium ? '0 0 8px rgba(232,121,249,0.4)' : '0 0 8px rgba(168,85,247,0.4)',
       }} />
-      <h2 style={{
-        color: premium ? 'var(--premium)' : 'var(--accent-bright)',
-        fontSize: 26, fontWeight: 900,
-        display: 'flex', alignItems: 'center', gap: 12,
-        paddingBottom: 14,
-        textShadow: premium
-          ? '0 0 15px var(--premium-glow), 0 0 30px var(--premium-glow)'
-          : '0 0 15px var(--accent-glow), 0 0 30px var(--accent-glow)',
-        letterSpacing: '1px',
-        textTransform: 'uppercase',
-      }}>
-        {icon && <span style={{ filter: 'drop-shadow(0 0 6px var(--accent-glow))' }}>{icon}</span>}
-        {children}
-      </h2>
     </div>
   );
 }
@@ -106,11 +113,12 @@ export function CardTitle({ icon, children, premium }: {
 }) {
   return (
     <h3 style={{
-      color: premium ? 'var(--premium)' : 'var(--accent)',
+      color: premium ? '#f0abfc' : '#d8b4fe',
       marginBottom: 10, display: 'flex', alignItems: 'center',
-      gap: 10, fontSize: 17, fontWeight: 800,
+      gap: 10, fontSize: 16, fontWeight: 800, letterSpacing: '0.5px',
+      textShadow: premium ? '0 0 10px rgba(232,121,249,0.5)' : '0 0 10px rgba(168,85,247,0.5)',
     }}>
-      {icon}{children}
+      <span style={{ opacity: 0.9 }}>{icon}</span>{children}
     </h3>
   );
 }
