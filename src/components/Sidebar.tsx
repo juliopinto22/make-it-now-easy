@@ -3,7 +3,7 @@
 import React from 'react';
 import { Home, MonitorCog, Wrench, Gamepad2, Wifi, Gem, Settings2, Scale } from 'lucide-react';
 
-export type ScreenId = 'inicio' | 'windows' | 'drivers' | 'jogos' | 'rede' | 'premium' | 'avancado' | 'direitos';
+export type ScreenId = 'inicio' | 'windows' | 'drivers' | 'jogos' | 'rede' | 'premium' | 'avancado' | 'direitos' | 'fastflags';
 
 interface NavItem { id: ScreenId; label: string; icon: React.ReactNode; premium?: boolean; }
 
@@ -13,7 +13,8 @@ const freeItems: NavItem[] = [
   { id: 'drivers',  label: 'Drivers',  icon: <Wrench size={17} /> },
   { id: 'jogos',    label: 'Jogos',    icon: <Gamepad2 size={17} /> },
   { id: 'rede',     label: 'Rede',     icon: <Wifi size={17} /> },
-  { id: 'direitos', label: 'Dir. Autorais', icon: <Scale size={17} /> },
+  { id: 'direitos',  label: 'Dir. Autorais',  icon: <Scale size={17} /> },
+  { id: 'fastflags', label: 'Fast Flags 🎮',  icon: <Gamepad2 size={17} /> },
 ];
 
 const premiumItems: NavItem[] = [

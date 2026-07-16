@@ -11,6 +11,7 @@ import NetworkScreen from '@/components/screens/NetworkScreen';
 import PremiumScreen from '@/components/screens/PremiumScreen';
 import AdvancedScreen from '@/components/screens/AdvancedScreen';
 import CopyrightScreen from '@/components/screens/CopyrightScreen';
+import FastFlagsScreen from '@/components/screens/FastFlagsScreen';
 import AntiBot from '@/components/AntiBot';
 
 const SIDEBAR_WIDTH = 240;
@@ -23,7 +24,8 @@ const screens: Record<ScreenId, React.ReactNode> = {
   rede:     <NetworkScreen />,
   premium:  <PremiumScreen />,
   avancado: <AdvancedScreen />,
-  direitos: <CopyrightScreen />,
+  direitos:  <CopyrightScreen />,
+  fastflags: <FastFlagsScreen />,
 };
 
 export default function Home() {
