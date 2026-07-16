@@ -10,6 +10,8 @@ import GamesScreen from '@/components/screens/GamesScreen';
 import NetworkScreen from '@/components/screens/NetworkScreen';
 import PremiumScreen from '@/components/screens/PremiumScreen';
 import AdvancedScreen from '@/components/screens/AdvancedScreen';
+import CopyrightScreen from '@/components/screens/CopyrightScreen';
+import AntiBot from '@/components/AntiBot';
 
 const SIDEBAR_WIDTH = 240;
 
@@ -21,10 +23,14 @@ const screens: Record<ScreenId, React.ReactNode> = {
   rede:     <NetworkScreen />,
   premium:  <PremiumScreen />,
   avancado: <AdvancedScreen />,
+  direitos: <CopyrightScreen />,
 };
 
 export default function Home() {
   const [active, setActive] = useState<ScreenId>('inicio');
+  const [verified, setVerified] = useState(false);
+
+  if (!verified) return <AntiBot onVerified={() => setVerified(true)} />;
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-total)' }}>
