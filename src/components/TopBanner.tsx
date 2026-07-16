@@ -18,7 +18,7 @@ export default function TopBanner() {
       left: 0,
       zIndex: 999,
     }}>
-      ⚠️ Não há suporte por enquanto. Em breve voltamos!
+      🔧 Moderadores estão trabalhando em melhorias e atualizações do site. Suporte temporariamente indisponível.
     </div>
   );
 }
