@@ -38,22 +38,27 @@ export default function Home() {
           overflowY: 'auto',
         }}
       >
-        <div
-          key={active}
-          style={{
-            animation: 'screenIn 0.3s ease',
-          }}
-        >
+        {/* Corner decoration top-right */}
+        <div style={{
+          position: 'fixed', top: 0, right: 0, width: 200, height: 200,
+          background: 'radial-gradient(circle at top right, rgba(232,121,249,0.08) 0%, transparent 70%)',
+          pointerEvents: 'none', zIndex: 0,
+        }} />
+        {/* Corner decoration bottom-left */}
+        <div style={{
+          position: 'fixed', bottom: 0, left: 230, width: 300, height: 200,
+          background: 'radial-gradient(circle at bottom left, rgba(0,212,255,0.05) 0%, transparent 70%)',
+          pointerEvents: 'none', zIndex: 0,
+        }} />
+
+        <div key={active} style={{ animation: 'screenIn 0.3s ease', position: 'relative', zIndex: 1 }}>
           {screens[active]}
         </div>
       </main>
 
       <style>{`
-        @keyframes screenIn {
-          from { opacity: 0; transform: translateX(15px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
         body { overflow-y: auto !important; overflow-x: hidden; }
+        h2 { text-shadow: 0 0 20px var(--accent-glow) !important; }
       `}</style>
     </div>
   );

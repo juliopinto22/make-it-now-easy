@@ -50,9 +50,9 @@ export default function Sidebar({ active, onSelect }: SidebarProps) {
     <nav
       style={{
         width: 230,
-        background: 'linear-gradient(180deg, #0e0e1e 0%, #080812 100%)',
-        borderRight: '1px solid var(--border)',
-        boxShadow: '2px 0 20px rgba(155,89,245,0.08)',
+        background: 'linear-gradient(180deg, #08081e 0%, #05050f 100%)',
+        borderRight: '1px solid var(--border-glow)',
+        boxShadow: '2px 0 30px rgba(168,85,247,0.12), inset -1px 0 0 rgba(168,85,247,0.1)',
         padding: '20px 0',
         position: 'fixed',
         top: 0,
@@ -68,14 +68,16 @@ export default function Sidebar({ active, onSelect }: SidebarProps) {
       <div
         style={{
           padding: '18px 20px 24px',
-          fontSize: 15,
+          fontSize: 14,
           fontWeight: 900,
-          color: 'var(--accent)',
+          color: 'var(--accent-bright)',
           textAlign: 'center',
-          borderBottom: '1px solid var(--border)',
+          borderBottom: '1px solid var(--border-glow)',
           marginBottom: 20,
-          letterSpacing: '0.5px',
-          lineHeight: 1.3,
+          letterSpacing: '2px',
+          lineHeight: 1.4,
+          textTransform: 'uppercase',
+          textShadow: '0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow)',
         }}
       >
         MAKE IT NOW EASY 🚀
@@ -152,10 +154,13 @@ function NavButton({
         gap: 12,
         padding: '13px 20px',
         width: '100%',
-        background: isActive ? 'rgba(155, 89, 245, 0.15)' : 'transparent',
+        background: isActive
+          ? 'linear-gradient(90deg, rgba(168,85,247,0.2) 0%, transparent 100%)'
+          : 'transparent',
         border: 'none',
-        borderLeft: `4px solid ${isActive ? 'var(--accent)' : 'transparent'}`,
-        boxShadow: isActive ? 'inset 0 0 20px rgba(155,89,245,0.05)' : 'none',
+        borderLeft: `3px solid ${isActive ? 'var(--accent-bright)' : 'transparent'}`,
+        boxShadow: isActive ? '0 0 15px rgba(168,85,247,0.15)' : 'none',
+        textShadow: isActive ? '0 0 8px var(--accent-glow)' : 'none',
         color: isActive
           ? 'var(--accent)'
           : item.premium
