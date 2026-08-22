@@ -1,64 +1,129 @@
-'use client';
+import React from 'react';
 
-import React, { useState } from 'react';
-import Sidebar, { type ScreenId } from '@/components/Sidebar';
-import AnimeBg from '@/components/AnimeBg';
-import HomeScreen from '@/components/screens/HomeScreen';
-import WindowsScreen from '@/components/screens/WindowsScreen';
-import DriversScreen from '@/components/screens/DriversScreen';
-import GamesScreen from '@/components/screens/GamesScreen';
-import NetworkScreen from '@/components/screens/NetworkScreen';
-import PremiumScreen from '@/components/screens/PremiumScreen';
-import AdvancedScreen from '@/components/screens/AdvancedScreen';
-import CopyrightScreen from '@/components/screens/CopyrightScreen';
-import FastFlagsScreen from '@/components/screens/FastFlagsScreen';
-import AntiBot from '@/components/AntiBot';
-
-const SIDEBAR_WIDTH = 240;
-
-const screens: Record<ScreenId, React.ReactNode> = {
-  inicio:   <HomeScreen />,
-  windows:  <WindowsScreen />,
-  drivers:  <DriversScreen />,
-  jogos:    <GamesScreen />,
-  rede:     <NetworkScreen />,
-  premium:  <PremiumScreen />,
-  avancado: <AdvancedScreen />,
-  direitos:  <CopyrightScreen />,
-  fastflags: <FastFlagsScreen />,
-};
-
-export default function Home() {
-  const [active, setActive] = useState<ScreenId>('inicio');
-  const [verified, setVerified] = useState(false);
-
-  if (!verified) return <AntiBot onVerified={() => setVerified(true)} />;
+export default function WindowsScreen() {
+  const otimizacoes = [
+    {
+      titulo: 'Limpar Arquivos Temporários',
+      descricao: 'Remove arquivos desnecessários do sistema para liberar memória e espaço.',
+      arquivo: '/limpar-temp.bat',
+      nomeDownload: 'Limpar_Temp.bat'
+    },
+    {
+      titulo: 'Ativar Desempenho Máximo',
+      descricao: 'Habilita o modo de energia de alta performance no Windows.',
+      arquivo: '/modo-desempenho.bat',
+      nomeDownload: 'Desempenho_Maximo.bat'
+    },
+    {
+      titulo: 'Otimizar Rede e DNS',
+      descricao: 'Limpa o cache de rede para melhorar a estabilidade e o ping nos jogos.',
+      arquivo: '/otimizar-rede.bat',
+      nomeDownload: 'Otimizar_Rede.bat'
+    }
+  ];
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-total)' }}>
-      <AnimeBg />
-      <Sidebar active={active} onSelect={setActive} />
+    <div style={{ color: '#fff', maxWidth: 800 }}>
+      <h1 style={{ fontSize: '28px', marginBottom: '10px' }}>⚡ Otimizações do Windows</h1>
+      <p style={{ color: '#aaa', marginBottom: '30px' }}>
+        Clique no botão para baixar o script de otimização e execute o arquivo no seu PC.
+      </p>
 
-      {/* Glow top-right corner */}
-      <div style={{
-        position: 'fixed', top: 0, right: 0, width: 350, height: 250, pointerEvents: 'none', zIndex: 0,
-        background: 'radial-gradient(ellipse at top right, rgba(232,121,249,0.1) 0%, transparent 65%)',
-      }} />
-      {/* Glow bottom-left (after sidebar) */}
-      <div style={{
-        position: 'fixed', bottom: 0, left: SIDEBAR_WIDTH, width: 300, height: 200, pointerEvents: 'none', zIndex: 0,
-        background: 'radial-gradient(ellipse at bottom left, rgba(34,211,238,0.06) 0%, transparent 65%)',
-      }} />
+      <div style={{ display: 'grid', gap: '20px' }}>
+        {otimizacoes.map((item, idx) => (
+          <div
+            key={idx}
+            style={{
+              padding: '20px',
+              borderRadius: '12px',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <div>
+              <h3 style={{ margin: '0 0 6px 0', fontSize: '18px' }}>{item.titulo}</h3>
+              <p style={{ margin: 0, fontSize: '14px', color: '#888' }}>{item.descricao}</p>
+            </div>
 
-      <main style={{
-        marginLeft: SIDEBAR_WIDTH, padding: '40px 50px',
-        flex: 1, minHeight: '100vh', overflowY: 'auto',
-        position: 'relative', zIndex: 1,
-      }}>
-        <div key={active} style={{ animation: 'screenIn 0.28s ease' }}>
-          {screens[active]}
-        </div>
-      </main>
+            <a
+              href={item.arquivo}
+              download={item.nomeDownload}
+              style={{
+                padding: '10px 20px',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #a855f7 0%, #06b6d4 100%)',
+                color: '#fff',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+                fontSize: '14px',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              ⬇️ Baixar e Executar
+            </a>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
