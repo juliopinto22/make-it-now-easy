@@ -575,3 +575,39 @@ export default function App() {
     </div>
   );
 }
+// Configuração do Usuário
+const usuarioAtual = {
+    nome: "SeuNome",
+    id: "SEU_ID_UNICO", // Ou seu e-mail registrado
+    isAdmin: true // Define você como administrador
+};
+
+// Função para verificar se a opção Premium deve ser mostrada
+function podeAcessarPremium(usuario) {
+    // Se for Administrador, libera sem pagar
+    if (usuario.isAdmin || usuario.id === "SEU_ID_UNICO") {
+        return true;
+    }
+    
+    // Para usuários comuns, verifica se pagou o plano Premium
+    return usuario.temPlanoPremiumAtivo === true;
+}
+
+// Exemplo de uso no app:
+if (podeAcessarPremium(usuarioAtual)) {
+    // Exibe as opções e os 70+ recursos Premium
+    mostrarOpcoesPremium();
+} else {
+    // Mostra a tela de bloqueio/pagamento Premium
+    mostrarTelaDePagamento();
+}const recursosPremium = [
+    // Recursos Atuais...
+    "Otimização Extrema de FPS",
+    "Limpeza de Cache Avançada",
+    
+    // +70 Recursos Adicionados
+    "Recurso Premium 1",
+    "Recurso Premium 2",
+    "Recurso Premium 3",
+    // ... até completar os 70 recursos
+];
