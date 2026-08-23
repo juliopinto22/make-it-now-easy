@@ -13,15 +13,19 @@ export default function App() {
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [searchFilter, setSearchFilter] = useState('');
 
-  // Estados de bloqueio do Premium
+  // Estados do VIP
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [vipKeyInput, setVipKeyInput] = useState('');
   const [keyError, setKeyError] = useState(false);
 
-  // CHAVE DE ACESSO VIP (Você pode mudar para a chave que desejar)
-  const VALID_KEY = 'KANEKI-VIP-10R';
+  // CHAVE VIP DE ACESSO
+  const VALID_KEY = 'KANEKI-VIP-590';
+  
+  // CHAVE PIX COPIA E COLA (Exemplo)
+  const PIX_PASTE = '00020126580014br.gov.bcb.pix0136suachavepixaqui@email.com52040000530398654045.905802BR5915OptimizerKaneki6009Sao Paulo62070503***6304E2CA';
 
-  const KANEKI_AVATAR = 'https://images.alphacoders.com/554/thumb-1920-554270.jpg';
+  // Imagem enviada pelo usuário
+  const KANEKI_AVATAR = '/kaneki.jpg';
   const KANEKI_BG = 'https://images.alphacoders.com/605/thumb-1920-605782.png';
 
   const handleVerify = () => {
@@ -137,8 +141,8 @@ export default function App() {
           backdropFilter: 'blur(10px)'
         }}>
           <div style={{
-            width: '70px',
-            height: '70px',
+            width: '75px',
+            height: '75px',
             borderRadius: '50%',
             overflow: 'hidden',
             margin: '0 auto 15px auto',
@@ -252,8 +256,8 @@ export default function App() {
               src={KANEKI_AVATAR}
               alt="Kaneki"
               style={{
-                width: '36px',
-                height: '36px',
+                width: '38px',
+                height: '38px',
                 borderRadius: '50%',
                 border: '1px solid #dc2626',
                 objectFit: 'cover'
@@ -312,7 +316,7 @@ export default function App() {
               <span style={{ fontSize: '16px' }}>👑</span>
               {!collapsed && (
                 <span style={{ color: '#dc2626', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  PREMIUM R$ 10
+                  PREMIUM R$ 5,90
                   {!isUnlocked && <span style={{ fontSize: '10px', opacity: 0.7 }}>🔒</span>}
                 </span>
               )}
@@ -345,73 +349,105 @@ export default function App() {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            minHeight: '70vh',
+            minHeight: '75vh',
             textAlign: 'center'
           }}>
             <div style={{
               backgroundColor: '#050505',
               border: '1px solid rgba(220, 38, 38, 0.4)',
               borderRadius: '16px',
-              padding: '40px',
-              maxWidth: '450px',
+              padding: '30px 35px',
+              maxWidth: '460px',
               boxShadow: '0 0 35px rgba(220, 38, 38, 0.2)'
             }}>
-              <div style={{ fontSize: '48px', marginBottom: '10px' }}>👑</div>
-              <h2 style={{ fontSize: '22px', fontWeight: '800', color: '#fff', margin: '0 0 8px 0' }}>
-                ACESSO PREMIUM VIP
+              <div style={{ fontSize: '36px', marginBottom: '8px' }}>👑</div>
+              <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#fff', margin: '0 0 6px 0' }}>
+                DESBLOQUEAR PREMIUM VIP (FULL FPS)
               </h2>
-              <p style={{ fontSize: '13px', color: '#a3a3a3', marginBottom: '20px', lineHeight: '1.5' }}>
-                Libere o pacote com **alterações profundas de registro (RegEdit)**, prioridade total de CPU/GPU e diminuição do Input Lag por apenas **R$ 10,00**.
+              <p style={{ fontSize: '12px', color: '#a3a3a3', marginBottom: '20px', lineHeight: '1.4' }}>
+                Escaneie o QR Code abaixo para pagar via PIX por apenas <strong style={{ color: '#dc2626' }}>R$ 5,90</strong> e digite sua Chave de Acesso.
               </p>
 
-              <form onSubmit={handleUnlockVip} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {/* QR CODE PIX */}
+              <div style={{
+                backgroundColor: '#fff',
+                padding: '12px',
+                borderRadius: '12px',
+                display: 'inline-block',
+                marginBottom: '15px',
+                boxShadow: '0 0 15px rgba(255,255,255,0.1)'
+              }}>
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(PIX_PASTE)}`}
+                  alt="QR Code PIX R$ 5,90"
+                  style={{ width: '160px', height: '160px', display: 'block' }}
+                />
+              </div>
+
+              {/* PIX COPIA E COLA */}
+              <div style={{ marginBottom: '20px' }}>
+                <button
+                  onClick={() => handleCopy(PIX_PASTE)}
+                  style={{
+                    width: '100%',
+                    padding: '8px',
+                    borderRadius: '6px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    color: '#fff',
+                    fontSize: '11px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    transition: '0.2s'
+                  }}
+                >
+                  {copiedText === PIX_PASTE ? '✓ PIX COPIADO!' : '📋 COPIAR PIX COPIA E COLA (R$ 5,90)'}
+                </button>
+              </div>
+
+              {/* FORMULÁRIO DA CHAVE VIP */}
+              <form onSubmit={handleUnlockVip} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <input
                   type="text"
-                  placeholder="Cole sua Chave VIP aqui..."
+                  placeholder="Cole sua Chave VIP recebida..."
                   value={vipKeyInput}
                   onChange={(e) => setVipKeyInput(e.target.value)}
                   style={{
-                    padding: '12px',
+                    padding: '11px',
                     borderRadius: '8px',
                     border: keyError ? '1px solid #ef4444' : '1px solid rgba(255, 255, 255, 0.2)',
                     backgroundColor: '#000',
                     color: '#fff',
                     textAlign: 'center',
-                    fontSize: '13px',
+                    fontSize: '12px',
                     outline: 'none'
                   }}
                 />
                 {keyError && (
-                  <span style={{ fontSize: '11px', color: '#ef4444' }}>Chave inválida. Verifique e tente novamente.</span>
+                  <span style={{ fontSize: '11px', color: '#ef4444' }}>Chave incorreta. Tente novamente.</span>
                 )}
 
                 <button
                   type="submit"
                   style={{
-                    padding: '12px',
+                    padding: '11px',
                     borderRadius: '8px',
                     background: '#dc2626',
                     border: 'none',
                     color: '#fff',
                     fontWeight: 'bold',
-                    fontSize: '13px',
+                    fontSize: '12px',
                     cursor: 'pointer',
                     boxShadow: '0 0 15px rgba(220, 38, 38, 0.4)'
                   }}
                 >
-                  DESBLOQUEAR PAINEL VIP
+                  ATIVAR ACESSO VIP
                 </button>
               </form>
-
-              <div style={{ marginTop: '20px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '15px' }}>
-                <p style={{ fontSize: '11px', color: '#666', margin: 0 }}>
-                  Ainda não tem a chave? Adquira via PIX por R$ 10,00 com o administrador.
-                </p>
-              </div>
             </div>
           </div>
         ) : (
-          /* EXIBIÇÃO DA LISTA LIBERADA (FREE OU PREMIUM DESBLOQUEADO) */
+          /* EXIBIÇÃO DA LISTA LIBERADA */
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
               <div>
