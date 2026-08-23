@@ -13,6 +13,14 @@ export default function App() {
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [searchFilter, setSearchFilter] = useState('');
 
+  // Estados de bloqueio do Premium
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [vipKeyInput, setVipKeyInput] = useState('');
+  const [keyError, setKeyError] = useState(false);
+
+  // CHAVE DE ACESSO VIP (Você pode mudar para a chave que desejar)
+  const VALID_KEY = 'KANEKI-VIP-10R';
+
   const KANEKI_AVATAR = 'https://images.alphacoders.com/554/thumb-1920-554270.jpg';
   const KANEKI_BG = 'https://images.alphacoders.com/605/thumb-1920-605782.png';
 
@@ -23,6 +31,16 @@ export default function App() {
       setVerifying(false);
       setVerified(true);
     }, 1200);
+  };
+
+  const handleUnlockVip = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (vipKeyInput.trim() === VALID_KEY) {
+      setIsUnlocked(true);
+      setKeyError(false);
+    } else {
+      setKeyError(true);
+    }
   };
 
   const handleCopy = (text: string) => {
@@ -55,9 +73,8 @@ export default function App() {
     { category: 'SYSTEM', title: 'Serviços do Windows', desc: 'Abre a lista de serviços para otimização manual.', cmd: 'services.msc' }
   ];
 
-  // ---------------- OTIMIZAÇÕES PREMIUM (FULL FPS / REGISTROS / PROCESSOS) ----------------
+  // ---------------- OTIMIZAÇÕES PREMIUM ----------------
   const premiumOptimizations = [
-    // REGISTRO & CPU SCHEDULING
     { category: 'REGISTRY', title: 'Prioridade Absoluta CPU', desc: 'Força o agendamento de processos em jogos na CPU.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 38 /f' },
     { category: 'REGISTRY', title: 'MMCSS Games Priority', desc: 'Força áudio e GPU com prioridade máxima no registro.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games" /v "GPU Priority" /t REG_DWORD /d 8 /f' },
     { category: 'REGISTRY', title: 'MMCSS Games Priority CPU', desc: 'Define a prioridade de CPU para tarefas de jogos no MMCSS.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games" /v "Priority" /t REG_DWORD /d 6 /f' },
@@ -68,26 +85,18 @@ export default function App() {
     { category: 'REGISTRY', title: 'Desativar Network Throttling', desc: 'Remove o limite de velocidade de rede do Windows.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile" /v "NetworkThrottlingIndex" /t REG_DWORD /d 4294967295 /f' },
     { category: 'REGISTRY', title: 'SystemResponsiveness 0%', desc: 'Aloca 100% do poder do sistema para apps em primeiro plano.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile" /v "SystemResponsiveness" /t REG_DWORD /d 0 /f' },
     { category: 'REGISTRY', title: 'Desativar Sticky Keys Popup', desc: 'Evita janelas pop-up ao apertar SHIFT várias vezes em jogos.', cmd: 'reg add "HKCU\\Control Panel\\Accessibility\\StickyKeys" /v "Flags" /t REG_SZ /d "506" /f' },
-
-    // MEMÓRIA & PROCESSOS
     { category: 'MEMORY', title: 'Forçar Descarregamento DLLs', desc: 'Ejeta bibliotecas não utilizadas da memória RAM.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer" /v "AlwaysUnloadDLL" /t REG_DWORD /d 1 /f' },
     { category: 'MEMORY', title: 'Desativar Memory Paging Executive', desc: 'Força os drivers e kernel a ficarem gravados na RAM e não no HD/SSD.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 1 /f' },
     { category: 'MEMORY', title: 'Aumentar System Cache Size', desc: 'Aumenta a alocação de cache interno de leitura para a RAM.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 1 /f' },
     { category: 'MEMORY', title: 'Limpar Memória de Paged Pool', desc: 'Reduz o acúmulo de cache no pool paginado da RAM.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "ClearPageFileAtShutdown" /t REG_DWORD /d 0 /f' },
-
-    // REDE & PING EXTREMO
     { category: 'NETWORK_EX', title: 'Max User Port TCP', desc: 'Expande a quantidade máxima de conexões TCP simultâneas.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v "MaxUserPort" /t REG_DWORD /d 65534 /f' },
     { category: 'NETWORK_EX', title: 'TcpTimedWaitDelay Minimum', desc: 'Reduz o tempo de espera de fechamento de pacotes na rede.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v "TcpTimedWaitDelay" /t REG_DWORD /d 30 /f' },
     { category: 'NETWORK_EX', title: 'Default TTL Gaming Optim', desc: 'Ajusta o TTL para padrão de alta resposta em roteadores.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v "DefaultTTL" /t REG_DWORD /d 64 /f' },
-
-    // SERVIÇOS E BACKGROUND
     { category: 'SERVICES', title: 'Desativar Telemetria', desc: 'Muda a coleta de dados da Microsoft em segundo plano para zero.', cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f' },
     { category: 'SERVICES', title: 'Desativar Maps Broker Service', desc: 'Desativa o serviço invisível de download de mapas do Windows.', cmd: 'sc config MapsBroker start= disabled' },
     { category: 'SERVICES', title: 'Desativar Windows Search Index', desc: 'Para o consumo constante de disco do indexador do Windows.', cmd: 'sc config WSearch start= disabled' },
     { category: 'SERVICES', title: 'Desativar Telemetria DiagTrack', desc: 'Para o serviço de rastreamento de diagnósticos em segundo plano.', cmd: 'sc config DiagTrack start= disabled' },
     { category: 'SERVICES', title: 'Desativar Serviço dmwappushservice', desc: 'Desativa o serviço de envio de dados de rastreio corporativo.', cmd: 'sc config dmwappushservice start= disabled' },
-
-    // LATÊNCIA & GPU
     { category: 'FULL_FPS', title: 'Desativar Fullscreen Optimizations', desc: 'Remove o overlay do Windows em jogos para menor Input Lag.', cmd: 'reg add "HKCU\\System\\GameConfigStore" /v "GameDVR_FSEBehaviorMode" /t REG_DWORD /d 2 /f' },
     { category: 'FULL_FPS', title: 'Desativar GameBar Overlay', desc: 'Desliga a barra flutuante da Xbox Game Bar completamente.', cmd: 'reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR" /v "AppCaptureEnabled" /t REG_DWORD /d 0 /f' },
     { category: 'FULL_FPS', title: 'Habilitar Agendamento GPU HAGS', desc: 'Ativa o controle de memória direto da Placa de Vídeo.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d 2 /f' },
@@ -257,7 +266,7 @@ export default function App() {
             )}
           </div>
 
-          {/* Navegação entre Free e Premium */}
+          {/* Navegação */}
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <button
               onClick={() => setActiveTab('free')}
@@ -300,8 +309,13 @@ export default function App() {
                 transition: '0.15s'
               }}
             >
-              <span style={{ fontSize: '16px' }}>🔥</span>
-              {!collapsed && <span style={{ color: '#dc2626', letterSpacing: '0.5px' }}>PREMIUM FULL FPS</span>}
+              <span style={{ fontSize: '16px' }}>👑</span>
+              {!collapsed && (
+                <span style={{ color: '#dc2626', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  PREMIUM R$ 10
+                  {!isUnlocked && <span style={{ fontSize: '10px', opacity: 0.7 }}>🔒</span>}
+                </span>
+              )}
             </button>
           </nav>
         </div>
@@ -322,106 +336,182 @@ export default function App() {
         </button>
       </aside>
 
-      {/* Conteúdo do Painel */}
+      {/* Conteúdo Principal */}
       <main style={{ flex: 1, padding: '35px 40px', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-          <div>
-            <h1 style={{ fontSize: '22px', fontWeight: '800', color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
-              {activeTab === 'free' ? 'Otimizações Padrão' : 'Ajustes Extremos Registro & FPS (Premium)'}
-              {activeTab === 'premium' && (
-                <span style={{ fontSize: '10px', background: '#dc2626', color: '#fff', padding: '2px 8px', borderRadius: '4px', letterSpacing: '1px' }}>
-                  ULTRA FPS
-                </span>
-              )}
-            </h1>
-            <p style={{ fontSize: '13px', color: '#525252', margin: '4px 0 0 0' }}>
-              {activeTab === 'free' 
-                ? 'Comandos nativos básicos e manutenção de rotina' 
-                : 'Alterações profundas de registro (reg add) para maximizar o FPS do seu PC'}
-            </p>
+        {/* CASO A ABA PREMIUM ESTEJA BLOQUEADA */}
+        {activeTab === 'premium' && !isUnlocked ? (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '70vh',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              backgroundColor: '#050505',
+              border: '1px solid rgba(220, 38, 38, 0.4)',
+              borderRadius: '16px',
+              padding: '40px',
+              maxWidth: '450px',
+              boxShadow: '0 0 35px rgba(220, 38, 38, 0.2)'
+            }}>
+              <div style={{ fontSize: '48px', marginBottom: '10px' }}>👑</div>
+              <h2 style={{ fontSize: '22px', fontWeight: '800', color: '#fff', margin: '0 0 8px 0' }}>
+                ACESSO PREMIUM VIP
+              </h2>
+              <p style={{ fontSize: '13px', color: '#a3a3a3', marginBottom: '20px', lineHeight: '1.5' }}>
+                Libere o pacote com **alterações profundas de registro (RegEdit)**, prioridade total de CPU/GPU e diminuição do Input Lag por apenas **R$ 10,00**.
+              </p>
+
+              <form onSubmit={handleUnlockVip} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <input
+                  type="text"
+                  placeholder="Cole sua Chave VIP aqui..."
+                  value={vipKeyInput}
+                  onChange={(e) => setVipKeyInput(e.target.value)}
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: keyError ? '1px solid #ef4444' : '1px solid rgba(255, 255, 255, 0.2)',
+                    backgroundColor: '#000',
+                    color: '#fff',
+                    textAlign: 'center',
+                    fontSize: '13px',
+                    outline: 'none'
+                  }}
+                />
+                {keyError && (
+                  <span style={{ fontSize: '11px', color: '#ef4444' }}>Chave inválida. Verifique e tente novamente.</span>
+                )}
+
+                <button
+                  type="submit"
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    background: '#dc2626',
+                    border: 'none',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    boxShadow: '0 0 15px rgba(220, 38, 38, 0.4)'
+                  }}
+                >
+                  DESBLOQUEAR PAINEL VIP
+                </button>
+              </form>
+
+              <div style={{ marginTop: '20px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '15px' }}>
+                <p style={{ fontSize: '11px', color: '#666', margin: 0 }}>
+                  Ainda não tem a chave? Adquira via PIX por R$ 10,00 com o administrador.
+                </p>
+              </div>
+            </div>
           </div>
-
-          <input
-            type="text"
-            placeholder="Filtrar ajuste..."
-            value={searchFilter}
-            onChange={(e) => setSearchFilter(e.target.value)}
-            style={{
-              padding: '8px 14px',
-              borderRadius: '6px',
-              backgroundColor: '#0a0a0a',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              color: '#fff',
-              fontSize: '13px',
-              outline: 'none',
-              width: '200px'
-            }}
-          />
-        </div>
-
-        {/* Grid dos Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px' }}>
-          {filtered.map((item, idx) => (
-            <div
-              key={idx}
-              style={{
-                backgroundColor: '#050505',
-                border: activeTab === 'premium' ? '1px solid rgba(220, 38, 38, 0.25)' : '1px solid rgba(255, 255, 255, 0.06)',
-                padding: '16px',
-                borderRadius: '10px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                gap: '12px',
-                boxShadow: activeTab === 'premium' ? '0 0 10px rgba(0,0,0,0.5)' : 'none'
-              }}
-            >
+        ) : (
+          /* EXIBIÇÃO DA LISTA LIBERADA (FREE OU PREMIUM DESBLOQUEADO) */
+          <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '10px', color: '#dc2626', fontWeight: 'bold', letterSpacing: '1px' }}>
-                    {item.category}
-                  </span>
-                </div>
-                <h3 style={{ fontSize: '14px', fontWeight: '600', color: '#fff', margin: '0 0 4px 0' }}>
-                  {item.title}
-                </h3>
-                <p style={{ fontSize: '12px', color: '#666', margin: 0, lineHeight: '1.4' }}>
-                  {item.desc}
+                <h1 style={{ fontSize: '22px', fontWeight: '800', color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  {activeTab === 'free' ? 'Otimizações Padrão' : 'Ajustes Extremos Registro & FPS (Premium VIP)'}
+                  {activeTab === 'premium' && (
+                    <span style={{ fontSize: '10px', background: '#dc2626', color: '#fff', padding: '2px 8px', borderRadius: '4px', letterSpacing: '1px' }}>
+                      DESBLOQUEADO
+                    </span>
+                  )}
+                </h1>
+                <p style={{ fontSize: '13px', color: '#525252', margin: '4px 0 0 0' }}>
+                  {activeTab === 'free' 
+                    ? 'Comandos nativos básicos e manutenção de rotina' 
+                    : 'Alterações profundas de registro (reg add) para maximizar o FPS do seu PC'}
                 </p>
               </div>
 
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                backgroundColor: '#000',
-                padding: '6px 10px',
-                borderRadius: '6px',
-                border: '1px solid rgba(255, 255, 255, 0.04)'
-              }}>
-                <code style={{ fontSize: '10px', color: '#a3a3a3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '170px' }}>
-                  {item.cmd}
-                </code>
-                <button
-                  onClick={() => handleCopy(item.cmd)}
+              <input
+                type="text"
+                placeholder="Filtrar ajuste..."
+                value={searchFilter}
+                onChange={(e) => setSearchFilter(e.target.value)}
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: '6px',
+                  backgroundColor: '#0a0a0a',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#fff',
+                  fontSize: '13px',
+                  outline: 'none',
+                  width: '200px'
+                }}
+              />
+            </div>
+
+            {/* Grid dos Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px' }}>
+              {filtered.map((item, idx) => (
+                <div
+                  key={idx}
                   style={{
-                    background: copiedText === item.cmd ? '#dc2626' : 'transparent',
-                    border: 'none',
-                    color: copiedText === item.cmd ? '#fff' : '#dc2626',
-                    fontSize: '11px',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                    padding: '3px 8px',
-                    borderRadius: '4px',
-                    transition: '0.15s'
+                    backgroundColor: '#050505',
+                    border: activeTab === 'premium' ? '1px solid rgba(220, 38, 38, 0.25)' : '1px solid rgba(255, 255, 255, 0.06)',
+                    padding: '16px',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    gap: '12px'
                   }}
                 >
-                  {copiedText === item.cmd ? 'COPIADO' : 'COPIAR'}
-                </button>
-              </div>
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '10px', color: '#dc2626', fontWeight: 'bold', letterSpacing: '1px' }}>
+                        {item.category}
+                      </span>
+                    </div>
+                    <h3 style={{ fontSize: '14px', fontWeight: '600', color: '#fff', margin: '0 0 4px 0' }}>
+                      {item.title}
+                    </h3>
+                    <p style={{ fontSize: '12px', color: '#666', margin: 0, lineHeight: '1.4' }}>
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    backgroundColor: '#000',
+                    padding: '6px 10px',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.04)'
+                  }}>
+                    <code style={{ fontSize: '10px', color: '#a3a3a3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '170px' }}>
+                      {item.cmd}
+                    </code>
+                    <button
+                      onClick={() => handleCopy(item.cmd)}
+                      style={{
+                        background: copiedText === item.cmd ? '#dc2626' : 'transparent',
+                        border: 'none',
+                        color: copiedText === item.cmd ? '#fff' : '#dc2626',
+                        fontSize: '11px',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        padding: '3px 8px',
+                        borderRadius: '4px',
+                        transition: '0.15s'
+                      }}
+                    >
+                      {copiedText === item.cmd ? 'COPIADO' : 'COPIAR'}
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
       </main>
     </div>
   );
