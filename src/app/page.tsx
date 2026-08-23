@@ -21,7 +21,7 @@ export default function App() {
   // CHAVE VIP DE ACESSO
   const VALID_KEY = 'KANEKI-VIP-590';
   
-  // CHAVE PIX COPIA E COLA (Exemplo)
+  // CHAVE PIX COPIA E COLA
   const PIX_PASTE = '00020126580014br.gov.bcb.pix0136suachavepixaqui@email.com52040000530398654045.905802BR5915OptimizerKaneki6009Sao Paulo62070503***6304E2CA';
 
   // Imagem enviada pelo usuário
@@ -53,8 +53,9 @@ export default function App() {
     setTimeout(() => setCopiedText(null), 1800);
   };
 
-  // ---------------- OTIMIZAÇÕES FREE ----------------
+  // ---------------- OTIMIZAÇÕES FREE (40 OPÇÕES) ----------------
   const freeOptimizations = [
+    // --- Iniciais (20) ---
     { category: 'NETWORK', title: 'Flush DNS', desc: 'Limpa rotas e cache de IP acumulados.', cmd: 'ipconfig /flushdns' },
     { category: 'NETWORK', title: 'Renovar IP Local', desc: 'Solicita um novo IP para a placa de rede.', cmd: 'ipconfig /renew' },
     { category: 'NETWORK', title: 'Resetar Winsock', desc: 'Restaura a biblioteca de conexões do Windows.', cmd: 'netsh winsock reset' },
@@ -74,7 +75,29 @@ export default function App() {
     { category: 'SYSTEM', title: 'Imagem DISM', desc: 'Restaura a imagem base do Windows.', cmd: 'DISM /Online /Cleanup-Image /RestoreHealth' },
     { category: 'SYSTEM', title: 'Efeitos Visuais', desc: 'Abre o painel de ajuste de desempenho visual.', cmd: 'SystemPropertiesPerformance' },
     { category: 'SYSTEM', title: 'Programas de Início', desc: 'Gerencie apps que iniciam com o PC.', cmd: 'msconfig' },
-    { category: 'SYSTEM', title: 'Serviços do Windows', desc: 'Abre a lista de serviços para otimização manual.', cmd: 'services.msc' }
+    { category: 'SYSTEM', title: 'Serviços do Windows', desc: 'Abre a lista de serviços para otimização manual.', cmd: 'services.msc' },
+
+    // --- Novas 20 Opções Free ---
+    { category: 'NETWORK', title: 'Desativar Teredo Tunneling', desc: 'Remove o túnel IPv6 desnecessário para menor latência.', cmd: 'netsh interface teredo set state disabled' },
+    { category: 'NETWORK', title: 'Ativar ECN Capability', desc: 'Melhora o gerenciamento de congestionamento de pacotes na rede.', cmd: 'netsh int tcp set global ecncapability=enabled' },
+    { category: 'NETWORK', title: 'Ajustar Autotuning TCP', desc: 'Otimiza o fluxo de recepção de dados da conexão.', cmd: 'netsh int tcp set global autotuninglevel=normal' },
+    { category: 'NETWORK', title: 'Tabela NetBIOS Reset', desc: 'Limpa nomes de redes locais mantidos em cache.', cmd: 'nbtstat -R' },
+    { category: 'CLEAN', title: 'Esvaziar Lixeira via CMD', desc: 'Limpa o conteúdo da Lixeira do Windows rapidamente.', cmd: 'rd /s /q %systemdrive%\\$Recycle.bin' },
+    { category: 'CLEAN', title: 'Limpar Cache de Fontes', desc: 'Para e limpa o cache acumulado de fontes do sistema.', cmd: 'net stop fontcache & del /f /s /q %windir%\\ServiceProfiles\\LocalService\\AppData\\Local\\FontCache\\*.*' },
+    { category: 'CLEAN', title: 'Limpar Logs do Event Viewer', desc: 'Abre o Visualizador de Eventos para gerenciamento de logs.', cmd: 'eventvwr.msc' },
+    { category: 'CLEAN', title: 'Limpar Cache do Windows Update', desc: 'Remove atualizações antigas baixadas na pasta SoftwareDistribution.', cmd: 'net stop wuauserv & del /f /s /q %windir%\\SoftwareDistribution\\Download\\*.* & net start wuauserv' },
+    { category: 'SYSTEM', title: 'Início Rápido Power Control', desc: 'Abre as Opções de Energia do Painel de Controle.', cmd: 'control powercfg.cpl' },
+    { category: 'SYSTEM', title: 'Verificador de Memória RAM', desc: 'Abre a ferramenta de diagnóstico de memória do Windows.', cmd: 'mdsched.exe' },
+    { category: 'SYSTEM', title: 'Informações do Sistema', desc: 'Exibe relatório técnico completo sobre o Hardware.', cmd: 'msinfo32' },
+    { category: 'SYSTEM', title: 'Monitor de Recursos', desc: 'Abre o painel detalhado de uso de CPU, RAM e Rede.', cmd: 'resmon' },
+    { category: 'SYSTEM', title: 'Gerenciador de Dispositivos', desc: 'Abre o painel para verificar e atualizar drivers.', cmd: 'devmgmt.msc' },
+    { category: 'SYSTEM', title: 'Inspecionar Erros no HD/SSD', desc: 'Verifica erros de leiturabilidade no disco primário.', cmd: 'chkdsk C: /f /r' },
+    { category: 'GAMING', title: 'Recursos do Windows', desc: 'Ative ou desative recursos legados do sistema.', cmd: 'optionalfeatures' },
+    { category: 'GAMING', title: 'Painel de Configurações de GPU', desc: 'Abre as configurações avançadas de elementos gráficos.', cmd: 'start ms-settings:display-advancedgraphics' },
+    { category: 'GAMING', title: 'Prioridade de CPU do Processo', desc: 'Abre o Gerenciador de Tarefas na aba de detalhes.', cmd: 'taskmgr' },
+    { category: 'SERVICES', title: 'Pausar Atualizações Windows', desc: 'Abre a central do Windows Update para pausar updates.', cmd: 'start ms-settings:windowsupdate' },
+    { category: 'SERVICES', title: 'Desativar Fax Service', desc: 'Desabilita o serviço legado de Fax do sistema.', cmd: 'sc config Fax start= disabled' },
+    { category: 'SERVICES', title: 'Desativar Spooler de Impressão', desc: 'Economiza RAM se você não utiliza impressoras físicas.', cmd: 'sc config Spooler start= disabled' }
   ];
 
   // ---------------- OTIMIZAÇÕES PREMIUM ----------------
@@ -291,7 +314,7 @@ export default function App() {
               }}
             >
               <span style={{ fontSize: '16px' }}>⚡</span>
-              {!collapsed && <span>Otimizações Free</span>}
+              {!collapsed && <span>Otimizações Free ({freeOptimizations.length})</span>}
             </button>
 
             <button
@@ -452,7 +475,7 @@ export default function App() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
               <div>
                 <h1 style={{ fontSize: '22px', fontWeight: '800', color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  {activeTab === 'free' ? 'Otimizações Padrão' : 'Ajustes Extremos Registro & FPS (Premium VIP)'}
+                  {activeTab === 'free' ? `Otimizações Padrão (${filtered.length})` : 'Ajustes Extremos Registro & FPS (Premium VIP)'}
                   {activeTab === 'premium' && (
                     <span style={{ fontSize: '10px', background: '#dc2626', color: '#fff', padding: '2px 8px', borderRadius: '4px', letterSpacing: '1px' }}>
                       DESBLOQUEADO
@@ -461,7 +484,7 @@ export default function App() {
                 </h1>
                 <p style={{ fontSize: '13px', color: '#525252', margin: '4px 0 0 0' }}>
                   {activeTab === 'free' 
-                    ? 'Comandos nativos básicos e manutenção de rotina' 
+                    ? 'Comandos nativos básicos, rede e manutenção de rotina do Windows' 
                     : 'Alterações profundas de registro (reg add) para maximizar o FPS do seu PC'}
                 </p>
               </div>
