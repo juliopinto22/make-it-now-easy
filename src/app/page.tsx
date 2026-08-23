@@ -10,7 +10,6 @@ export default function App() {
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [searchFilter, setSearchFilter] = useState('');
 
-  // Imagens ultra clean do Kaneki (Tokyo Ghoul)
   const KANEKI_AVATAR = 'https://images.alphacoders.com/554/thumb-1920-554270.jpg';
   const KANEKI_BG = 'https://images.alphacoders.com/605/thumb-1920-605782.png';
 
@@ -30,33 +29,55 @@ export default function App() {
   };
 
   const freeOptimizations = [
-    // REDE & PING
+    // --- OTIMIZAÇÕES ANTERIORES (20) ---
     { category: 'NETWORK', title: 'Flush DNS', desc: 'Limpa rotas e cache de IP acumulados.', cmd: 'ipconfig /flushdns' },
     { category: 'NETWORK', title: 'Renovar IP Local', desc: 'Solicita um novo IP para a placa de rede.', cmd: 'ipconfig /renew' },
     { category: 'NETWORK', title: 'Resetar Winsock', desc: 'Restaura a biblioteca de conexões do Windows.', cmd: 'netsh winsock reset' },
     { category: 'NETWORK', title: 'Reset TCP/IP', desc: 'Reseta o protocolo de rede padrão.', cmd: 'netsh int ip reset' },
     { category: 'NETWORK', title: 'Desativar Chimney', desc: 'Elimina picos de latência em jogos.', cmd: 'netsh int tcp set global chimney=disabled' },
 
-    // PERFORMANCE & JOGOS
     { category: 'GAMING', title: 'Desativar GameDVR', desc: 'Remove o gravador em segundo plano do Windows.', cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR" /v "AllowGameDVR" /t REG_DWORD /d 0 /f' },
     { category: 'GAMING', title: 'Modo de Jogo UI', desc: 'Abre a central para ativar a prioridade de GPU.', cmd: 'start ms-settings:gaming-gamemode' },
     { category: 'GAMING', title: 'Plano Desempenho Máximo', desc: 'Habilita o perfil oculto de energia no sistema.', cmd: 'powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61' },
     { category: 'GAMING', title: 'Desativar Hibernação', desc: 'Economiza espaço e reduz leituras no SSD.', cmd: 'powercfg /hibernate off' },
     { category: 'GAMING', title: 'Painel DirectX', desc: 'Diagnóstico rápido da placa de vídeo.', cmd: 'dxdiag' },
 
-    // LIMPEZA DE RAM E DISCO
     { category: 'CLEAN', title: 'Pasta Temp Global', desc: 'Abre o diretório temporário do sistema.', cmd: 'temp' },
     { category: 'CLEAN', title: 'Pasta Temp Usuário', desc: 'Abre o cache temporário de programas.', cmd: 'shell:Local AppData\\Temp' },
     { category: 'CLEAN', title: 'Prefetch Cache', desc: 'Abre a pasta de pré-inicialização do Windows.', cmd: 'prefetch' },
     { category: 'CLEAN', title: 'Limpeza de Disco', desc: 'Executa a ferramenta oficial de remoção de lixo.', cmd: 'cleanmgr' },
     { category: 'CLEAN', title: 'Reset Store Cache', desc: 'Limpa o cache acumulado da Microsoft Store.', cmd: 'wsreset.exe' },
 
-    // SISTEMA & PRIVACIDADE
     { category: 'SYSTEM', title: 'Reparar Arquivos SFC', desc: 'Corrige arquivos corrompidos do sistema.', cmd: 'sfc /scannow' },
     { category: 'SYSTEM', title: 'Imagem DISM', desc: 'Restaura a imagem base do Windows.', cmd: 'DISM /Online /Cleanup-Image /RestoreHealth' },
     { category: 'SYSTEM', title: 'Efeitos Visuais', desc: 'Abre o painel de ajuste de desempenho visual.', cmd: 'SystemPropertiesPerformance' },
     { category: 'SYSTEM', title: 'Programas de Início', desc: 'Gerencie apps que iniciam com o PC.', cmd: 'msconfig' },
-    { category: 'SYSTEM', title: 'Serviços do Windows', desc: 'Abre a lista de serviços para otimização manual.', cmd: 'services.msc' }
+    { category: 'SYSTEM', title: 'Serviços do Windows', desc: 'Abre a lista de serviços para otimização manual.', cmd: 'services.msc' },
+
+    // --- NOVAS 20 OPÇÕES SEGURAS ---
+    { category: 'NETWORK', title: 'Limpar Tabela ARP', desc: 'Reseta o mapeamento de endereços IP locais da rede.', cmd: 'arp -d *' },
+    { category: 'NETWORK', title: 'Ativar Autotuning TCP', desc: 'Garante que a taxa de download e upload opere no máximo.', cmd: 'netsh int tcp set global autotuninglevel=normal' },
+    { category: 'NETWORK', title: 'Painel de Adaptadores', desc: 'Atalho direto para trocar o DNS rapidamente.', cmd: 'ncpa.cpl' },
+
+    { category: 'GAMING', title: 'Configurações de Exibição', desc: 'Painel para verificar e ajustar a taxa de atualização (Hz).', cmd: 'start ms-settings:display' },
+    { category: 'GAMING', title: 'Configurações de GPU', desc: 'Atalho para ativar o agendamento de GPU (HAGS).', cmd: 'start ms-settings:display-advancedgraphics' },
+    { category: 'GAMING', title: 'Gerenciador de Tarefas', desc: 'Defina a prioridade de CPU dos jogos manualmente.', cmd: 'taskmgr' },
+
+    { category: 'CLEAN', title: 'Abrir Lixeira', desc: 'Acesso direto para esvaziar a Lixeira do sistema.', cmd: 'explorer.exe shell:RecycleBinFolder' },
+    { category: 'CLEAN', title: 'Cache do Explorador', desc: 'Abre a pasta de dados recentes do Windows Explorer.', cmd: 'shell:recent' },
+    { category: 'CLEAN', title: 'Cache de Icones', desc: 'Reconstrói o cache visual do sistema operacional.', cmd: 'ie4uinit.exe -Show' },
+    { category: 'CLEAN', title: 'Armazenamento UI', desc: 'Painel nativo do Windows para apagar arquivos temporários.', cmd: 'start ms-settings:storagesense' },
+
+    { category: 'SYSTEM', title: 'Otimizar Discos/SSD', desc: 'Executa a ferramenta nativa de otimização TRIM e desfragmentação.', cmd: 'dfrgui' },
+    { category: 'SYSTEM', title: 'Informações do Sistema', desc: 'Exibe especificações completas de processador, RAM e BIOS.', cmd: 'msinfo32' },
+    { category: 'SYSTEM', title: 'Monitor de Recursos', desc: 'Acompanhe consumo de memória e disco em tempo real.', cmd: 'resmon' },
+    { category: 'SYSTEM', title: 'Gerenciador de Dispositivos', desc: 'Verifique se há drivers de vídeo ou rede desatualizados.', cmd: 'devmgmt.msc' },
+    { category: 'SYSTEM', title: 'Adicionar/Remover Programas', desc: 'Painel direto para desinstalar softwares pesados.', cmd: 'appwiz.cpl' },
+    { category: 'SYSTEM', title: 'Propriedades do Sistema', desc: 'Acesso rápido para ajustar a Memória Virtual (Paging).', cmd: 'sysdm.cpl' },
+    { category: 'SYSTEM', title: 'Visualizador de Eventos', desc: 'Ferramenta oficial para diagnosticar erros no Windows.', cmd: 'eventvwr.msc' },
+    { category: 'SYSTEM', title: 'Gerenciamento de Disco', desc: 'Verifique a saúde e a partição das suas unidades.', cmd: 'diskmgmt.msc' },
+    { category: 'SYSTEM', title: 'Regras do Firewall', desc: 'Painel nativo para liberar ou bloquear portas de jogos.', cmd: 'wf.msc' },
+    { category: 'SYSTEM', title: 'Painel de Controle Tradicional', desc: 'Acesso direto às configurações clássicas do sistema.', cmd: 'control' }
   ];
 
   const filtered = freeOptimizations.filter(i => 
@@ -64,7 +85,6 @@ export default function App() {
     i.category.toLowerCase().includes(searchFilter.toLowerCase())
   );
 
-  // MODO DE SEGURANÇA E DIREITOS AUTORAIS
   if (!verified) {
     return (
       <div style={{
@@ -110,7 +130,6 @@ export default function App() {
             Verificação de Segurança & Termos
           </p>
 
-          {/* Aviso de Direitos Autorais e Isenção */}
           <div style={{
             backgroundColor: 'rgba(0, 0, 0, 0.6)',
             border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -130,7 +149,6 @@ export default function App() {
             3. Os comandos fornecidos utilizam recursos nativos do sistema operacional. Use por sua conta e risco.
           </div>
 
-          {/* Checkbox de Aceite */}
           <label style={{
             display: 'flex',
             alignItems: 'center',
@@ -175,7 +193,6 @@ export default function App() {
     );
   }
 
-  // INTERFACE PRINCIPAL
   return (
     <div style={{
       display: 'flex',
@@ -184,7 +201,6 @@ export default function App() {
       color: '#e5e5e5',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
-      {/* Sidebar Retrátil (Apenas Otimizações Free) */}
       <aside style={{
         width: collapsed ? '70px' : '220px',
         backgroundColor: '#050505',
@@ -197,7 +213,6 @@ export default function App() {
         zIndex: 10
       }}>
         <div>
-          {/* Header Sidebar / Avatar */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -224,7 +239,6 @@ export default function App() {
             )}
           </div>
 
-          {/* Nav - Apenas Otimizações Free */}
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <button
               style={{
@@ -243,12 +257,11 @@ export default function App() {
               }}
             >
               <span style={{ fontSize: '16px' }}>⚡</span>
-              {!collapsed && <span>Otimizações Free</span>}
+              {!collapsed && <span>Otimizações Free ({filtered.length})</span>}
             </button>
           </nav>
         </div>
 
-        {/* Toggle Collapse */}
         <button
           onClick={() => setCollapsed(!collapsed)}
           style={{
@@ -265,16 +278,14 @@ export default function App() {
         </button>
       </aside>
 
-      {/* Conteúdo Clean */}
       <main style={{ flex: 1, padding: '35px 40px', overflowY: 'auto' }}>
-        {/* Header Principal */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
           <div>
             <h1 style={{ fontSize: '22px', fontWeight: '700', color: '#fff', margin: 0 }}>
               Optimizer Kaneki
             </h1>
             <p style={{ fontSize: '13px', color: '#525252', margin: '4px 0 0 0' }}>
-              Comandos de alto desempenho e limpeza ultraleve
+              Comandos nativos, seguros e de alto desempenho
             </p>
           </div>
 
@@ -296,7 +307,6 @@ export default function App() {
           />
         </div>
 
-        {/* Grid Clean de Cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '14px' }}>
           {filtered.map((item, idx) => (
             <div
