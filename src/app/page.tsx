@@ -2,11 +2,14 @@
 
 import React, { useState } from 'react';
 
+type Section = 'free' | 'premium';
+
 export default function App() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [verified, setVerified] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [activeTab, setActiveTab] = useState<Section>('free');
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [searchFilter, setSearchFilter] = useState('');
 
@@ -28,59 +31,72 @@ export default function App() {
     setTimeout(() => setCopiedText(null), 1800);
   };
 
+  // ---------------- OTIMIZAÇÕES FREE ----------------
   const freeOptimizations = [
-    // --- OTIMIZAÇÕES ANTERIORES (20) ---
     { category: 'NETWORK', title: 'Flush DNS', desc: 'Limpa rotas e cache de IP acumulados.', cmd: 'ipconfig /flushdns' },
     { category: 'NETWORK', title: 'Renovar IP Local', desc: 'Solicita um novo IP para a placa de rede.', cmd: 'ipconfig /renew' },
     { category: 'NETWORK', title: 'Resetar Winsock', desc: 'Restaura a biblioteca de conexões do Windows.', cmd: 'netsh winsock reset' },
     { category: 'NETWORK', title: 'Reset TCP/IP', desc: 'Reseta o protocolo de rede padrão.', cmd: 'netsh int ip reset' },
     { category: 'NETWORK', title: 'Desativar Chimney', desc: 'Elimina picos de latência em jogos.', cmd: 'netsh int tcp set global chimney=disabled' },
-
     { category: 'GAMING', title: 'Desativar GameDVR', desc: 'Remove o gravador em segundo plano do Windows.', cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR" /v "AllowGameDVR" /t REG_DWORD /d 0 /f' },
     { category: 'GAMING', title: 'Modo de Jogo UI', desc: 'Abre a central para ativar a prioridade de GPU.', cmd: 'start ms-settings:gaming-gamemode' },
     { category: 'GAMING', title: 'Plano Desempenho Máximo', desc: 'Habilita o perfil oculto de energia no sistema.', cmd: 'powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61' },
     { category: 'GAMING', title: 'Desativar Hibernação', desc: 'Economiza espaço e reduz leituras no SSD.', cmd: 'powercfg /hibernate off' },
     { category: 'GAMING', title: 'Painel DirectX', desc: 'Diagnóstico rápido da placa de vídeo.', cmd: 'dxdiag' },
-
     { category: 'CLEAN', title: 'Pasta Temp Global', desc: 'Abre o diretório temporário do sistema.', cmd: 'temp' },
     { category: 'CLEAN', title: 'Pasta Temp Usuário', desc: 'Abre o cache temporário de programas.', cmd: 'shell:Local AppData\\Temp' },
     { category: 'CLEAN', title: 'Prefetch Cache', desc: 'Abre a pasta de pré-inicialização do Windows.', cmd: 'prefetch' },
     { category: 'CLEAN', title: 'Limpeza de Disco', desc: 'Executa a ferramenta oficial de remoção de lixo.', cmd: 'cleanmgr' },
     { category: 'CLEAN', title: 'Reset Store Cache', desc: 'Limpa o cache acumulado da Microsoft Store.', cmd: 'wsreset.exe' },
-
     { category: 'SYSTEM', title: 'Reparar Arquivos SFC', desc: 'Corrige arquivos corrompidos do sistema.', cmd: 'sfc /scannow' },
     { category: 'SYSTEM', title: 'Imagem DISM', desc: 'Restaura a imagem base do Windows.', cmd: 'DISM /Online /Cleanup-Image /RestoreHealth' },
     { category: 'SYSTEM', title: 'Efeitos Visuais', desc: 'Abre o painel de ajuste de desempenho visual.', cmd: 'SystemPropertiesPerformance' },
     { category: 'SYSTEM', title: 'Programas de Início', desc: 'Gerencie apps que iniciam com o PC.', cmd: 'msconfig' },
-    { category: 'SYSTEM', title: 'Serviços do Windows', desc: 'Abre a lista de serviços para otimização manual.', cmd: 'services.msc' },
-
-    // --- NOVAS 20 OPÇÕES SEGURAS ---
-    { category: 'NETWORK', title: 'Limpar Tabela ARP', desc: 'Reseta o mapeamento de endereços IP locais da rede.', cmd: 'arp -d *' },
-    { category: 'NETWORK', title: 'Ativar Autotuning TCP', desc: 'Garante que a taxa de download e upload opere no máximo.', cmd: 'netsh int tcp set global autotuninglevel=normal' },
-    { category: 'NETWORK', title: 'Painel de Adaptadores', desc: 'Atalho direto para trocar o DNS rapidamente.', cmd: 'ncpa.cpl' },
-
-    { category: 'GAMING', title: 'Configurações de Exibição', desc: 'Painel para verificar e ajustar a taxa de atualização (Hz).', cmd: 'start ms-settings:display' },
-    { category: 'GAMING', title: 'Configurações de GPU', desc: 'Atalho para ativar o agendamento de GPU (HAGS).', cmd: 'start ms-settings:display-advancedgraphics' },
-    { category: 'GAMING', title: 'Gerenciador de Tarefas', desc: 'Defina a prioridade de CPU dos jogos manualmente.', cmd: 'taskmgr' },
-
-    { category: 'CLEAN', title: 'Abrir Lixeira', desc: 'Acesso direto para esvaziar a Lixeira do sistema.', cmd: 'explorer.exe shell:RecycleBinFolder' },
-    { category: 'CLEAN', title: 'Cache do Explorador', desc: 'Abre a pasta de dados recentes do Windows Explorer.', cmd: 'shell:recent' },
-    { category: 'CLEAN', title: 'Cache de Icones', desc: 'Reconstrói o cache visual do sistema operacional.', cmd: 'ie4uinit.exe -Show' },
-    { category: 'CLEAN', title: 'Armazenamento UI', desc: 'Painel nativo do Windows para apagar arquivos temporários.', cmd: 'start ms-settings:storagesense' },
-
-    { category: 'SYSTEM', title: 'Otimizar Discos/SSD', desc: 'Executa a ferramenta nativa de otimização TRIM e desfragmentação.', cmd: 'dfrgui' },
-    { category: 'SYSTEM', title: 'Informações do Sistema', desc: 'Exibe especificações completas de processador, RAM e BIOS.', cmd: 'msinfo32' },
-    { category: 'SYSTEM', title: 'Monitor de Recursos', desc: 'Acompanhe consumo de memória e disco em tempo real.', cmd: 'resmon' },
-    { category: 'SYSTEM', title: 'Gerenciador de Dispositivos', desc: 'Verifique se há drivers de vídeo ou rede desatualizados.', cmd: 'devmgmt.msc' },
-    { category: 'SYSTEM', title: 'Adicionar/Remover Programas', desc: 'Painel direto para desinstalar softwares pesados.', cmd: 'appwiz.cpl' },
-    { category: 'SYSTEM', title: 'Propriedades do Sistema', desc: 'Acesso rápido para ajustar a Memória Virtual (Paging).', cmd: 'sysdm.cpl' },
-    { category: 'SYSTEM', title: 'Visualizador de Eventos', desc: 'Ferramenta oficial para diagnosticar erros no Windows.', cmd: 'eventvwr.msc' },
-    { category: 'SYSTEM', title: 'Gerenciamento de Disco', desc: 'Verifique a saúde e a partição das suas unidades.', cmd: 'diskmgmt.msc' },
-    { category: 'SYSTEM', title: 'Regras do Firewall', desc: 'Painel nativo para liberar ou bloquear portas de jogos.', cmd: 'wf.msc' },
-    { category: 'SYSTEM', title: 'Painel de Controle Tradicional', desc: 'Acesso direto às configurações clássicas do sistema.', cmd: 'control' }
+    { category: 'SYSTEM', title: 'Serviços do Windows', desc: 'Abre a lista de serviços para otimização manual.', cmd: 'services.msc' }
   ];
 
-  const filtered = freeOptimizations.filter(i => 
+  // ---------------- OTIMIZAÇÕES PREMIUM (FULL FPS / REGISTROS / PROCESSOS) ----------------
+  const premiumOptimizations = [
+    // REGISTRO & CPU SCHEDULING
+    { category: 'REGISTRY', title: 'Prioridade Absoluta CPU', desc: 'Força o agendamento de processos em jogos na CPU.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 38 /f' },
+    { category: 'REGISTRY', title: 'MMCSS Games Priority', desc: 'Força áudio e GPU com prioridade máxima no registro.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games" /v "GPU Priority" /t REG_DWORD /d 8 /f' },
+    { category: 'REGISTRY', title: 'MMCSS Games Priority CPU', desc: 'Define a prioridade de CPU para tarefas de jogos no MMCSS.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games" /v "Priority" /t REG_DWORD /d 6 /f' },
+    { category: 'REGISTRY', title: 'MMCSS Scheduling Category', desc: 'Muda a categoria de agendamento do MMCSS para High.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games" /v "Scheduling Category" /t REG_SZ /d "High" /f' },
+    { category: 'REGISTRY', title: 'SFIO Priority High', desc: 'Define prioridade de E/S de jogos para High.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games" /v "SFIO Priority" /t REG_SZ /d "High" /f' },
+    { category: 'REGISTRY', title: 'Desativar Nagle Algorithm', desc: 'Desativa o delay de pacotes TCP na placa de rede.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v "TcpAckFrequency" /t REG_DWORD /d 1 /f' },
+    { category: 'REGISTRY', title: 'TCPNoDelay Force', desc: 'Envia dados de jogos instantaneamente sem agrupamento.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v "TCPNoDelay" /t REG_DWORD /d 1 /f' },
+    { category: 'REGISTRY', title: 'Desativar Network Throttling', desc: 'Remove o limite de velocidade de rede do Windows.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile" /v "NetworkThrottlingIndex" /t REG_DWORD /d 4294967295 /f' },
+    { category: 'REGISTRY', title: 'SystemResponsiveness 0%', desc: 'Aloca 100% do poder do sistema para apps em primeiro plano.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile" /v "SystemResponsiveness" /t REG_DWORD /d 0 /f' },
+    { category: 'REGISTRY', title: 'Desativar Sticky Keys Popup', desc: 'Evita janelas pop-up ao apertar SHIFT várias vezes em jogos.', cmd: 'reg add "HKCU\\Control Panel\\Accessibility\\StickyKeys" /v "Flags" /t REG_SZ /d "506" /f' },
+
+    // MEMÓRIA & PROCESSOS
+    { category: 'MEMORY', title: 'Forçar Descarregamento DLLs', desc: 'Ejeta bibliotecas não utilizadas da memória RAM.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer" /v "AlwaysUnloadDLL" /t REG_DWORD /d 1 /f' },
+    { category: 'MEMORY', title: 'Desativar Memory Paging Executive', desc: 'Força os drivers e kernel a ficarem gravados na RAM e não no HD/SSD.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 1 /f' },
+    { category: 'MEMORY', title: 'Aumentar System Cache Size', desc: 'Aumenta a alocação de cache interno de leitura para a RAM.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 1 /f' },
+    { category: 'MEMORY', title: 'Limpar Memória de Paged Pool', desc: 'Reduz o acúmulo de cache no pool paginado da RAM.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "ClearPageFileAtShutdown" /t REG_DWORD /d 0 /f' },
+
+    // REDE & PING EXTREMO
+    { category: 'NETWORK_EX', title: 'Max User Port TCP', desc: 'Expande a quantidade máxima de conexões TCP simultâneas.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v "MaxUserPort" /t REG_DWORD /d 65534 /f' },
+    { category: 'NETWORK_EX', title: 'TcpTimedWaitDelay Minimum', desc: 'Reduz o tempo de espera de fechamento de pacotes na rede.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v "TcpTimedWaitDelay" /t REG_DWORD /d 30 /f' },
+    { category: 'NETWORK_EX', title: 'Default TTL Gaming Optim', desc: 'Ajusta o TTL para padrão de alta resposta em roteadores.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v "DefaultTTL" /t REG_DWORD /d 64 /f' },
+
+    // SERVIÇOS E BACKGROUND
+    { category: 'SERVICES', title: 'Desativar Telemetria', desc: 'Muda a coleta de dados da Microsoft em segundo plano para zero.', cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f' },
+    { category: 'SERVICES', title: 'Desativar Maps Broker Service', desc: 'Desativa o serviço invisível de download de mapas do Windows.', cmd: 'sc config MapsBroker start= disabled' },
+    { category: 'SERVICES', title: 'Desativar Windows Search Index', desc: 'Para o consumo constante de disco do indexador do Windows.', cmd: 'sc config WSearch start= disabled' },
+    { category: 'SERVICES', title: 'Desativar Telemetria DiagTrack', desc: 'Para o serviço de rastreamento de diagnósticos em segundo plano.', cmd: 'sc config DiagTrack start= disabled' },
+    { category: 'SERVICES', title: 'Desativar Serviço dmwappushservice', desc: 'Desativa o serviço de envio de dados de rastreio corporativo.', cmd: 'sc config dmwappushservice start= disabled' },
+
+    // LATÊNCIA & GPU
+    { category: 'FULL_FPS', title: 'Desativar Fullscreen Optimizations', desc: 'Remove o overlay do Windows em jogos para menor Input Lag.', cmd: 'reg add "HKCU\\System\\GameConfigStore" /v "GameDVR_FSEBehaviorMode" /t REG_DWORD /d 2 /f' },
+    { category: 'FULL_FPS', title: 'Desativar GameBar Overlay', desc: 'Desliga a barra flutuante da Xbox Game Bar completamente.', cmd: 'reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR" /v "AppCaptureEnabled" /t REG_DWORD /d 0 /f' },
+    { category: 'FULL_FPS', title: 'Habilitar Agendamento GPU HAGS', desc: 'Ativa o controle de memória direto da Placa de Vídeo.', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d 2 /f' },
+    { category: 'FULL_FPS', title: 'Forçar Renderização GPU', desc: 'Força aceleração de hardware do Direct3D em segundo plano.', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\DirectX" /v "MaxPreRenderedFrames" /t REG_DWORD /d 1 /f' }
+  ];
+
+  const currentList = activeTab === 'free' ? freeOptimizations : premiumOptimizations;
+
+  const filtered = currentList.filter(i => 
     i.title.toLowerCase().includes(searchFilter.toLowerCase()) ||
     i.category.toLowerCase().includes(searchFilter.toLowerCase())
   );
@@ -201,8 +217,9 @@ export default function App() {
       color: '#e5e5e5',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
+      {/* Sidebar Retrátil */}
       <aside style={{
-        width: collapsed ? '70px' : '220px',
+        width: collapsed ? '70px' : '230px',
         backgroundColor: '#050505',
         borderRight: '1px solid rgba(255, 255, 255, 0.08)',
         padding: '20px 12px',
@@ -213,6 +230,7 @@ export default function App() {
         zIndex: 10
       }}>
         <div>
+          {/* Header Sidebar */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -239,8 +257,10 @@ export default function App() {
             )}
           </div>
 
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {/* Navegação entre Free e Premium */}
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <button
+              onClick={() => setActiveTab('free')}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -248,16 +268,40 @@ export default function App() {
                 padding: '10px 14px',
                 borderRadius: '8px',
                 border: 'none',
-                background: 'rgba(220, 38, 38, 0.12)',
-                color: '#dc2626',
-                fontWeight: '600',
+                background: activeTab === 'free' ? 'rgba(220, 38, 38, 0.15)' : 'transparent',
+                color: activeTab === 'free' ? '#dc2626' : '#737373',
+                fontWeight: activeTab === 'free' ? '700' : '500',
                 fontSize: '13px',
                 cursor: 'pointer',
-                justifyContent: collapsed ? 'center' : 'flex-start'
+                justifyContent: collapsed ? 'center' : 'flex-start',
+                transition: '0.15s'
               }}
             >
               <span style={{ fontSize: '16px' }}>⚡</span>
-              {!collapsed && <span>Otimizações Free ({filtered.length})</span>}
+              {!collapsed && <span>Otimizações Free</span>}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('premium')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                border: activeTab === 'premium' ? '1px solid #dc2626' : '1px solid rgba(220, 38, 38, 0.2)',
+                background: activeTab === 'premium' ? 'linear-gradient(135deg, rgba(220,38,38,0.2) 0%, rgba(0,0,0,0.8) 100%)' : 'rgba(220, 38, 38, 0.05)',
+                color: '#fff',
+                fontWeight: 'bold',
+                fontSize: '13px',
+                cursor: 'pointer',
+                justifyContent: collapsed ? 'center' : 'flex-start',
+                boxShadow: activeTab === 'premium' ? '0 0 12px rgba(220,38,38,0.3)' : 'none',
+                transition: '0.15s'
+              }}
+            >
+              <span style={{ fontSize: '16px' }}>🔥</span>
+              {!collapsed && <span style={{ color: '#dc2626', letterSpacing: '0.5px' }}>PREMIUM FULL FPS</span>}
             </button>
           </nav>
         </div>
@@ -278,14 +322,22 @@ export default function App() {
         </button>
       </aside>
 
+      {/* Conteúdo do Painel */}
       <main style={{ flex: 1, padding: '35px 40px', overflowY: 'auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
           <div>
-            <h1 style={{ fontSize: '22px', fontWeight: '700', color: '#fff', margin: 0 }}>
-              Optimizer Kaneki
+            <h1 style={{ fontSize: '22px', fontWeight: '800', color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {activeTab === 'free' ? 'Otimizações Padrão' : 'Ajustes Extremos Registro & FPS (Premium)'}
+              {activeTab === 'premium' && (
+                <span style={{ fontSize: '10px', background: '#dc2626', color: '#fff', padding: '2px 8px', borderRadius: '4px', letterSpacing: '1px' }}>
+                  ULTRA FPS
+                </span>
+              )}
             </h1>
             <p style={{ fontSize: '13px', color: '#525252', margin: '4px 0 0 0' }}>
-              Comandos nativos, seguros e de alto desempenho
+              {activeTab === 'free' 
+                ? 'Comandos nativos básicos e manutenção de rotina' 
+                : 'Alterações profundas de registro (reg add) para maximizar o FPS do seu PC'}
             </p>
           </div>
 
@@ -307,19 +359,21 @@ export default function App() {
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '14px' }}>
+        {/* Grid dos Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px' }}>
           {filtered.map((item, idx) => (
             <div
               key={idx}
               style={{
                 backgroundColor: '#050505',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
+                border: activeTab === 'premium' ? '1px solid rgba(220, 38, 38, 0.25)' : '1px solid rgba(255, 255, 255, 0.06)',
                 padding: '16px',
                 borderRadius: '10px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                gap: '12px'
+                gap: '12px',
+                boxShadow: activeTab === 'premium' ? '0 0 10px rgba(0,0,0,0.5)' : 'none'
               }}
             >
               <div>
@@ -345,7 +399,7 @@ export default function App() {
                 borderRadius: '6px',
                 border: '1px solid rgba(255, 255, 255, 0.04)'
               }}>
-                <code style={{ fontSize: '11px', color: '#a3a3a3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '160px' }}>
+                <code style={{ fontSize: '10px', color: '#a3a3a3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '170px' }}>
                   {item.cmd}
                 </code>
                 <button
