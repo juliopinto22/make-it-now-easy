@@ -2,13 +2,11 @@
 
 import React, { useState } from 'react';
 
-type Section = 'free' | 'sistema' | 'jogos' | 'limpeza';
-
 export default function App() {
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [verified, setVerified] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const [activeTab, setActiveTab] = useState<Section>('free');
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [searchFilter, setSearchFilter] = useState('');
 
@@ -17,6 +15,7 @@ export default function App() {
   const KANEKI_BG = 'https://images.alphacoders.com/605/thumb-1920-605782.png';
 
   const handleVerify = () => {
+    if (!acceptedTerms) return;
     setVerifying(true);
     setTimeout(() => {
       setVerifying(false);
@@ -65,7 +64,7 @@ export default function App() {
     i.category.toLowerCase().includes(searchFilter.toLowerCase())
   );
 
-  // MODO DE SEGURANÇA / ANTIBOT
+  // MODO DE SEGURANÇA E DIREITOS AUTORAIS
   if (!verified) {
     return (
       <div style={{
@@ -78,54 +77,95 @@ export default function App() {
         backgroundImage: `linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url(${KANEKI_BG})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        color: '#fff'
+        color: '#fff',
+        padding: '20px'
       }}>
         <div style={{
-          background: 'rgba(10, 10, 10, 0.85)',
+          background: 'rgba(10, 10, 10, 0.9)',
           border: '1px solid rgba(220, 38, 38, 0.4)',
-          padding: '40px',
+          padding: '30px',
           borderRadius: '16px',
           textAlign: 'center',
-          maxWidth: '380px',
-          width: '90%',
+          maxWidth: '420px',
+          width: '100%',
           boxShadow: '0 0 30px rgba(220, 38, 38, 0.2)',
           backdropFilter: 'blur(10px)'
         }}>
           <div style={{
-            width: '80px',
-            height: '80px',
+            width: '70px',
+            height: '70px',
             borderRadius: '50%',
             overflow: 'hidden',
-            margin: '0 auto 20px auto',
+            margin: '0 auto 15px auto',
             border: '2px solid #dc2626',
             boxShadow: '0 0 15px rgba(220,38,38,0.5)'
           }}>
             <img src={KANEKI_AVATAR} alt="Kaneki" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
 
-          <h2 style={{ fontSize: '18px', fontWeight: '800', letterSpacing: '2px', marginBottom: '8px', color: '#fff' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: '800', letterSpacing: '2px', marginBottom: '4px', color: '#fff' }}>
             OPTIMIZER KANEKI
           </h2>
-          <p style={{ fontSize: '12px', color: '#888', marginBottom: '25px' }}>
-            Verificação de Segurança do Sistema
+          <p style={{ fontSize: '11px', color: '#888', marginBottom: '20px' }}>
+            Verificação de Segurança & Termos
           </p>
+
+          {/* Aviso de Direitos Autorais e Isenção */}
+          <div style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            padding: '12px',
+            borderRadius: '8px',
+            fontSize: '11px',
+            color: '#a3a3a3',
+            textAlign: 'left',
+            lineHeight: '1.4',
+            maxHeight: '110px',
+            overflowY: 'auto',
+            marginBottom: '15px'
+          }}>
+            <strong style={{ color: '#dc2626' }}>AVISO DE DIREITOS AUTORAIS E ISENÇÃO:</strong><br />
+            1. As imagens e referências pertencem a Sui Ishida / Tokyo Ghoul.<br />
+            2. Este projeto é de uso educacional e informativo.<br />
+            3. Os comandos fornecidos utilizam recursos nativos do sistema operacional. Use por sua conta e risco.
+          </div>
+
+          {/* Checkbox de Aceite */}
+          <label style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontSize: '12px',
+            color: '#ccc',
+            marginBottom: '20px',
+            cursor: 'pointer',
+            textAlign: 'left'
+          }}>
+            <input
+              type="checkbox"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              style={{ accentColor: '#dc2626', cursor: 'pointer' }}
+            />
+            Li e concordo com os termos e avisos.
+          </label>
 
           <button
             onClick={handleVerify}
-            disabled={verifying}
+            disabled={!acceptedTerms || verifying}
             style={{
               width: '100%',
               padding: '12px',
               borderRadius: '8px',
-              background: verifying ? '#333' : '#dc2626',
+              background: !acceptedTerms ? '#222' : (verifying ? '#333' : '#dc2626'),
               border: 'none',
-              color: '#fff',
+              color: !acceptedTerms ? '#555' : '#fff',
               fontWeight: 'bold',
               fontSize: '13px',
               letterSpacing: '1px',
-              cursor: verifying ? 'wait' : 'pointer',
+              cursor: !acceptedTerms ? 'not-allowed' : (verifying ? 'wait' : 'pointer'),
               transition: '0.2s',
-              boxShadow: verifying ? 'none' : '0 0 15px rgba(220, 38, 38, 0.4)'
+              boxShadow: !acceptedTerms ? 'none' : '0 0 15px rgba(220, 38, 38, 0.4)'
             }}
           >
             {verifying ? 'VERIFICANDO...' : 'ACESSAR PAINEL'}
@@ -135,7 +175,7 @@ export default function App() {
     );
   }
 
-  // INTERFACE PRINCIPAL CLEAN / BLACK KANEKI
+  // INTERFACE PRINCIPAL
   return (
     <div style={{
       display: 'flex',
@@ -144,9 +184,9 @@ export default function App() {
       color: '#e5e5e5',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
-      {/* Sidebar Retrátil */}
+      {/* Sidebar Retrátil (Apenas Otimizações Free) */}
       <aside style={{
-        width: collapsed ? '70px' : '240px',
+        width: collapsed ? '70px' : '220px',
         backgroundColor: '#050505',
         borderRight: '1px solid rgba(255, 255, 255, 0.08)',
         padding: '20px 12px',
@@ -184,40 +224,27 @@ export default function App() {
             )}
           </div>
 
-          {/* Nav */}
+          {/* Nav - Apenas Otimizações Free */}
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            {[
-              { id: 'free', label: 'Otimizações Free', icon: '⚡' },
-              { id: 'sistema', label: 'Sistema', icon: '💻' },
-              { id: 'jogos', label: 'Modo Gamer', icon: '🎮' },
-              { id: 'limpeza', label: 'Limpeza', icon: '🧹' }
-            ].map(item => {
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id as Section)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '10px 14px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background: isActive ? 'rgba(220, 38, 38, 0.12)' : 'transparent',
-                    color: isActive ? '#dc2626' : '#737373',
-                    fontWeight: isActive ? '600' : 'normal',
-                    fontSize: '13px',
-                    cursor: 'pointer',
-                    justifyContent: collapsed ? 'center' : 'flex-start',
-                    transition: '0.15s'
-                  }}
-                >
-                  <span style={{ fontSize: '16px' }}>{item.icon}</span>
-                  {!collapsed && <span>{item.label}</span>}
-                </button>
-              );
-            })}
+            <button
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                border: 'none',
+                background: 'rgba(220, 38, 38, 0.12)',
+                color: '#dc2626',
+                fontWeight: '600',
+                fontSize: '13px',
+                cursor: 'pointer',
+                justifyContent: collapsed ? 'center' : 'flex-start'
+              }}
+            >
+              <span style={{ fontSize: '16px' }}>⚡</span>
+              {!collapsed && <span>Otimizações Free</span>}
+            </button>
           </nav>
         </div>
 
