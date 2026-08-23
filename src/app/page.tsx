@@ -103,8 +103,8 @@ export default function App() {
             <img src={KANEKI_AVATAR} alt="Kaneki" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
 
-          <h2 style={{ fontSize: '20px', fontWeight: '800', letterSpacing: '2px', marginBottom: '8px', color: '#fff' }}>
-            KANEKI // OPT
+          <h2 style={{ fontSize: '18px', fontWeight: '800', letterSpacing: '2px', marginBottom: '8px', color: '#fff' }}>
+            OPTIMIZER KANEKI
           </h2>
           <p style={{ fontSize: '12px', color: '#888', marginBottom: '25px' }}>
             Verificação de Segurança do Sistema
@@ -178,8 +178,8 @@ export default function App() {
               }}
             />
             {!collapsed && (
-              <span style={{ fontSize: '15px', fontWeight: '800', letterSpacing: '1px', color: '#fff' }}>
-                KANEKI<span style={{ color: '#dc2626' }}>//</span>
+              <span style={{ fontSize: '13px', fontWeight: '800', letterSpacing: '1px', color: '#fff' }}>
+                OPTIMIZER <span style={{ color: '#dc2626' }}>KANEKI</span>
               </span>
             )}
           </div>
@@ -244,7 +244,7 @@ export default function App() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
           <div>
             <h1 style={{ fontSize: '22px', fontWeight: '700', color: '#fff', margin: 0 }}>
-              Painel de Otimização
+              Optimizer Kaneki
             </h1>
             <p style={{ fontSize: '13px', color: '#525252', margin: '4px 0 0 0' }}>
               Comandos de alto desempenho e limpeza ultraleve
