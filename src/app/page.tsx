@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from 'react';
 
+// IMAGENS DE FUNDO (Certifique-se de salvar os arquivos na pasta /public)
+const IMG_CARREGANDO = '/KKTG-696x392.webp'; // Kaneki na cadeira
+const IMG_FUNDO_PRINCIPAL = '/kaneki6.webp'; // Kaneki de máscara
+
 const SENHA_PREMIUM = 'Pagamento@2026';
 const CHAVE_PIX = '+5511947138400';
 const VALOR_PREMIUM = '5,90';
@@ -9,8 +13,7 @@ const VERSAO = '4.5.0';
 
 const CORES = {
   fundo: '#050505',
-  fundoCard: '#111111',
-  fundoCardHover: '#1a0505',
+  fundoCard: 'rgba(17, 17, 17, 0.88)', // Leve transparência para ver o fundo
   vermelho: '#E40200',
   vermelhoEscuro: '#8B0000',
   vermelhoClaro: '#FF3333',
@@ -21,7 +24,7 @@ const CORES = {
   verdeSeguro: '#00CC44',
   amareloAviso: '#FFCC00',
   borda: '#330000',
-  alertaFundo: 'rgba(228, 2, 0, 0.12)',
+  alertaFundo: 'rgba(228, 2, 0, 0.2)',
 };
 
 const otmFree = [
@@ -89,7 +92,7 @@ export default function Page() {
   const [lateralAberta, setLateralAberta] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setCarregando(false), 1200);
+    const timer = setTimeout(() => setCarregando(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -124,13 +127,28 @@ export default function Page() {
     });
   };
 
+  // 1. TELA DE CARREGAMENTO / VERIFICAÇÃO (KANEKI NA CADEIRA)
   if (carregando) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: CORES.fundo, color: CORES.branco, flexDirection: 'column' }}>
-        <div style={{ fontSize: 38, fontWeight: 'bold', color: CORES.vermelho, marginBottom: 15, letterSpacing: 6 }}>TOKYO GHOUL</div>
-        <div style={{ fontSize: 13, color: CORES.cinzaClaro, marginBottom: 20 }}>CARREGANDO OTIMIZADOR...</div>
-        <div style={{ width: 260, height: 6, backgroundColor: '#1a0000', borderRadius: 10, border: '1px solid ' + CORES.vermelhoEscuro, overflow: 'hidden' }}>
-          <div style={{ width: '60%', height: '100%', backgroundColor: CORES.vermelho, borderRadius: 10, transition: 'width 0.5s ease' }} />
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        height: '100vh', 
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.82)), url(${IMG_CARREGANDO})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        color: CORES.branco, 
+        flexDirection: 'column' 
+      }}>
+        <div style={{ fontSize: 42, fontWeight: 'bold', color: CORES.vermelho, marginBottom: 10, letterSpacing: 8, textShadow: '0 0 20px #E40200' }}>
+          TOKYO GHOUL
+        </div>
+        <div style={{ fontSize: 13, color: CORES.cinzaClaro, marginBottom: 25, letterSpacing: 2 }}>
+          INICIALIZANDO SISTEMA DE OTIMIZAÇÃO...
+        </div>
+        <div style={{ width: 280, height: 6, backgroundColor: '#1a0000', borderRadius: 10, border: '1px solid ' + CORES.vermelhoEscuro, overflow: 'hidden' }}>
+          <div style={{ width: '100%', height: '100%', backgroundColor: CORES.vermelho, borderRadius: 10, animation: 'pulse 1.5s infinite' }} />
         </div>
       </div>
     );
@@ -139,10 +157,20 @@ export default function Page() {
   const listaExibida = abaAtiva === 'free' ? filtrar(otmFree) : abaAtiva === 'premium' ? filtrar(otmPremium) : [];
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: CORES.fundo, color: CORES.branco, fontFamily: 'sans-serif' }}>
+    // 2. TELA PRINCIPAL (KANEKI DE MÁSCARA)
+    <div style={{ 
+      display: 'flex', 
+      minHeight: '100vh', 
+      backgroundImage: `linear-gradient(rgba(5, 5, 5, 0.88), rgba(5, 5, 5, 0.88)), url(${IMG_FUNDO_PRINCIPAL})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+      color: CORES.branco, 
+      fontFamily: 'sans-serif' 
+    }}>
       
       {/* MENU LATERAL */}
-      <aside style={{ width: lateralAberta ? 260 : 70, backgroundColor: '#0a0000', borderRight: '2px solid ' + CORES.vermelhoEscuro, transition: 'width 0.3s ease', display: 'flex', flexDirection: 'column', padding: '16px 10px' }}>
+      <aside style={{ width: lateralAberta ? 260 : 70, backgroundColor: 'rgba(10, 0, 0, 0.92)', borderRight: '2px solid ' + CORES.vermelhoEscuro, transition: 'width 0.3s ease', display: 'flex', flexDirection: 'column', padding: '16px 10px', backdropFilter: 'blur(5px)' }}>
         <button 
           onClick={() => setLateralAberta(!lateralAberta)} 
           style={{ alignSelf: lateralAberta ? 'flex-end' : 'center', background: 'transparent', border: '1px solid ' + CORES.vermelhoEscuro, color: CORES.vermelho, width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', marginBottom: 12 }}
@@ -153,7 +181,7 @@ export default function Page() {
 
         {lateralAberta ? (
           <div style={{ textAlign: 'center', marginBottom: 16, paddingBottom: 12, borderBottom: '1px solid ' + CORES.borda }}>
-            <div style={{ fontSize: 18, fontWeight: 'bold', color: CORES.vermelho }}>OPTIMIZADOR</div>
+            <div style={{ fontSize: 18, fontWeight: 'bold', color: CORES.vermelho, letterSpacing: 2 }}>OPTIMIZADOR</div>
             <div style={{ fontSize: 11, color: CORES.vermelhoClaro }}>v{VERSAO}</div>
           </div>
         ) : null}
@@ -169,14 +197,14 @@ export default function Page() {
           
           <button 
             onClick={() => setAbaAtiva('pagamento')} 
-            style={{ padding: '10px', background: abaAtiva === 'pagamento' ? 'rgba(184,134,11,0.12)' : 'transparent', border: '1px solid ' + (abaAtiva === 'pagamento' ? CORES.dourado : 'transparent'), color: abaAtiva === 'pagamento' ? CORES.dourado : CORES.cinzaClaro, borderRadius: 8, cursor: 'pointer', textAlign: lateralAberta ? 'left' : 'center' }}
+            style={{ padding: '10px', background: abaAtiva === 'pagamento' ? 'rgba(184,134,11,0.2)' : 'transparent', border: '1px solid ' + (abaAtiva === 'pagamento' ? CORES.dourado : 'transparent'), color: abaAtiva === 'pagamento' ? CORES.dourado : CORES.cinzaClaro, borderRadius: 8, cursor: 'pointer', textAlign: lateralAberta ? 'left' : 'center' }}
           >
             💳 {lateralAberta && 'COMPRAR PREMIUM'}
           </button>
           
           <button 
             onClick={() => { setAbaAtiva('premium'); setCategoria('todas'); }} 
-            style={{ padding: '10px', background: abaAtiva === 'premium' ? 'rgba(184,134,11,0.12)' : 'transparent', border: '1px solid ' + (abaAtiva === 'premium' ? CORES.dourado : 'transparent'), color: abaAtiva === 'premium' ? CORES.dourado : CORES.cinzaClaro, borderRadius: 8, cursor: 'pointer', textAlign: lateralAberta ? 'left' : 'center' }}
+            style={{ padding: '10px', background: abaAtiva === 'premium' ? 'rgba(184,134,11,0.2)' : 'transparent', border: '1px solid ' + (abaAtiva === 'premium' ? CORES.dourado : 'transparent'), color: abaAtiva === 'premium' ? CORES.dourado : CORES.cinzaClaro, borderRadius: 8, cursor: 'pointer', textAlign: lateralAberta ? 'left' : 'center' }}
           >
             ⭐ {lateralAberta && `PREMIUM ${premiumLiberado ? '✓' : '🔒'}`}
           </button>
@@ -224,7 +252,7 @@ export default function Page() {
         
         {/* NOTIFICAÇÃO DE CÓPIA */}
         {mensagem && (
-          <div style={{ position: 'fixed', top: 20, right: 20, padding: '10px 20px', background: 'rgba(0,204,68,0.2)', border: '1px solid ' + CORES.verdeSeguro, borderRadius: 8, color: CORES.verdeSeguro, zIndex: 1000, fontWeight: 'bold' }}>
+          <div style={{ position: 'fixed', top: 20, right: 20, padding: '10px 20px', background: 'rgba(0,204,68,0.2)', border: '1px solid ' + CORES.verdeSeguro, borderRadius: 8, color: CORES.verdeSeguro, zIndex: 1000, fontWeight: 'bold', backdropFilter: 'blur(10px)' }}>
             {mensagem}
           </div>
         )}
@@ -237,7 +265,7 @@ export default function Page() {
               placeholder="🔍 Buscar otimização ou comando..." 
               value={busca} 
               onChange={(e) => setBusca(e.target.value)} 
-              style={{ width: '100%', padding: '12px 16px', background: CORES.fundoCard, border: '1px solid ' + CORES.borda, borderRadius: 8, color: CORES.branco, fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '12px 16px', background: CORES.fundoCard, border: '1px solid ' + CORES.borda, borderRadius: 8, color: CORES.branco, fontSize: 14, outline: 'none', boxSizing: 'border-box', backdropFilter: 'blur(5px)' }}
             />
           </div>
         )}
@@ -245,11 +273,11 @@ export default function Page() {
         {/* ABA: GRATUITA */}
         {abaAtiva === 'free' && (
           <div>
-            <h1 style={{ color: CORES.vermelho, marginTop: 0 }}>🔥 OTIMIZAÇÕES GRATUITAS</h1>
+            <h1 style={{ color: CORES.vermelho, marginTop: 0, textShadow: '0 0 10px rgba(228,2,0,0.5)' }}>🔥 OTIMIZAÇÕES GRATUITAS</h1>
             <p style={{ color: CORES.cinzaMedio, marginBottom: 20 }}>Exibindo {listaExibida.length} comandos prontos para aplicar no Prompt/PowerShell</p>
             
             {listaExibida.map((item) => (
-              <div key={item.id} style={{ background: CORES.fundoCard, padding: 14, borderRadius: 10, marginBottom: 12, borderLeft: '4px solid ' + corNivel(item.risco), borderTop: '1px solid ' + CORES.borda }}>
+              <div key={item.id} style={{ background: CORES.fundoCard, padding: 14, borderRadius: 10, marginBottom: 12, borderLeft: '4px solid ' + corNivel(item.risco), borderTop: '1px solid ' + CORES.borda, backdropFilter: 'blur(8px)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, alignItems: 'center' }}>
                   <strong>{String(item.id).padStart(2, '0')}. {item.nome}</strong>
                   <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 4, background: corNivel(item.risco), color: '#000', fontWeight: 'bold' }}>
@@ -276,10 +304,10 @@ export default function Page() {
         {/* ABA: PAGAMENTO (COM QR CODE VISÍVEL) */}
         {abaAtiva === 'pagamento' && (
           <div style={{ maxWidth: 450, margin: '20px auto', textAlign: 'center' }}>
-            <h2 style={{ color: CORES.dourado, fontSize: 32, margin: '0 0 10px 0' }}>R$ {VALOR_PREMIUM}</h2>
+            <h2 style={{ color: CORES.dourado, fontSize: 32, margin: '0 0 10px 0', textShadow: '0 0 10px rgba(184,134,11,0.5)' }}>R$ {VALOR_PREMIUM}</h2>
             <p style={{ color: CORES.cinzaClaro, fontSize: 14, marginBottom: 20 }}>Acesso vitalício a mais de 150 otimizações exclusivas</p>
             
-            <div style={{ background: CORES.fundoCard, padding: 24, borderRadius: 16, border: '1px solid ' + CORES.borda }}>
+            <div style={{ background: CORES.fundoCard, padding: 24, borderRadius: 16, border: '1px solid ' + CORES.borda, backdropFilter: 'blur(10px)' }}>
               
               {/* BOX DO QR CODE REAL */}
               <div style={{ padding: 16, background: '#fff', borderRadius: 8, marginBottom: 16, color: '#000', fontWeight: 'bold' }}>
@@ -302,7 +330,7 @@ export default function Page() {
                 📋 Copiar Chave PIX
               </button>
 
-              {/* A SENHA SÓ APARECE SE CLICAR NESSE BOTÃO */}
+              {/* BOTÃO JÁ REALIZEI O PAGAMENTO */}
               {!pagamentoConfirmado ? (
                 <button 
                   onClick={() => setPagamentoConfirmado(true)} 
@@ -334,11 +362,11 @@ export default function Page() {
         {/* ABA: PREMIUM (LIBERADA) */}
         {abaAtiva === 'premium' && premiumLiberado && (
           <div>
-            <h1 style={{ color: CORES.dourado, marginTop: 0 }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
+            <h1 style={{ color: CORES.dourado, marginTop: 0, textShadow: '0 0 10px rgba(184,134,11,0.5)' }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
             <p style={{ color: CORES.cinzaMedio, marginBottom: 20 }}>Exibindo {listaExibida.length} comandos avançados</p>
             
             {listaExibida.map((item) => (
-              <div key={item.id} style={{ background: CORES.fundoCard, padding: 14, borderRadius: 10, marginBottom: 12, borderLeft: '4px solid ' + corNivel(item.risco), borderTop: '1px solid ' + CORES.borda }}>
+              <div key={item.id} style={{ background: CORES.fundoCard, padding: 14, borderRadius: 10, marginBottom: 12, borderLeft: '4px solid ' + corNivel(item.risco), borderTop: '1px solid ' + CORES.borda, backdropFilter: 'blur(8px)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, alignItems: 'center' }}>
                   <strong style={{ color: CORES.dourado }}>{String(item.id).padStart(2, '0')}. {item.nome}</strong>
                   <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 4, background: corNivel(item.risco), color: '#000', fontWeight: 'bold' }}>
