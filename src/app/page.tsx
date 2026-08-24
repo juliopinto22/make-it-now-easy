@@ -4,12 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel — Optimizer Kaneki</title>
-    <link rel="stylesheet" href="estilo.css">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body {
+            background: linear-gradient(135deg, #2b003d, #4b0000);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            padding: 20px;
+        }
+        .caixa-principal {
+            background: rgba(0,0,0,0.75);
+            border: 2px solid #990000;
+            border-radius: 15px;
+            padding: 35px;
+            max-width: 550px;
+            width: 100%;
+            box-shadow: 0 0 25px #660066;
+        }
+        .titulo { color: #cc0000; text-align: center; font-size: 38px; margin-bottom: 5px; }
+        .subtitulo { color: #cc66ff; text-align: center; font-size: 20px; margin-bottom: 25px; letter-spacing: 2px; }
         .grupo { margin: 18px 0; padding: 15px; background: rgba(40,0,60,0.35); border-radius: 8px; }
         h3 { margin-bottom: 10px; }
-        button { margin: 5px; padding: 10px 15px; background: #550088; color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #880088; transform: scale(1.03); }
+        button {
+            margin: 5px; padding: 10px 15px;
+            background: linear-gradient(90deg, #660066, #990000);
+            color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;
+        }
+        button:hover { transform: scale(1.03); box-shadow: 0 0 10px #cc0000; }
         .voltar { background: #770000; margin-bottom: 15px; }
         .premium { border: 2px solid #cc0000; background: rgba(80,0,80,0.4); box-shadow: 0 0 15px #cc0000; margin-top: 25px; }
         .premium h3 { color: #ffcc00; text-align: center; font-size: 22px; }
@@ -44,14 +68,13 @@
             <button onclick="copiarComando('sistema')">Copiar Comandos</button>
         </div>
 
-        <!-- ✅ ÁREA PREMIUM COM QR CODE NOVO → A CHAVE FICA ESCONDIDA -->
+        <!-- ÁREA PREMIUM → Chave PIX escondida, só aparece o QR Code -->
         <div class="grupo premium">
             <h3>👑 ÁREA PREMIUM</h3>
             <div class="qr-container">
-                <!-- QR Code gerado com base nos seus dados PIX → só escaneável, número NÃO aparece -->
                 <svg id="qr-code-svg" class="qr-code" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"></svg>
-                <p class="aviso-pix">💳 Escaneie para pagar — PIX copia e cola</p>
-                <p class="chave-oculta">🔒 Chave protegida — apenas via QR Code</p>
+                <p class="aviso-pix">💳 Escaneie para pagamento via PIX</p>
+                <p class="chave-oculta">🔒 Chave protegida — apenas QR Code</p>
             </div>
         </div>
 
@@ -60,18 +83,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
     <script>
-        // ✅ DADOS DO PIX → NÃO APARECE NA TELA, SÓ NO QR CODE
-        const dadosPix = "+55 11947138400"; // A chave fica AQUI no código, NÃO aparece visível pro usuário
+        // ⚠️ CHAVE PIX AQUI — NÃO APARECE NA TELA, SÓ NO QR CODE
+        const dadosPix = "+55 11947138400";
 
-        // ✅ GERA O QR CODE AUTOMATICAMENTE → só a imagem, sem mostrar o número
+        // Gera QR Code com cores do tema Kaneki
         QRCode.to(document.getElementById('qr-code-svg'), dadosPix, {
-            width: 220,
-            height: 220,
-            margin: 2,
-            color: { dark: '#cc0000', light: '#1a001a' } // Cores do tema Kaneki
+            width: 220, height: 220, margin: 2,
+            color: { dark: '#cc0000', light: '#1a001a' }
         });
 
-        // ✅ COMANDOS DE OTIMIZAÇÃO — EXATAMENTE OS MESMOS DE ANTES
+        // MESMOs comandos de otimização — nada mudou!
         const comandos = {
             roblox: `:: Roblox FPS Boost — cole no Executor
 FramerateLimit = 0
