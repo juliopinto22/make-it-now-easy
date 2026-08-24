@@ -13,6 +13,7 @@ export default function App() {
   const [adminLiberado, setAdminLiberado] = useState(false);
   const [premiumPagoLiberado, setPremiumPagoLiberado] = useState(false);
   const [senhaDigitada, setSenhaDigitada] = useState('');
+  const [tipoAcesso, setTipoAcesso] = useState<'admin' | 'premium' | null>(null);
   const [erroSenha, setErroSenha] = useState('');
   const [status, setStatus] = useState('');
 
@@ -20,7 +21,7 @@ export default function App() {
     setTimeout(() => setCarregando(false), 2000);
   }, []);
 
-  // ✅ FUNÇÃO CORRIGIDA CONFORME SEU MODELO
+  // ✅ FUNÇÃO DE SENHA NO SEU MODELO EXATO
   const verificarSenha = () => {
     if (tipoAcesso === 'admin' && senhaDigitada === SENHA_ADMINISTRADOR) {
       setAdminLiberado(true);
@@ -253,7 +254,7 @@ export default function App() {
   ];
 
   // ==============================================
-  // 🎨 RENDERIZAÇÃO DA INTERFACE
+  // 🎨 INTERFACE COMPLETA E FECHADA
   // ==============================================
   if (carregando) {
     return (
@@ -273,5 +274,4 @@ export default function App() {
       {/* ÁREA DE PIX E SENHA */}
       {!premiumPagoLiberado && !adminLiberado && (
         <div style={{ backgroundColor:'#1a1a30', padding:'25px', borderRadius:'12px', marginBottom:'30px', border:'2px solid #ff2e63' }}>
-          <h2 style={{ color:'#fffa65', textAlign:'center', marginTop:0 }}>💳 ACESSO PREMIUM — 200 OTIMIZAÇÕES</h2>
-          <p style={{ textAlign:'center', fontSize:'18px', margin:'15
+          <h2 style={{ color:'#fffa65', textAlign:'center', marginTop:0
