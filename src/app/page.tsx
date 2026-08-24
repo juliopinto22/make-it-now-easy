@@ -273,7 +273,7 @@ export default function Page() {
           </div>
         )}
 
-        {/* ABA: PAGAMENTO */}
+      {/* ABA: PAGAMENTO */}
         {abaAtiva === 'pagamento' && (
           <div style={{ maxWidth: 450, margin: '20px auto', textAlign: 'center' }}>
             <h2 style={{ color: CORES.dourado, fontSize: 32, margin: '0 0 10px 0' }}>R$ {VALOR_PREMIUM}</h2>
@@ -296,6 +296,7 @@ export default function Page() {
                 📋 Copiar Chave PIX
               </button>
 
+              {/* A SENHA SÓ APARECE DEPOIS DE CLICAR NO BOTÃO ABAIXO */}
               {!pagamentoConfirmado ? (
                 <button 
                   onClick={() => setPagamentoConfirmado(true)} 
