@@ -294,41 +294,39 @@ export default function App() {
 
         {abaAtiva === 'pagamento' && (
           <div style={{ maxWidth: 440, margin: '20px auto 0', textAlign: 'center', padding: 10 }}>
-            <div style={{ fontSize: 28, fontWeight: 800, color: CORES.vermelho, marginBottom: 6, letterSpacing: 1, textShadow: `0 0 12px rgba(228,2,0,0.3)` }}>⭐ DESBLOQUEAR PREMIUM</div>
-            <div style={{ fontSize: 13, color: CORES.cinzaClaro, marginBottom: 28 }}>Pague via PIX e receba a senha imediatamente</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: CORES.dourado, marginBottom: 6, letterSpacing: 1 }}>R$ {VALOR_PREMIUM}</div>
+            <div style={{ fontSize: 13, color: CORES.cinzaClaro, marginBottom: 28 }}>Pague com o QR Code ou chave abaixo</div>
 
             <div style={{ backgroundColor: CORES.fundoCard, borderRadius: 18, border: `2px solid ${CORES.vermelhoEscuro}`, padding: 30, boxShadow: CORES.sombraVermelha }}>
-              <div style={{ fontSize: 42, fontWeight: 900, color: CORES.dourado, marginBottom: 4, textShadow: '0 0 8px rgba(184,134,11,0.25)' }}>R$ {VALOR_PREMIUM}</div>
-              <div style={{ fontSize: 12, color: CORES.cinzaMedio, marginBottom: 20 }}>Escaneie o QR Code ou copie a chave abaixo</div>
-
-              <div style={{ margin: '0 auto 20px auto', width: 240, height: 240, backgroundColor: '#FFFFFF', padding: 10, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '4px solid #111', boxShadow: 'inset 0 0 0 2px #eee' }}>
-                <div style={{ width: '100%', height: '100%', display: 'grid', gridTemplateColumns: `repeat(${qrDados[0].length}, 1fr)`, gap: 0 }}>
+              {/* QR Code Placeholder */}
+              <div style={{ margin: '0 auto 20px auto', width: 240, height: 240, backgroundColor: '#FFFFFF', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '80%', height: '80%', display: 'grid', gridTemplateColumns: `repeat(${qrDados[0].length}, 1fr)`, gap: 0 }}>
                   {qrDados.flatMap((linha, y) => linha.map((p, x) => (
                     <div key={`${x}-${y}`} style={{ aspectRatio: 1, backgroundColor: p ? '#000000' : 'transparent' }} />
                   )))}
                 </div>
               </div>
 
-              <div style={{ fontSize: 12, color: CORES.cinzaClaro, marginBottom: 14, padding: '12px', backgroundColor: 'rgba(228,2,0,0.06)', borderRadius: 10, fontFamily: 'Consolas, monospace', letterSpacing: 0.8, border: `1px dashed ${CORES.vermelhoEscuro}` }}>
-                🔑 {CHAVE_PIX}
+              <div style={{ fontSize: 12, color: CORES.cinzaClaro, marginBottom: 14, padding: '12px', backgroundColor: 'rgba(228,2,0,0.06)', borderRadius: 10, fontFamily: 'Consolas, monospace', border: `1px solid ${CORES.vermelhoEscuro}` }}>
+                +5511947138400
               </div>
 
-              <button onClick={() => copiar(CHAVE_PIX)} style={{ width: '100%', padding: '13px', backgroundColor: CORES.dourado, color: '#000', border: 'none', borderRadius: 10, fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: '0 0 8px rgba(184,134,11,0.3)', transition: 'all 0.2s' }}
-                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#d4a000'; e.currentTarget.style.boxShadow = '0 0 14px rgba(184,134,11,0.5)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.dourado; e.currentTarget.style.boxShadow = '0 0 8px rgba(184,134,11,0.3)'; }}>📋 COPIAR CHAVE PIX</button>
+              <button onClick={() => copiar(CHAVE_PIX)} style={{ width: '100%', padding: '13px', backgroundColor: CORES.dourado, color: '#000', border: 'none', borderRadius: 10, fontSize: 15, fontWeight: 800, cursor: 'pointer', marginBottom: 20, transition: 'all 0.2s' }}
+                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#d4a000'; }}
+                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.dourado; }}>📋 Copiar Chave PIX</button>
 
+              {/* A SENHA SÓ APARECE QUANDO O PAGAMENTO FOR CONFIRMADO */}
               {!pagamentoConfirmado ? (
-                <div style={{ marginTop: 20, padding: '16px', border: `1px dashed ${CORES.vermelho}`, borderRadius: 12, backgroundColor: 'rgba(228,2,0,0.04)' }}>
-                  <div style={{ fontSize: 13, color: CORES.vermelho, marginBottom: 10, fontWeight: 600 }}>✅ Já realizou o pagamento?</div>
-                  <button onClick={() => setPagamentoConfirmado(true)} style={{ padding: '10px 22px', backgroundColor: CORES.vermelho, color: CORES.branco, border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
-                    onMouseOver={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelhoClaro; }}
-                    onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelho; }}>Clique Aqui</button>
+                <div>
+                  <button onClick={() => setPagamentoConfirmado(true)} style={{ width: '100%', padding: '12px', backgroundColor: 'transparent', color: CORES.verdeSeguro, border: `1px solid ${CORES.verdeSeguro}`, borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
+                    onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,204,68,0.05)'; }}
+                    onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}>✅ Já realizei o pagamento</button>
                 </div>
               ) : (
-                <div style={{ marginTop: 20, padding: '20px', backgroundColor: 'rgba(0,204,68,0.06)', border: `1px solid ${CORES.verdeSeguro}`, borderRadius: 12 }}>
-                  <div style={{ fontSize: 14, color: CORES.verdeSeguro, fontWeight: 700, marginBottom: 10 }}>🔓 SENHA DE ACESSO:</div>
-                  <code style={{ fontSize: 16, padding: '12px 16px', backgroundColor: 'rgba(0,0,0,0.6)', borderRadius: 8, color: CORES.dourado, fontWeight: 800, letterSpacing: 2, display: 'inline-block', fontFamily: 'Consolas, monospace' }}>{SENHA_PREMIUM}</code>
-                  <div style={{ fontSize: 11, color: CORES.cinzaMedio, marginTop: 12 }}>Copie a senha e cole na aba "Premium" no menu lateral</div>
+                <div style={{ padding: '16px', backgroundColor: 'rgba(0,204,68,0.08)', border: `1px solid ${CORES.verdeSeguro}`, borderRadius: 10 }}>
+                  <div style={{ fontSize: 13, color: CORES.verdeSeguro, fontWeight: 600, marginBottom: 8 }}>🔑 SENHA DE ACESSO:</div>
+                  <code style={{ fontSize: 16, padding: '10px 14px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 6, color: CORES.dourado, fontWeight: 700, letterSpacing: 1, display: 'inline-block', fontFamily: 'Consolas, monospace' }}>{SENHA_PREMIUM}</code>
+                  <div style={{ fontSize: 11, color: CORES.cinzaMedio, marginTop: 10 }}>Copie a senha e cole na aba "Premium" ao lado</div>
                 </div>
               )}
             </div>
@@ -338,31 +336,39 @@ export default function App() {
         {abaAtiva === 'premium' && !premiumLiberado ? (
           <div style={{ textAlign: 'center', padding: '100px 20px', marginTop: 20 }}>
             <div style={{ fontSize: 72, marginBottom: 16, filter: 'drop-shadow(0 0 10px rgba(228,2,0,0.3))' }}>🔒</div>
-            <div style={{ fontSize: 22, color: CORES.vermelho, fontWeight: 800, marginBottom: 10, letterSpacing: 1 }}>ÁREA PREMIUM PROTEGIDA</div>
-            <div style={{ fontSize: 14, color: CORES.cinzaClaro, marginBottom: 28 }}>Desbloqueie <strong style={{ color: CORES.dourado }}>+400 otimizações</strong> por apenas <span style={{ color: CORES.dourado, fontWeight: 800, fontSize: 18 }}>R$ {VALOR_PREMIUM}</span></div>
-            <button onClick={() => setAbaAtiva('pagamento')} style={{ padding: '14px 36px', backgroundColor: CORES.vermelho, color: CORES.branco, border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 800, cursor: 'pointer', boxShadow: `0 0 12px rgba(228,2,0,0.4)`, transition: 'all 0.25s' }}
-              onMouseOver={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelhoClaro; e.currentTarget.style.boxShadow = `0 0 20px rgba(228,2,0,0.6)`; }}
-              onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelho; e.currentTarget.style.boxShadow = `0 0 12px rgba(228,2,0,0.4)`; }}>💳 DESBLOQUEAR AGORA</button>
+            <div style={{ fontSize: 22, color: CORES.dourado, fontWeight: 800, marginBottom: 10 }}>ÁREA PREMIUM PROTEGIDA</div>
+            <div style={{ fontSize: 14, color: CORES.cinzaClaro, marginBottom: 28 }}>Desbloqueie <strong style={{ color: CORES.dourado }}>+400 otimizações</strong> por apenas R$ {VALOR_PREMIUM}</div>
+            <button onClick={() => setAbaAtiva('pagamento')} style={{ padding: '14px 36px', backgroundColor: CORES.dourado, color: '#000', border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 800, cursor: 'pointer', transition: 'all 0.25s' }}
+              onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#d4a000'; }}
+              onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.dourado; }}>💳 Desbloquear Agora</button>
           </div>
         ) : abaAtiva === 'premium' && premiumLiberado ? (
           <div style={{ marginTop: 20 }}>
             <div style={{ marginBottom: 24, paddingBottom: 12, borderBottom: `1px solid ${CORES.borda}` }}>
-              <h1 style={{ fontSize: 26, margin: 0, color: CORES.dourado, fontWeight: 800, letterSpacing: 1, textShadow: `0 0 10px rgba(184,134,11,0.25)` }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
+              <h1 style={{ fontSize: 26, margin: 0, color: CORES.dourado, fontWeight: 800, letterSpacing: 1 }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
               <p style={{ fontSize: 13, color: CORES.cinzaMedio, marginTop: 6 }}>{listaAtual.length} comandos exclusivos para desempenho máximo</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {listaAtual.map(item => (
                 <div key={item.id} style={{ padding: '14px 18px', backgroundColor: CORES.fundoCard, borderRadius: 14, borderLeft: `4px solid ${corNivel(item.risco)}`, borderTop: '1px solid rgba(184,134,11,0.15)', borderRight: '1px solid rgba(184,134,11,0.15)', borderBottom: '1px solid rgba(184,134,11,0.15)', transition: 'all 0.2s' }}
-                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(40,30,10,0.8)'; e.currentTarget.style.boxShadow = '0 0 15px rgba(184,134,11,0.2)'; }}
-                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.fundoCard; e.currentTarget.style.boxShadow = 'none'; }}>
-                  <div style={{ display: 'flex, justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(40,30,10,0.8)'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.fundoCard; }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                     <span style={{ fontSize: 14, fontWeight: 600, color: CORES.branco }}>
-                      <strong style={{ color: CORES.dourado, opacity: 0.9 }}>{String(item.id).padStart(2,'0')}.</strong> {item.nome}
+                      <strong style={{ color: CORES.dourado }}>{String(item.id).padStart(2,'0')}.</strong> {item.nome}
                     </span>
-                    <span style={{ fontSize: 10, padding: '3px 8px', borderRadius: 10, backgroundColor: corNivel(item.risco), color: '#000', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>{item.risco}</span>
+                    <span style={{ fontSize: 10, padding: '3px 8px', borderRadius: 10, backgroundColor: corNivel(item.risco), color: '#000', fontWeight: 700, textTransform: 'uppercase' }}>{item.risco}</span>
                   </div>
                   <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <code style={{ flex: 1, padding: '10px 14px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 8, fontSize: 11, color: CORES.dourado, overflowX: 'auto', whiteSpace: 'nowrap', border: '1px solid #332a0f', fontFamily: 'Consolas, Menlo, monospace', letterSpacing: 0.3 }}>{item.cmd}</code>
-                    <button onClick={() => copiar(item.cmd)} style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: CORES.dourado, color: '#000', fontSize: 11, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
-                      onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#d4a000'; }}
-                      onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.dourado; }}
+                    <code style={{ flex: 1, padding: '10px 14px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 8, fontSize: 11, color: CORES.dourado, overflowX: 'auto', whiteSpace: 'nowrap', border: '1px solid #332a0f', fontFamily: 'Consolas, monospace' }}>{item.cmd}</code>
+                    <button onClick={() => copiar(item.cmd)} style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: CORES.dourado, color: '#000', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>📋 Copiar</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
