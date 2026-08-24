@@ -83,7 +83,7 @@ const otmPremium = gerarPremium();
 
 export default function Page() {
   const [carregando, setCarregando] = useState(true);
-  const [modoApp, setModoApp] = useState(false); // false: Landing Page, true: App Dashboard
+  const [modoApp, setModoApp] = useState(false);
   const [abaAtiva, setAbaAtiva] = useState('free');
   const [categoria, setCategoria] = useState('todas');
   const [busca, setBusca] = useState('');
@@ -160,11 +160,9 @@ export default function Page() {
             ⚡ OPTIMIZER KANEKI
           </div>
           <div style={{ display: 'flex', gap: 30, fontSize: 14, color: CORES.cinzaMedio }}>
-            <a href="#recursos" style={{ color: 'inherit', textDecoration: 'none' }}>Recursos</a>
             <a href="#planos" style={{ color: 'inherit', textDecoration: 'none' }}>Planos</a>
           </div>
           <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
-            <button onClick={() => abrirApp('free')} style={{ background: 'transparent', color: CORES.branco, border: 'none', cursor: 'pointer', fontSize: 14 }}>Entrar</button>
             <button onClick={() => abrirApp('free')} style={{ background: CORES.vermelho, color: '#FFF', border: 'none', padding: '10px 20px', borderRadius: 6, fontWeight: 'bold', boxShadow: '0 0 15px ' + CORES.vermelhoGlow, fontSize: 14, cursor: 'pointer' }}>
               Acessar Site
             </button>
@@ -300,7 +298,7 @@ export default function Page() {
           </button>
         </div>
 
-        {/* CATEGORIAS (FUNCIONAM NA ABA FREE E PREMIUM) */}
+        {/* CATEGORIAS */}
         {lateralAberta && (abaAtiva === 'free' || (abaAtiva === 'premium' && premiumLiberado)) && (
           <div style={{ marginTop: 20, borderTop: '1px solid ' + CORES.borda, paddingTop: 12, overflowY: 'auto', maxHeight: '50vh' }}>
             <div style={{ fontSize: 11, color: CORES.vermelhoClaro, marginBottom: 8, fontWeight: 'bold' }}>CATEGORIAS</div>
@@ -358,7 +356,7 @@ export default function Page() {
           </div>
         )}
 
-        {/* ABA: PAGAMENTO (PIX R$ 5,90) */}
+        {/* ABA: PAGAMENTO */}
         {abaAtiva === 'pagamento' && (
           <div style={{ maxWidth: 450, margin: '20px auto', textAlign: 'center' }}>
             <h2 style={{ color: CORES.dourado, fontSize: 32, margin: '0 0 10px 0', textShadow: '0 0 10px rgba(184,134,11,0.5)' }}>R$ {VALOR_PREMIUM}</h2>
@@ -395,7 +393,7 @@ export default function Page() {
           </div>
         )}
 
-        {/* ABA: PREMIUM (LIBERADA - 150+ OTIMIZAÇÕES) */}
+        {/* ABA: PREMIUM (LIBERADA) */}
         {abaAtiva === 'premium' && premiumLiberado && (
           <div>
             <h1 style={{ color: CORES.dourado, marginTop: 0, textShadow: '0 0 10px rgba(184,134,11,0.5)' }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
