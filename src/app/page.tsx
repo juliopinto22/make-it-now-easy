@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 const SENHA_PREMIUM = 'Pagamento@2026';
 const CHAVE_PIX = '+5511999999999'; // ⚠️ COLOQUE AQUI SUA CHAVE PIX REAL
 const VALOR_PREMIUM = '5,90';
-const VERSAO = '4.2.0';
+const VERSAO = '4.2.1';
 
 // 🎨 TEMA GOTICO — PRETO + VERMELHO SANGUE
 const CORES = {
@@ -17,7 +17,7 @@ const CORES = {
   vermelhoEscuro: '#8B0000',
   branco: '#FFFFFF',
   cinzaClaro: '#CCCCCC',
-  cinzaMedio: '#666666',
+  cinzaMedio: '#888888',
   dourado: '#B8860B',
   verdeSeguro: '#00CC44',
   amareloAviso: '#FFCC00',
@@ -25,6 +25,7 @@ const CORES = {
   textoSecundario: '#999999',
   alerta: '#FF2222',
   alertaFundo: 'rgba(204, 0, 0, 0.15)',
+  avisoFundo: 'rgba(139, 0, 0, 0.25)',
 };
 
 type Verificacao = {
@@ -43,7 +44,7 @@ type ProcessoSuspeito = {
 
 export default function App() {
   const [carregando, setCarregando] = useState(true);
-  const [abaAtiva, setAbaAtiva] = useState('seguranca'); // ✅ SEGURANCA APARECE PRIMEIRO
+  const [abaAtiva, setAbaAtiva] = useState('seguranca');
   const [categoria, setCategoria] = useState('todas');
   const [premiumLiberado, setPremiumLiberado] = useState(false);
   const [pagamentoConfirmado, setPagamentoConfirmado] = useState(false);
@@ -59,12 +60,11 @@ export default function App() {
   const [nivelAmeaca, setNivelAmeaca] = useState(0);
   const [ultimaVerificacao, setUltimaVerificacao] = useState('');
 
-  // ✅ INICIA VERIFICACAO AUTOMATICA AO ENTRAR NO SITE
   useEffect(() => {
     setTimeout(() => {
       setCarregando(false);
       setTimeout(() => {
-        iniciarVerificacaoSeguranca(); // Roda sozinho quando entra
+        iniciarVerificacaoSeguranca();
       }, 800);
     }, 1200);
   }, []);
@@ -83,7 +83,7 @@ export default function App() {
       { id: 5, nome: 'Verificacao de DLL e Hooks', status: 'verificando', detalhe: 'Buscando modificacoes...' },
       { id: 6, nome: 'Detecao de Ferramentas de Hack', status: 'verificando', detalhe: 'Comparando padroes...' },
       { id: 7, nome: 'Auditoria de Permissoes', status: 'verificando', detalhe: 'Verificando acessos...' },
-      { id: 8, nome: 'Analise de Tráfego Anormal', status: 'verificando', detalhe: 'Analisando rede...' },
+      { id: 8, nome: 'Analise de Trafego Anormal', status: 'verificando', detalhe: 'Analisando rede...' },
     ];
 
     setVerificacoes(lista);
@@ -159,14 +159,11 @@ export default function App() {
       case 'alerta': return { cor: '#FF8800', fundo: 'rgba(255,136,0,0.08)' };
       default: return { cor: CORES.cinzaMedio, fundo: 'transparent' };
     }
-  };
+  );
 
-  // ✅ QR CODE GERADO CORRETAMENTE — 29x29 padrao
   const gerarQR = (texto: string) => {
     const size = 29;
     const modules: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
-
-    // Marcadores de canto (padrao QR Code)
     const posicoes = [[0, 0], [0, size - 7], [size - 7, 0]];
     posicoes.forEach(([ox, oy]) => {
       for (let dy = 0; dy < 7; dy++) {
@@ -177,8 +174,6 @@ export default function App() {
         }
       }
     });
-
-    // Preenchimento com base no texto da chave
     const dados = texto.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
     for (let y = 8; y < size - 8; y++) {
       for (let x = 8; x < size - 8; x++) {
@@ -192,13 +187,7 @@ export default function App() {
   const otmFree = [
     { id: 1, cat: 'cpu', nome: 'Desativar C-States (Max Desempenho)', cmd: 'bcdedit /set useplatformtick yes', risco: 'medio' },
     { id: 2, cat: 'cpu', nome: 'Frequencia Maxima do Processador', cmd: 'powercfg /setacvalueindex scheme_current sub_processor 75b0ae3f-bce0-4099-8a7c-e05575c504d5 100', risco: 'medio' },
-    { id: 3, cat: 'gpu', nome: 'Forcar Desempenho Maximo da GPU', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\0000\\Settings" /v "PowerMizerLevelAC" /t REG_DWORD /d 1 /f', risco: 'medio' },
-    { id: 4, cat: 'memoria', nome: 'Liberar Memoria Nao Utilizada', cmd: 'Rundll32.exe advapi32.dll,ProcessIdleTasks', risco: 'baixo' },
-    { id: 5, cat: 'jogos', nome: 'Desativar Barra de Jogos Xbox', cmd: 'reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\GameBar" /v "AllowAutoGameMode" /t REG_DWORD /d 0 /f', risco: 'baixo' },
-    { id: 6, cat: 'registro', nome: 'Desativar Animacoes', cmd: 'reg add "HKCU\\Control Panel\\Desktop\\WindowMetrics" /v "MinAnimate" /t REG_SZ /d 0 /f', risco: 'baixo' },
-    { id: 7, cat: 'perifericos', nome: 'Remover Aceleracao do Mouse', cmd: 'reg add "HKCU\\Control Panel\\Mouse" /v "MouseSpeed" /t REG_SZ /d 0 /f', risco: 'baixo' },
-    { id: 8, cat: 'rede', nome: 'Limpar Cache DNS', cmd: 'ipconfig /flushdns', risco: 'baixo' },
-    { id: 9, cat: 'boot', nome: 'Tempo de Boot Reduzido', cmd: 'bcdedit /set timeout 3', risco: 'baixo' },
+    { id: 3, cat: 'memoria', nome: 'Liberar Memoria Nao Utilizada', cmd: 'Rundll32.exe advapi32.dll,ProcessIdleTasks', risco: 'baixo' },
   ];
 
   const gerarPremium = () => {
@@ -233,7 +222,28 @@ export default function App() {
   const listaAtual = abaAtiva === 'free' ? filtrar(otmFree) : abaAtiva === 'pagamento' ? [] : abaAtiva === 'seguranca' ? [] : filtrar(otmPremium);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: CORES.fundo, color: CORES.branco, fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: CORES.fundo, color: CORES.branco, fontFamily: 'system-ui, sans-serif', position: 'relative' }}>
+      
+      {/* ✅ AVISO FLUTUANTE NO CANTO SUPERIOR DIREITO */}
+      <div style={{
+        position: 'fixed',
+        top: 12,
+        right: 12,
+        zIndex: 9999,
+        backgroundColor: CORES.avisoFundo,
+        border: `1px solid ${CORES.vermelho}`,
+        borderRadius: 6,
+        padding: '8px 12',
+        maxWidth: 260,
+        fontSize: 11,
+        color: CORES.branco,
+        lineHeight: '1.4',
+        backdropFilter: 'blur(6px)',
+        boxShadow: `0 2px 8px ${CORES.vermelho}33`
+      }}>
+        ⚠️ <strong style={{ color: CORES.amareloAviso }}>Aviso:</strong> Este site é totalmente pago. Abaixo gratuita contém poucos itens. Adquira o Premium para acesso completo.
+      </div>
+
       {/* BARRA LATERAL */}
       <aside style={{ width: lateralAberta ? 260 : 56, backgroundColor: CORES.fundoCard, borderRight: `2px solid ${CORES.vermelhoEscuro}`, transition: 'width 0.25s ease', overflow: 'hidden', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: 14, display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -290,16 +300,13 @@ export default function App() {
           </div>
         )}
 
-        {/* ===================================== */}
-        {/* 🛡️ TELA DE SEGURANCA — APARECE PRIMEIRO */}
-        {/* ===================================== */}
+        {/* TELA DE SEGURANCA */}
         {abaAtiva === 'seguranca' && (
-          <div style={{ maxWidth: 720, margin: '0 auto' }}>
+          <div style={{ maxWidth: 720, margin: '0 auto', marginTop: 30 }}>
             <div style={{ textAlign: 'center', marginBottom: 24, padding: 20, backgroundColor: CORES.fundoCard, borderRadius: 8, border: `2px solid ${CORES.vermelhoEscuro}` }}>
               <div style={{ fontSize: 26, fontWeight: 'bold', color: CORES.vermelho, letterSpacing: 3, marginBottom: 4 }}>🛡️ SISTEMA DE SEGURANCA</div>
               <div style={{ fontSize: 12, color: CORES.cinzaClaro }}>Verificacao Automatica — Nao e preciso clicar</div>
             </div>
-
             <div style={{ padding: 20, marginBottom: 20, borderRadius: 8, border: `2px solid ${segurancaPronta ? (nivelAmeaca > 0 ? CORES.vermelho : CORES.verdeSeguro) : CORES.amareloAviso}`, backgroundColor: segurancaPronta ? (nivelAmeaca > 0 ? CORES.alertaFundo : 'rgba(0,204,68,0.08)') : 'rgba(255,204,0,0.05)', textAlign: 'center' }}>
               <div style={{ fontSize: 44, marginBottom: 8 }}>
                 {!segurancaPronta ? '⏳' : nivelAmeaca === 0 ? '✅' : nivelAmeaca <= 2 ? '⚠️' : '🚨'}
@@ -311,7 +318,6 @@ export default function App() {
                 {segurancaPronta ? `Concluido em: ${ultimaVerificacao}` : 'Aguarde, analisando o sistema...'}
               </div>
             </div>
-
             {verificacoes.length > 0 && (
               <div style={{ marginBottom: 20 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: CORES.vermelho, marginBottom: 10 }}>📋 REGISTRO</div>
@@ -331,7 +337,6 @@ export default function App() {
                 })}
               </div>
             )}
-
             {processosSuspeitos.length > 0 && (
               <div style={{ padding: 16, borderRadius: 6, border: `2px solid ${CORES.alerta}`, backgroundColor: 'rgba(204,0,0,0.12)' }}>
                 <div style={{ fontSize: 14, fontWeight: 'bold', color: CORES.alerta, marginBottom: 10 }}>🚨 ITENS SUSPEITOS</div>
@@ -347,19 +352,14 @@ export default function App() {
           </div>
         )}
 
-        {/* ===================================== */}
-        {/* 💳 PAGAMENTO — QR CODE FUNCIONANDO */}
-        {/* ===================================== */}
+        {/* PAGAMENTO COM QR CODE */}
         {abaAtiva === 'pagamento' && (
-          <div style={{ maxWidth: 400, margin: '0 auto', textAlign: 'center', padding: 10 }}>
+          <div style={{ maxWidth: 400, margin: '0 auto', textAlign: 'center', padding: 10, marginTop: 30 }}>
             <div style={{ fontSize: 24, fontWeight: 'bold', color: CORES.vermelho, marginBottom: 4 }}>⭐ DESBLOQUEAR PREMIUM</div>
-            <div style={{ fontSize: 12, color: CORES.cinzaClaro, marginBottom: 20 }}>+600 otimizacoes exclusivas</div>
-
+            <div style={{ fontSize: 12, color: CORES.cinzaClaro, marginBottom: 24 }}>+600 otimizacoes exclusivas</div>
             <div style={{ backgroundColor: CORES.fundoCard, borderRadius: 10, border: `2px solid ${CORES.vermelhoEscuro}`, padding: 24 }}>
               <div style={{ fontSize: 36, fontWeight: 'bold', color: CORES.dourado, marginBottom: 2 }}>R$ {VALOR_PREMIUM}</div>
               <div style={{ fontSize: 11, color: CORES.cinzaMedio, marginBottom: 16 }}>Pagamento via PIX — liberacao imediata</div>
-
-              {/* ✅ QR CODE AGORA GERADO CORRETAMENTE */}
               <div style={{ margin: '0 auto 16px auto', width: 232, height: 232, backgroundColor: '#FFFFFF', padding: 4, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ width: '100%', height: '100%', display: 'grid', gridTemplateColumns: `repeat(${qrDados[0].length}, 1fr)`, gap: 0 }}>
                   {qrDados.flatMap((linha, y) => linha.map((p, x) => (
@@ -367,20 +367,17 @@ export default function App() {
                   )))}
                 </div>
               </div>
-
               <div style={{ fontSize: 11, color: CORES.cinzaClaro, marginBottom: 12, wordBreak: 'break-all', padding: '0 8px' }}>Chave PIX: {CHAVE_PIX}</div>
-
               <button onClick={() => copiar(CHAVE_PIX)} style={{ width: '100%', padding: '10px', backgroundColor: CORES.dourado, color: '#000', border: 'none', borderRadius: 6, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>📋 Copiar Chave PIX</button>
-
               {!pagamentoConfirmado ? (
                 <div style={{ marginTop: 16, padding: 12, border: `1px dashed ${CORES.vermelho}`, borderRadius: 6 }}>
                   <div style={{ fontSize: 12, color: CORES.vermelho, marginBottom: 8 }}>✅ Ja pagou?</div>
                   <button onClick={() => setPagamentoConfirmado(true)} style={{ padding: '8px 16px', backgroundColor: CORES.vermelho, color: CORES.branco, border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Clique Aqui</button>
                 </div>
               ) : (
-                <div style={{ marginTop: 16, padding: 14, backgroundColor: 'rgba(0,204,68,0.08)', border: `1px solid ${CORES.verdeSeguro}`, borderRadius: 6 }}>
-                  <div style={{ fontSize: 13, color: CORES.verdeSeguro, fontWeight: 600, marginBottom: 6 }}>🔓 SENHA LIBERADA:</div>
-                  <code style={{ fontSize: 14, padding: '8px 12px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 4, color: CORES.dourado, fontWeight: 'bold', display: 'inline-block' }}>{SENHA_PREMIUM}</code>
+                <div style={{ marginTop: 16, padding: 14, backgroundColor: 'rgba(0,204,68,0.08)', border: `1px solid ${CORES.verdeSeguro}`, borderRadius: 4 }}>
+                  <div style={{ fontSize: 13, color: CORES.verdeSeguro, fontWeight: 600, marginBottom: 8 }}>🔓 SENHA LIBERADA:</div>
+                  <code style={{ fontSize: 15, padding: '8px 12px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 4, color: CORES.dourado, fontWeight: 'bold', letterSpacing: 1 }}>{SENHA_PREMIUM}</code>
                   <div style={{ fontSize: 11, color: CORES.cinzaMedio, marginTop: 8 }}>Copie e cole na aba Premium</div>
                 </div>
               )}
@@ -388,12 +385,12 @@ export default function App() {
           </div>
         )}
 
-        {/* 🔥 OTIMIZACOES GRATUITAS */}
+        {/* OTIMIZACOES GRATUITAS */}
         {abaAtiva === 'free' && (
-          <>
+          <div style={{ marginTop: 30 }}>
             <div style={{ marginBottom: 20 }}>
               <h1 style={{ fontSize: 20, margin: 0, color: CORES.vermelho }}>🔥 OTIMIZACOES GRATUITAS</h1>
-              <p style={{ fontSize: 12, color: CORES.cinzaMedio, marginTop: 4 }}>{listaAtual.length} itens encontrados</p>
+              <p style={{ fontSize: 12, color: CORES.cinzaMedio, marginTop: 4 }}>{listaAtual.length} itens disponiveis gratuitamente</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {listaAtual.map(item => (
@@ -404,24 +401,24 @@ export default function App() {
                   </div>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                     <code style={{ flex: 1, padding: '8px 10px', backgroundColor: CORES.fundo, borderRadius: 3, fontSize: 11, color: CORES.verdeSeguro, overflowX: 'auto', whiteSpace: 'nowrap', border: '1px solid #222' }}>{item.cmd}</code>
-                    <button onClick={() => copiar(item.cmd)} style={{ padding: '7px 12px', borderRadius: 3, border: 'none', backgroundColor: CORES.vermelho, color: CORES.branco, fontSize: 11, fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>Copiar</button>
+                    <button onClick={() => copiar(item.cmd)} style={{ padding: '7px 12px', borderRadius: 3, border: 'none', backgroundColor: CORES.vermelho, color: CORES.branco, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Copiar</button>
                   </div>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )}
 
-        {/* ⭐ PREMIUM */}
+        {/* AREA PREMIUM */}
         {abaAtiva === 'premium' && !premiumLiberado ? (
-          <div style={{ textAlign: 'center', padding: '80px 20px' }}>
+          <div style={{ textAlign: 'center', padding: '80px 20px', marginTop: 30 }}>
             <div style={{ fontSize: 52, marginBottom: 12 }}>🔒</div>
             <div style={{ fontSize: 18, color: CORES.vermelho, fontWeight: 600, marginBottom: 8 }}>AREA PREMIUM PROTEGIDA</div>
             <div style={{ fontSize: 14, color: CORES.cinzaClaro, marginBottom: 24 }}>Compre o acesso por apenas <span style={{ color: CORES.dourado, fontWeight: 'bold' }}>R$ {VALOR_PREMIUM}</span></div>
-            <button onClick={() => setAbaAtiva('pagamento')} style={{ padding: '12px 28px', backgroundColor: CORES.vermelho, color: CORES.branco, border: 'none', borderRadius: 6, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>💳 COMPRAR ACESSO</button>
+            <button onClick={() => setAbaAtiva('pagamento')} style={{ padding: '12px 24px', backgroundColor: CORES.vermelho, color: CORES.branco, border: 'none', borderRadius: 6, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>💳 COMPRAR ACESSO</button>
           </div>
         ) : abaAtiva === 'premium' && premiumLiberado && (
-          <>
+          <div style={{ marginTop: 30 }}>
             <div style={{ marginBottom: 20 }}>
               <h1 style={{ fontSize: 20, margin: 0, color: CORES.dourado }}>⭐ OTIMIZACOES PREMIUM</h1>
               <p style={{ fontSize: 12, color: CORES.cinzaMedio, marginTop: 4 }}>{listaAtual.length} itens disponiveis</p>
@@ -435,12 +432,12 @@ export default function App() {
                   </div>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                     <code style={{ flex: 1, padding: '8px 10px', backgroundColor: CORES.fundo, borderRadius: 3, fontSize: 11, color: CORES.dourado, overflowX: 'auto', whiteSpace: 'nowrap', border: '1px solid #331100' }}>{item.cmd}</code>
-                    <button onClick={() => copiar(item.cmd)} style={{ padding: '7px 12px', borderRadius: 3, border: 'none', backgroundColor: CORES.vermelho, color: CORES.branco, fontSize: 11, fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>Copiar</button>
+                    <button onClick={() => copiar(item.cmd)} style={{ padding: '7px 12px', borderRadius: 3, border: 'none', backgroundColor: CORES.vermelho, color: CORES.branco, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Copiar</button>
                   </div>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )}
       </main>
     </div>
