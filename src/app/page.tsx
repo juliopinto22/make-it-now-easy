@@ -397,7 +397,7 @@ export default function App() {
 
       <main style={{ flex: 1, padding: '30px 40px', overflowY: 'auto', position: 'relative', zIndex: 1 }}>
         {mensagem && (
-          <div style={{ position: 'fixed, top: 60px, right: 16px, padding: 10px 18px, backgroundColor: rgba(0,204,68,0.15), border: 1px solid ${CORES.verdeSeguro}, borderRadius: 10px, color: ${CORES.verdeSeguro}, fontSize: 12px, zIndex: 9999, backdropFilter: blur(8px)' }}>
+          <div style={{ position: 'fixed', top: 60, right: 16, padding: '10px 18px', backgroundColor: 'rgba(0,204,68,0.15)', border: `1px solid ${CORES.verdeSeguro}`, borderRadius: 10, color: CORES.verdeSeguro, fontSize: 12, zIndex: 9999, backdropFilter: 'blur(8px)' }}>
             {mensagem}
           </div>
         )}
@@ -583,7 +583,7 @@ export default function App() {
               onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelho; e.currentTarget.style.boxShadow = `0 0 12px rgba(228,2,0,0.4)`; }}
             >💳 DESBLOQUEAR AGORA</button>
           </div>
-        ) : abaAtiva === 'premium' && premiumLiberado && (
+        ) : abaAtiva === 'premium' && premiumLiberado ? (
           <div style={{ marginTop: 20 }}>
             <div style={{ marginBottom: 24, paddingBottom: 12, borderBottom: `1px solid ${CORES.borda}` }}>
               <h1 style={{ fontSize: 26, margin: 0, color: CORES.dourado, fontWeight: 800, letterSpacing: 1, textShadow: `0 0 10px rgba(184,134,11,0.25)` }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
@@ -600,4 +600,4 @@ export default function App() {
                     borderLeft: `4px solid ${corNivel(item.risco)}`,
                     borderTop: '1px solid rgba(184,134,11,0.15)',
                     borderRight: '1px solid rgba(184,134,11,0.15)',
-                    borderBottom
+                    borderBottom: '1px solid rgba(1
