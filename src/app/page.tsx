@@ -1,6 +1,5 @@
 'use client';
 
-// Imagem do preview do aplicativo
 const IMG_HERO_APP = 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1000&auto=format&fit=crop';
 
 const CORES = {
@@ -32,9 +31,8 @@ export default function Home() {
 
         <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
           <a href="#login" style={{ color: CORES.textoClaro, textDecoration: 'none', fontSize: 14 }}>Entrar</a>
-          {/* BOTÃO HEADER REDIRECIONANDO PARA O SITE */}
           <a 
-            href="https://seu-site-completo.com" 
+            href="#planos" 
             style={{ background: CORES.vermelho, color: '#FFF', textDecoration: 'none', padding: '10px 20px', borderRadius: 6, fontWeight: 'bold', boxShadow: '0 0 15px ' + CORES.vermelhoGlow, fontSize: 14 }}
           >
             Acessar Site
@@ -60,15 +58,13 @@ export default function Home() {
           </p>
 
           <div style={{ display: 'flex', gap: 16, marginBottom: 40, flexWrap: 'wrap' }}>
-            {/* BOTÃO 1: REDIRECIONA PARA O SITE COMPLETO */}
             <a 
-              href="https://seu-site-completo.com" 
+              href="#planos" 
               style={{ background: CORES.vermelho, color: '#FFF', textDecoration: 'none', padding: '16px 32px', borderRadius: 8, fontSize: 16, fontWeight: 'bold', boxShadow: '0 0 25px ' + CORES.vermelhoGlow, display: 'inline-block' }}
             >
               Acessar Site
             </a>
 
-            {/* BOTÃO 2: REDIRECIONA PARA A SEÇÃO OU PÁGINA DE PLANOS PREMIUM */}
             <a 
               href="#planos" 
               style={{ background: CORES.card, color: CORES.textoClaro, textDecoration: 'none', border: '1px solid ' + CORES.borda, padding: '16px 28px', borderRadius: 8, fontSize: 16, display: 'inline-block' }}
@@ -123,6 +119,65 @@ export default function Home() {
           </div>
         </div>
 
+      </section>
+
+      {/* SEÇÃO DE PLANOS (FREE & PREMIUM) */}
+      <section id="planos" style={{ padding: '80px 8%', borderTop: '1px solid ' + CORES.borda, background: 'rgba(10,0,0,0.6)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 50 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 900, marginBottom: 12 }}>Escolha o seu Plano</h2>
+          <p style={{ color: CORES.textoCinza, fontSize: 16 }}>Desbloqueie o máximo potencial do seu sistema com as opções abaixo.</p>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 30, flexWrap: 'wrap', alignItems: 'stretch' }}>
+          
+          {/* PLANO FREE */}
+          <div style={{ flex: '1 1 320px', maxWidth: 380, background: CORES.card, border: '1px solid ' + CORES.borda, borderRadius: 12, padding: 32, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ fontSize: 14, color: CORES.textoCinza, fontWeight: 'bold', marginBottom: 8 }}>GRÁTIS</div>
+              <h3 style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 16 }}>Plano Free</h3>
+              <div style={{ fontSize: 36, fontWeight: 900, marginBottom: 24 }}>R$ 0 <span style={{ fontSize: 14, color: CORES.textoCinza, fontWeight: 'normal' }}>/sempre</span></div>
+              
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 30px 0', lineHeight: '2.2', fontSize: 14, color: CORES.textoCinza }}>
+                <li>✔ Otimização básica de Memória RAM</li>
+                <li>✔ Limpeza de arquivos temporários</li>
+                <li>✔ Desativação básica de telemetria</li>
+                <li>✖ Sem tweaks avançados de GPU/CPU</li>
+                <li>✖ Sem prioridade de processo em jogos</li>
+              </ul>
+            </div>
+
+            <button style={{ width: '100%', background: 'transparent', color: CORES.textoClaro, border: '1px solid ' + CORES.borda, padding: '14px', borderRadius: 8, fontWeight: 'bold', cursor: 'pointer' }}>
+              Acessar Versão Free
+            </button>
+          </div>
+
+          {/* PLANO PREMIUM */}
+          <div style={{ flex: '1 1 320px', maxWidth: 380, background: CORES.card, border: '1px solid ' + CORES.vermelho, borderRadius: 12, padding: 32, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 0 30px ' + CORES.vermelhoGlow, position: 'relative' }}>
+            
+            <div style={{ position: 'absolute', top: -12, right: 20, background: CORES.vermelho, color: '#FFF', fontSize: 11, fontWeight: 'bold', padding: '4px 12px', borderRadius: 12, letterSpacing: 1 }}>
+              MAIS POPULAR
+            </div>
+
+            <div>
+              <div style={{ fontSize: 14, color: CORES.vermelho, fontWeight: 'bold', marginBottom: 8 }}>VIP ACCESS</div>
+              <h3 style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 16 }}>Plano Premium</h3>
+              <div style={{ fontSize: 36, fontWeight: 900, marginBottom: 24 }}>R$ 29,90 <span style={{ fontSize: 14, color: CORES.textoCinza, fontWeight: 'normal' }}>/mês</span></div>
+              
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 30px 0', lineHeight: '2.2', fontSize: 14, color: CORES.textoClaro }}>
+                <li>✔ 150+ Tweaks avançados no Registro</li>
+                <li>✔ Redução de Input Lag e Latência</li>
+                <li>✔ Plano de Energia Kaneki Max Performance</li>
+                <li>✔ Otimização exclusiva para GPU e CPU</li>
+                <li>✔ Suporte VIP 24/7 e Atualizações Contínuas</li>
+              </ul>
+            </div>
+
+            <button style={{ width: '100%', background: CORES.vermelho, color: '#FFF', border: 'none', padding: '14px', borderRadius: 8, fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 0 20px ' + CORES.vermelhoGlow }}>
+              Assinar Premium Agora
+            </button>
+          </div>
+
+        </div>
       </section>
 
     </div>
