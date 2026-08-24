@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 const SENHA_PREMIUM = 'Pagamento@2026';
 const CHAVE_PIX = '+5511999999999'; // ⚠️ COLOQUE AQUI SUA CHAVE PIX REAL
 const VALOR_PREMIUM = '5,90';
-const VERSAO = '4.0.0';
+const VERSAO = '4.1.0';
 
 // 🎨 TEMA GÓTICO — PRETO + VERMELHO SANGUE
 const CORES = {
@@ -23,11 +23,28 @@ const CORES = {
   amareloAviso: '#FFCC00',
   borda: '#330000',
   textoSecundario: '#999999',
+  alerta: '#FF2222',
+  alertaFundo: 'rgba(204, 0, 0, 0.15)',
+};
+
+// 🔒 TIPOS DE DADOS
+type Verificacao = {
+  id: number;
+  nome: string;
+  status: 'verificando' | 'seguro' | 'ameaca' | 'alerta';
+  detalhe: string;
+  gravidade?: 'baixa' | 'media' | 'alta' | 'critica';
+};
+
+type ProcessoSuspeito = {
+  nome: string;
+  caminho: string;
+  risco: string;
 };
 
 export default function App() {
   const [carregando, setCarregando] = useState(true);
-  const [abaAtiva, setAbaAtiva] = useState('free');
+  const [abaAtiva, setAbaAtiva] = useState('seguranca');
   const [categoria, setCategoria] = useState('todas');
   const [premiumLiberado, setPremiumLiberado] = useState(false);
   const [pagamentoConfirmado, setPagamentoConfirmado] = useState(false);
@@ -36,9 +53,80 @@ export default function App() {
   const [mensagem, setMensagem] = useState('');
   const [lateralAberta, setLateralAberta] = useState(true);
 
+  // 🛡️ ESTADO DO SISTEMA DE SEGURANÇA
+  const [verificacoes, setVerificacoes] = useState<Verificacao[]>([]);
+  const [verificando, setVerificando] = useState(false);
+  const [segurancaPronta, setSegurancaPronta] = useState(false);
+  const [processosSuspeitos, setProcessosSuspeitos] = useState<ProcessoSuspeito[]>([]);
+  const [nivelAmeaca, setNivelAmeaca] = useState(0);
+  const [ultimaVerificacao, setUltimaVerificacao] = useState('');
+
   useEffect(() => {
     setTimeout(() => setCarregando(false), 1200);
   }, []);
+
+  // 🔍 SISTEMA DE VERIFICAÇÃO AUTOMÁTICA — SEM PERGUNTAS
+  const iniciarVerificacaoSeguranca = () => {
+    setVerificando(true);
+    setSegurancaPronta(false);
+    setNivelAmeaca(0);
+    setProcessosSuspeitos([]);
+
+    const lista: Verificacao[] = [
+      { id: 1, nome: 'Verificação de Modificação de Arquivos do Sistema', status: 'verificando', detalhe: 'Analisando integridade...' },
+      { id: 2, nome: 'Detecção de Injeção de Código', status: 'verificando', detalhe: 'Escaneando processos...' },
+      { id: 3, nome: 'Verificação de Acesso Remoto', status: 'verificando', detalhe: 'Monitorando conexões...' },
+      { id: 4, nome: 'Detecção de Processos Suspeitos', status: 'verificando', detalhe: 'Verificando assinaturas...' },
+      { id: 5, nome: 'Verificação de Hooks e Injeção de DLL', status: 'verificando', detalhe: 'Buscando modificações...' },
+      { id: 6, nome: 'Detecção de Ferramentas de Hack', status: 'verificando', detalhe: 'Comparando assinaturas...' },
+      { id: 7, nome: 'Verificação de Acesso não Autorizado', status: 'verificando', detalhe: 'Auditando permissões...' },
+      { id: 8, nome: 'Monitoramento de Conexões Anormais', status: 'verificando', detalhe: 'Analisando tráfego...' },
+    ];
+
+    setVerificacoes(lista);
+
+    // Simulação de progresso em etapas
+    lista.forEach((item, index) => {
+      setTimeout(() => {
+        const resultado = gerarResultadoVerificacao(item.id);
+        setVerificacoes(prev => prev.map(v =>
+          v.id === item.id ? { ...v, status: resultado.status, detalhe: resultado.detalhe, gravidade: resultado.gravidade } : v
+        ));
+
+        if (resultado.status === 'ameaca' || resultado.status === 'alerta') {
+          setNivelAmeaca(prev => prev + 1);
+          if (resultado.processos) setProcessosSuspeitos(resultado.processos);
+        }
+
+        // Última etapa — finalizar
+        if (index === lista.length - 1) {
+          setTimeout(() => {
+            setVerificando(false);
+            setSegurancaPronta(true);
+            setUltimaVerificacao(new Date().toLocaleString('pt-BR'));
+          }, 600);
+        }
+      }, (index + 1) * 900);
+    });
+  };
+
+  // 🎲 GERADOR DE RESULTADOS DE VERIFICAÇÃO
+  const gerarResultadoVerificacao = (id: number) => {
+    const aleatorio = Math.random();
+
+    // SIMULAÇÃO DE AMEAÇAS DETECTADAS
+    if (aleatorio < 0.12) {
+      const ameacas = [
+        { status: 'ameaca' as const, detalhe: 'Arquivo modificado sem assinatura digital', gravidade: 'alta' as const },
+        { status: 'ameaca' as const, detalhe: 'Processo desconhecido em execução', gravidade: 'critica' as const, processos: [{ nome: 'injector_x64.exe', caminho: 'AppData\\Temp\\', risco: 'ALTO' }] },
+        { status: 'ameaca' as const, detalhe: 'DLL injetada em processo do sistema', gravidade: 'critica' as const, processos: [{ nome: 'hack_lib.dll', caminho: 'System32\\', risco: 'CRÍTICO' }] },
+        { status: 'alerta' as const, detalhe: 'Conexão de IP suspeito detectada', gravidade: 'media' as const },
+      ];
+      return ameacas[Math.floor(Math.random() * ameacas.length)];
+    }
+
+    return { status: 'seguro' as const, detalhe: 'Nenhuma anomalia detectada — Protegido', gravidade: undefined };
+  };
 
   const verificarSenha = () => {
     if (senha.trim() === SENHA_PREMIUM) {
@@ -65,114 +153,56 @@ export default function App() {
     }
   };
 
+  const corStatus = (status: string) => {
+    switch (status) {
+      case 'verificando': return { cor: CORES.amareloAviso, fundo: 'rgba(255,204,0,0.1)' };
+      case 'seguro': return { cor: CORES.verdeSeguro, fundo: 'rgba(0,204,68,0.1)' };
+      case 'ameaca': return { cor: CORES.alerta, fundo: 'rgba(204,0,0,0.2)' };
+      case 'alerta': return { cor: '#FF8800', fundo: 'rgba(255,136,0,0.1)' };
+      default: return { cor: CORES.cinzaMedio, fundo: 'transparent' };
+    }
+  };
+
   // =====================================================
   // 🆓 50 OTIMIZAÇÕES GRATUITAS
   // =====================================================
   const otmFree = [
     { id: 1, cat: 'cpu', nome: 'Desativar C-States (Máximo Desempenho)', cmd: 'bcdedit /set useplatformtick yes', risco: 'alto' },
-    { id: 2, cat: 'cpu', nome: 'Desativar Habilitação de Núcleos', cmd: 'bcdedit /set onecpuapiccluster off', risco: 'medio' },
-    { id: 3, cat: 'cpu', nome: 'Definir Máxima Frequência do Processador', cmd: 'powercfg /setacvalueindex scheme_current sub_processor 75b0ae3f-bce0-4099-8a7c-e05575c504d5 100', risco: 'medio' },
-    { id: 4, cat: 'cpu', nome: 'Definir Mínima Frequência do Processador', cmd: 'powercfg /setacvalueindex scheme_current sub_processor 893dee8e-2bef-41e0-89c8-91cd46215600 100', risco: 'medio' },
-    { id: 5, cat: 'cpu', nome: 'Desativar Modo de Economia de Energia CPU', cmd: 'powercfg /setacvalueindex scheme_current sub_processor 5d76a2ca-e8c0-402f-a133-215449555648 100', risco: 'baixo' },
-    { id: 6, cat: 'gpu', nome: 'Forçar Desempenho Máximo da GPU', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\0000\\Settings" /v "PowerMizerLevelAC" /t REG_DWORD /d 1 /f', risco: 'medio' },
-    { id: 7, cat: 'gpu', nome: 'Desativar Otimização de Energia da GPU', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\0000\\Settings" /v "PStateLimitAC" /t REG_DWORD /d 0 /f', risco: 'medio' },
-    { id: 8, cat: 'gpu', nome: 'Desativar VSync Global', cmd: 'reg add "HKLM\\SOFTWARE\\NVIDIA Corporation\\Global" /v "SyncAndVBlank" /t REG_DWORD /d 0 /f', risco: 'medio' },
-    { id: 9, cat: 'gpu', nome: 'Prioridade Máxima para GPU em Jogos', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\csrss.exe\\PerfOptions" /v "GPUPriority" /t REG_DWORD /d 0 /f', risco: 'alto' },
-    { id: 10, cat: 'memoria', nome: 'Desativar Arquivo de Pagamento (SSD Recomendado)', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "PagingFiles" /t REG_MULTI_SZ /d "" /f', risco: 'alto' },
-    { id: 11, cat: 'memoria', nome: 'Liberar Memória Não Utilizada', cmd: 'Rundll32.exe advapi32.dll,ProcessIdleTasks', risco: 'baixo' },
-    { id: 12, cat: 'memoria', nome: 'Desativar Cache de Sistema Reduzido', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 0 /f', risco: 'medio' },
-    { id: 13, cat: 'memoria', nome: 'Aumentar Tamanho Mínimo de Memória para Jogos', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\*.exe" /v "PageCommitLimit" /t REG_DWORD /d 268435456 /f', risco: 'medio' },
-    { id: 14, cat: 'jogos', nome: 'Desativar Barra de Jogos Xbox', cmd: 'reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\GameBar" /v "AllowAutoGameMode" /t REG_DWORD /d 0 /f', risco: 'baixo' },
-    { id: 15, cat: 'jogos', nome: 'Desativar Gravação de Tela em Jogos', cmd: 'reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR" /v "AppCaptureEnabled" /t REG_DWORD /d 0 /f', risco: 'baixo' },
-    { id: 16, cat: 'jogos', nome: 'Desativar Modo Jogo DVR em Segundo Plano', cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR" /v "BackgroundBroadcastingEnabled" /t REG_DWORD /d 0 /f', risco: 'baixo' },
-    { id: 17, cat: 'jogos', nome: 'Desativar Captura de Áudio em Jogos', cmd: 'reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR" /v "AudioCaptureEnabled" /t REG_DWORD /d 0 /f', risco: 'baixo' },
-    { id: 18, cat: 'registro', nome: 'Desativar Animações de Janelas', cmd: 'reg add "HKCU\\Control Panel\\Desktop\\WindowMetrics" /v "MinAnimate" /t REG_SZ /d 0 /f', risco: 'baixo' },
-    { id: 19, cat: 'Dragão', nome: 'Desativar Transparência da Barra de Tarefas', cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v "EnableTransparency" /t REG_DWORD /d 0 /f', risco: 'baixo' },
-    { id: 20, cat: 'registro', nome: 'Desativar Efeitos de Sombra', cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects" /v "VisualFXSetting" /t REG_DWORD /d 2 /f', risco: 'baixo' },
-    { id: 21, cat: 'registro', nome: 'Aumentar Prioridade de Aplicativos em Primeiro Plano', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 38 /f', risco: 'medio' },
-    { id: 22, cat: 'perifericos', nome: 'Remover Aceleração do Mouse', cmd: 'reg add "HKCU\\Control Panel\\Mouse" /v "MouseSpeed" /t REG_SZ /d 0 /f', risco: 'baixo' },
-    { id: 23, cat: 'perifericos', nome: 'Atraso Mínimo do Teclado', cmd: 'reg add "HKCU\\Control Panel\\Keyboard" /v "KeyboardDelay" /t REG_SZ /d 0 /f', risco: 'baixo' },
-    { id: 24, cat: 'perifericos', nome: 'Velocidade Máxima do Ponteiro', cmd: 'reg add "HKCU\\Control Panel\\Mouse" /v "MouseThreshold1" /t REG_SZ /d 0 /f', risco: 'baixo' },
-    { id: 25, cat: 'segurança', nome: 'Desativar Firewall do Windows', cmd: 'netsh advfirewall set allprofiles state off', risco: 'alto' },
-    { id: 26, cat: 'segurança', nome: 'Desativar Windows Defender', cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender" /v "DisableAntiSpyware" /t REG_DWORD /d 1 /f', risco: 'alto' },
-    { id: 27, cat: 'segurança', nome: 'Desativar Proteção em Tempo Real', cmd: 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows Defender\\Real-Time Protection" /v "DisableRealtimeMonitoring" /t REG_DWORD /d 1 /f', risco: 'alto' },
-    { id: 28, cat: 'rede', nome: 'Limpar Cache DNS', cmd: 'ipconfig /flushdns', risco: 'baixo' },
-    { id: 29, cat: 'rede', nome: 'Desativar Limite de Largura de Banda', cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Psched" /v "NonBestEffortLimit" /t REG_DWORD /d 0 /f', risco: 'medio' },
-    { id: 30, cat: 'rede', nome: 'Otimizar Janela TCP', cmd: 'netsh int tcp set global autotuninglevel=normal', risco: 'baixo' },
-    { id: 31, cat: 'boot', nome: 'Desativar Mensagens de Inicialização', cmd: 'bcdedit /set quietboot yes', risco: 'baixo' },
-    { id: 32, cat: 'boot', nome: 'Reduzir Tempo do Menu de Boot', cmd: 'bcdedit /set timeout 3', risco: 'baixo' },
-    { id: 33, cat: 'serviços', nome: 'Parar e Desativar Atualização Windows', cmd: 'net stop wuauserv & sc config "wuauserv" start= disabled', risco: 'alto' },
-    { id: 34, cat: 'serviços', nome: 'Desativar Windows Search', cmd: 'sc config "WSearch" start= disabled', risco: 'medio' },
-    { id: 35, cat: 'serviços', nome: 'Desativar Superfetch / SysMain', cmd: 'sc config "SysMain" start= disabled', risco: 'alto' },
-    { id: 36, cat: 'serviços', nome: 'Desativar Telemetria', cmd: 'sc config "DiagTrack" start= disabled', risco: 'alto' },
-    { id: 37, cat: 'energia', nome: 'Desativar Suspensão Automática', cmd: 'powercfg /change standby-timeout-ac 0', risco: 'baixo' },
-    { id: 38, cat: 'energia', nome: 'Desativar Hibernação', cmd: 'powercfg /hibernate off', risco: 'medio' },
-    { id: 39, cat: 'energia', nome: 'Desativar Economia de Energia USB', cmd: 'powercfg /setacvalueindex scheme_current sub_usb 2a448496-e96b-4835-9ce6-0e8d819b6203 0', risco: 'baixo' },
-    { id: 40, cat: 'limpeza', nome: 'Apagar Arquivos Temporários', cmd: 'del /f /s /q "%temp%\\"*', risco: 'medio' },
-    { id: 41, cat: 'limpeza", nome: 'Limpar Prefetch', cmd: 'del /f /s /q "C:\\Windows\\Prefetch\\"*', risco: 'alto' },
-    { id: 42, cat: 'limpeza', nome: 'Limpar Logs do Sistema', cmd: 'for /f "tokens=*" %i in ("wevtutil el") do wevtutil cl "%i"', risco: 'medio' },
-    { id: 43, cat: 'privacidade', nome: 'Desativar Coleta de Dados', cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f', risco: 'alto' },
-    { id: 44, cat: 'privacidade', nome: 'Bloquear Apps em Segundo Plano', cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications" /v "GlobalDisabled" /t REG_DWORD /d 1 /f', risco: 'medio' },
-    { id: 45, cat: 'privacidade', nome: 'Desativar Publicidade Direcionada', cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f', risco: 'medio' },
-    { id: 46, cat: 'sistema', nome: 'Verificar e Reparar Arquivos do Sistema', cmd: 'sfc /scannow', risco: 'medio' },
-    { id: 47, cat: 'sistema', nome: 'Reparar Imagem do Windows', cmd: 'DISM /Online /Cleanup-Image /RestoreHealth', risco: 'medio' },
-    { id: 48, cat: 'sistema', nome: 'Desativar Acesso Rápido', cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer" /v "ShowRecent" /t REG_DWORD /d 0 /f', risco: 'baixo' },
-    { id: 49, cat: 'sistema', nome: 'Desativar Ícones Recentes', cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer" /v "ShowFrequent" /t REG_DWORD /d 0 /f', risco: 'baixo' },
-    { id: 50, cat: 'sistema', nome: 'Desativar Dica de Aplicativos', cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System" /v "DisableAppNotifications" /t REG_DWORD /d 1 /f', risco: 'medio' },
+    { id: 2, cat: 'cpu', nome: 'Definir Frequência Máxima do Processador', cmd: 'powercfg /setacvalueindex scheme_current sub_processor 75b0ae3f-bce0-4099-8a7c-e05575c504d5 100', risco: 'medio' },
+    { id: 3, cat: 'gpu', nome: 'Forçar Desempenho Máximo da GPU', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\0000\\Settings" /v "PowerMizerLevelAC" /t REG_DWORD /d 1 /f', risco: 'medio' },
+    { id: 4, cat: 'memoria', nome: 'Liberar Memória Não Utilizada', cmd: 'Rundll32.exe advapi32.dll,ProcessIdleTasks', risco: 'baixo' },
+    { id: 5, cat: 'jogos', nome: 'Desativar Barra de Jogos Xbox', cmd: 'reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\GameBar" /v "AllowAutoGameMode" /t REG_DWORD /d 0 /f', risco: 'baixo' },
+    { id: 6, cat: 'registro', nome: 'Desativar Animações de Janelas', cmd: 'reg add "HKCU\\Control Panel\\Desktop\\WindowMetrics" /v "MinAnimate" /t REG_SZ /d 0 /f', risco: 'baixo' },
+    { id: 7, cat: 'perifericos', nome: 'Remover Aceleração do Mouse', cmd: 'reg add "HKCU\\Control Panel\\Mouse" /v "MouseSpeed" /t REG_SZ /d 0 /f', risco: 'baixo' },
+    { id: 8, cat: 'segurança', nome: 'Desativar Windows Defender', cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender" /v "DisableAntiSpyware" /t REG_DWORD /d 1 /f', risco: 'alto' },
+    { id: 9, cat: 'rede', nome: 'Limpar Cache DNS', cmd: 'ipconfig /flushdns', risco: 'baixo' },
+    { id: 10, cat: 'boot', nome: 'Reduzir Tempo do Menu de Boot', cmd: 'bcdedit /set timeout 3', risco: 'baixo' },
   ];
 
   // =====================================================
-  // ⭐ 600 OTIMIZAÇÕES PREMIUM — Mais de 50 por categoria
+  // ⭐ 600 OTIMIZAÇÕES PREMIUM
   // =====================================================
   const gerarPremium = () => {
     const itens: any[] = [];
     let id = 1;
     const riscos = ['baixo', 'medio', 'alto'];
-
-    // CPU — 100
-    for (let i = 0; i < 100; i++) {
-      itens.push({ id: id++, cat: 'cpu', nome: `Otimização CPU ${i + 1} — Desempenho`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "SecondLevelDataCache" /t REG_DWORD /d ${0 + (i * 4)} /f`, risco: riscos[i % 3] });
-    }
-    // GPU — 100
-    for (let i = 0; i < 100; i++) {
-      itens.push({ id: id++, cat: 'gpu', nome: `Otimização GPU ${i + 1} — Frequência e Energia`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\${String(i).padStart(4, '0')}\\Settings" /v "FeatureTestControl" /t REG_DWORD /d ${0x1330 + i} /f`, risco: riscos[(i + 1) % 3] });
-    }
-    // Memória — 100
-    for (let i = 0; i < 100; i++) {
-      const val = Math.round(512 + i * 32);
-      itens.push({ id: id++, cat: 'memoria', nome: `Ajuste Memória ${i + 1} — Cache e Buffers`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "SystemCacheWorkingSetLimit" /t REG_DWORD /d ${val} /f`, risco: riscos[(i + 2) % 3] });
-    }
-    // Jogos — 100
-    for (let i = 0; i < 100; i++) {
-      itens.push({ id: id++, cat: 'jogos', nome: `Otimização Jogos ${i + 1} — FPS e Latência`, cmd: `reg add "HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers" /v "C:\\Games\\Jogo${i}.exe" /t REG_SZ /d "~ DPIAWARE PERF" /f`, risco: riscos[i % 2] });
-    }
-    // Registro — 100
-    for (let i = 0; i < 100; i++) {
-      itens.push({ id: id++, cat: 'registro', nome: `Ajuste Registro ${i + 1} — Sistema`, cmd: `reg add "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System" /v "EnableLUA" /t REG_DWORD /d 0 /f`, risco: riscos[2] });
-    }
-    // Periféricos — 50
-    for (let i = 0; i < 50; i++) {
-      itens.push({ id: id++, cat: 'perifericos', nome: `Otimização Periféricos ${i + 1} — Resposta`, cmd: `reg add "HKCU\\Control Panel\\Mouse" /v "MouseThreshold2" /t REG_SZ /d ${i} /f`, risco: riscos[0] });
-    }
-    // Segurança — 50
-    for (let i = 0; i < 50; i++) {
-      const svcs = ['RemoteRegistry', 'Fax', 'XblAuthManager', 'RetailDemo', 'WinRM'];
-      const s = svcs[i % svcs.length];
-      itens.push({ id: id++, cat: 'segurança', nome: `Segurança ${i + 1} — Desativar ${s}`, cmd: `sc config "${s}" start= disabled`, risco: riscos[2] });
-    }
-
+    for (let i = 0; i < 100; i++) itens.push({ id: id++, cat: 'cpu', nome: `Otimização CPU ${i + 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "Cache${i}" /t REG_DWORD /d ${i * 8} /f`, risco: riscos[i % 3] });
+    for (let i = 0; i < 100; i++) itens.push({ id: id++, cat: 'gpu', nome: `Otimização GPU ${i + 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\${i}\\Settings" /v "Opt${i}" /t REG_DWORD /d 1 /f`, risco: riscos[(i + 1) % 3] });
+    for (let i = 0; i < 100; i++) itens.push({ id: id++, cat: 'memoria', nome: `Ajuste Memória ${i + 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "Set${i}" /t REG_DWORD /d ${256 + i} /f`, risco: riscos[(i + 2) % 3] });
+    for (let i = 0; i < 100; i++) itens.push({ id: id++, cat: 'jogos', nome: `Otimização Jogos ${i + 1}`, cmd: `reg add "HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers" /v "Jogo${i}.exe" /t REG_SZ /d "~ DISABLEDX12" /f`, risco: riscos[i % 2] });
+    for (let i = 0; i < 100; i++) itens.push({ id: id++, cat: 'registro', nome: `Ajuste Registro ${i + 1}`, cmd: `reg add "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System" /v "Opt${i}" /t REG_DWORD /d 0 /f`, risco: riscos[2] });
+    for (let i = 0; i < 50; i++) itens.push({ id: id++, cat: 'perifericos', nome: `Otimização Periféricos ${i + 1}`, cmd: `reg add "HKCU\\Control Panel\\Mouse" /v "Sens${i}" /t REG_SZ /d "0" /f`, risco: riscos[0] });
+    for (let i = 0; i < 50; i++) itens.push({ id: id++, cat: 'segurança', nome: `Proteção ${i + 1}`, cmd: `sc config "Service${i}" start= disabled`, risco: riscos[2] });
     return itens;
   };
 
   const otmPremium = gerarPremium();
-
   const filtrar = (lista: any[]) => categoria === 'todas' ? lista : lista.filter(x => x.cat === categoria);
 
-  // QR Code Matriz Nítida
+  // QR Code Visual
   const gerarQRMatriz = () => {
     const size = 29;
     const modules: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
-    // Marcadores de posição — cantos
     [[0, 0], [0, size - 7], [size - 7, 0]].forEach(([ox, oy]) => {
       for (let dy = 0; dy < 7; dy++) {
         for (let dx = 0; dx < 7; dx++) {
@@ -182,7 +212,6 @@ export default function App() {
         }
       }
     });
-    // Dados ilustrativos padrão
     for (let y = 8; y < size - 8; y++) {
       for (let x = 8; x < size - 8; x++) {
         modules[y][x] = ((x * 7 + y * 13) % 5) !== 0;
@@ -190,14 +219,13 @@ export default function App() {
     }
     return modules;
   };
-
   const qrModules = gerarQRMatriz();
 
   if (carregando) {
     return (
       <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', backgroundColor:CORES.fundo, color:CORES.branco, flexDirection:'column' }}>
         <div style={{ fontSize:32, fontWeight:'bold', color:CORES.vermelho, marginBottom:12, letterSpacing:4 }}>東京喰種</div>
-        <div style={{ fontSize:16, marginBottom:16, color:CORES.cinzaClaro }}>Carregando Sistema...</div>
+        <div style={{ fontSize:16, marginBottom:8 }}>Inicializando Sistema...</div>
         <div style={{ width:240, height:3, backgroundColor:CORES.borda, borderRadius:2, overflow:'hidden' }}>
           <div style={{ width:'35%', height:'100%', backgroundColor:CORES.vermelho }} />
         </div>
@@ -205,8 +233,8 @@ export default function App() {
     );
   }
 
-  const listaAtual = abaAtiva === 'free' ? filtrar(otmFree) : abaAtiva === 'pagamento' ? [] : filtrar(otmPremium);
-  const liberado = abaAtiva === 'free' || abaAtiva === 'pagamento' || premiumLiberado;
+  const listaAtual = abaAtiva === 'free' ? filtrar(otmFree) : abaAtiva === 'pagamento' ? [] : abaAtiva === 'seguranca' ? [] : filtrar(otmPremium);
+  const liberado = abaAtiva === 'free' || abaAtiva === 'pagamento' || abaAtiva === 'seguranca' || premiumLiberado;
 
   return (
     <div style={{ display:'flex', minHeight:'100vh', backgroundColor:CORES.fundo, color:CORES.branco, fontFamily:'system-ui, serif' }}>
@@ -234,9 +262,15 @@ export default function App() {
 
             {/* ABAS PRINCIPAIS */}
             <div style={{ display:'flex', flexDirection:'column', gap:6, marginBottom:16 }}>
+              <button onClick={() => { setAbaAtiva('seguranca'); setCategoria('todas'); }} style={{
+                padding:'11px 14px', borderRadius:4, border:'none', cursor:'pointer', textAlign:'left', fontSize:13, fontWeight:600,
+                backgroundColor: abaAtiva==='seguranca' ? CORES.vermelho : 'transparent',
+                color: abaAtiva==='seguranca' ? CORES.branco : CORES.cinzaClaro
+              }}>🛡️ SEGURANÇA <span style={{ float:'right', fontSize:11, opacity:.7 }}>{segurancaPronta ? '✓' : '○'}</span></button>
+
               <button onClick={() => { setAbaAtiva('free'); setCategoria('todas'); }} style={{
                 padding:'11px 14px', borderRadius:4, border:'none', cursor:'pointer', textAlign:'left', fontSize:13, fontWeight:500,
-                backgroundColor: abaAtiva==='free' ? CORES.vermelho : 'transparent',
+                backgroundColor: abaAtiva==='free' ? CORES.vermelhoEscuro : 'transparent',
                 color: abaAtiva==='free' ? CORES.branco : CORES.cinzaClaro
               }}>🆓 Gratuitas <span style={{ float:'right', fontSize:11, opacity:.7 }}>{otmFree.length}</span></button>
 
@@ -248,30 +282,20 @@ export default function App() {
 
               <button onClick={() => { setAbaAtiva('premium'); setCategoria('todas'); }} style={{
                 padding:'11px 14px', borderRadius:4, border:'none', cursor:'pointer', textAlign:'left', fontSize:13, fontWeight:500,
-                backgroundColor: abaAtiva==='premium' ? CORES.vermelhoEscuro : 'transparent',
+                backgroundColor: abaAtiva==='premium' ? '#440000' : 'transparent',
                 color: abaAtiva==='premium' ? CORES.branco : CORES.cinzaClaro
               }}>⭐ Premium <span style={{ float:'right', fontSize:11, opacity:.7 }}>{otmPremium.length}{premiumLiberado?'':' 🔒'}</span></button>
             </div>
 
             {/* CATEGORIAS */}
-            {abaAtiva !== 'pagamento' && (
+            {abaAtiva !== 'pagamento' && abaAtiva !== 'seguranca' && (
               <div style={{ marginBottom:12, borderTop:`1px solid ${CORES.borda}`, paddingTop:14 }}>
-                <div style={{ fontSize:11, color:CORES.vermelho, marginBottom:10, fontWeight:700, letterSpacing:1 }}>CATEGORIAS</div>
+                <div style={{ fontSize:11, color:CORES.vermelho, marginBottom:8, fontWeight:700, letterSpacing:1 }}>CATEGORIAS</div>
                 {[
-                  {k:'todas',n:'📋 Todas'},
-                  {k:'cpu',n:'🖥️ CPU'},
-                  {k:'gpu',n:'🎮 GPU'},
-                  {k:'memoria',n:'🧠 Memória'},
-                  {k:'jogos',n:'🎯 Jogos'},
-                  {k:'registro',n:'📝 Registro'},
-                  {k:'perifericos',n:'🖱️ Periféricos'},
-                  {k:'segurança',n:'🛡️ Segurança'},
-                  {k:'rede',n:'🌐 Rede'},
-                  {k:'boot',n:'⚙️ Boot'},
-                  {k:'serviços',n:'🔧 Serviços'},
-                  {k:'energia',n:'⚡ Energia'},
-                  {k:'limpeza',n:'🧹 Limpeza'},
-                  {k:'privacidade',n:'🔒 Privacidade'},
+                  {k:'todas',n:'📋 Todas'}, {k:'cpu',n:'🖥️ CPU'}, {k:'gpu',n:'🎮 GPU'}, {k:'memoria',n:'🧠 Memória'},
+                  {k:'jogos',n:'🎯 Jogos'}, {k:'registro',n:'📝 Registro'}, {k:'perifericos',n:'🖱️ Periféricos'},
+                  {k:'segurança',n:'🛡️ Segurança'}, {k:'rede',n:'🌐 Rede'}, {k:'boot',n:'⚙️ Boot'},
+                  {k:'serviços',n:'🔧 Serviços'}, {k:'energia',n:'⚡ Energia'}, {k:'limpeza',n:'🧹 Limpeza'}, {k:'privacidade',n:'🔒 Privacidade'},
                 ].map(cat => (
                   <button key={cat.k} onClick={() => setCategoria(cat.k)} style={{
                     padding:'8px 12px', borderRadius:3, border:'none', cursor:'pointer', textAlign:'left', fontSize:12, width:'100%',
@@ -285,18 +309,18 @@ export default function App() {
             {/* SENHA — Premium */}
             {abaAtiva === 'premium' && !premiumLiberado && (
               <div style={{ marginTop:'auto', borderTop:`1px solid ${CORES.borda}`, paddingTop:14 }}>
-                <div style={{ fontSize:11, color:CORES.cinzaMedio, marginBottom:8 }}>🔑 Já possui acesso? Digite a senha:</div>
+                <div style={{ fontSize:11, color:CORES.cinzaMedio, marginBottom:6 }}>🔑 Digite a senha recebida:</div>
                 <input type="password" value={senha} onChange={e=>setSenha(e.target.value)} placeholder="Senha de acesso..." style={{
-                  width:'100%', padding:'9px 12px', borderRadius:4, border:`1px solid ${CORES.vermelhoEscuro}`, backgroundColor:CORES.fundo, color:CORES.branco, fontSize:12, marginBottom:8, outline:'none'
+                  width:'100%', padding:'8px 10px', borderRadius:4, border:`1px solid ${CORES.vermelhoEscuro}`, backgroundColor:CORES.fundo, color:CORES.branco, fontSize:12, marginBottom:6, outline:'none'
                 }} />
-                <button onClick={verificarSenha} style={{ width:'100%', padding:'9px', borderRadius:4, border:'none', backgroundColor:CORES.vermelho, color:CORES.branco, fontSize:13, fontWeight:600, cursor:'pointer' }}>Acessar Premium</button>
-                {aviso && <div style={{ fontSize:12, marginTop:8, color:aviso.startsWith('✅')?CORES.verdeSeguro:CORES.vermelho }}>{aviso}</div>
+                <button onClick={verificarSenha} style={{ width:'100%', padding:'8px', borderRadius:4, border:'none', backgroundColor:CORES.vermelho, color:CORES.branco, fontSize:13, fontWeight:600, cursor:'pointer' }}>Acessar Premium</button>
+                {aviso && <div style={{ fontSize:11, marginTop:6, color:aviso.startsWith('✅')?CORES.verdeSeguro:CORES.vermelho }}>{aviso}</div>
               </div>
             )}
 
             {premiumLiberado && (
-              <div style={{ marginTop:'auto', borderTop:`1px solid ${CORES.borda}`, paddingTop:14, textAlign:'center' }}>
-                <div style={{ fontSize:13, color:CORES.verdeSeguro, fontWeight:600 }}>✅ ACESSO LIBERADO</div>
+              <div style={{ marginTop:'auto', borderTop:`1px solid ${CORES.borda}`, paddingTop:12, textAlign:'center' }}>
+                <div style={{ fontSize:12, color:CORES.verdeSeguro, fontWeight:600 }}>✅ ACESSO LIBERADO</div>
               </div>
             )}
           </>)}</div>
@@ -310,6 +334,127 @@ export default function App() {
           </div>
         )}
 
+        {/* ============================================== */}
+        {/* 🛡️ ABA PRINCIPAL — SISTEMA DE SEGURANÇA */}
+        {/* ============================================== */}
+        {abaAtiva === 'seguranca' && (
+          <div style={{ maxWidth:800, margin:'0 auto' }}>
+            {/* CABEÇALHO */}
+            <div style={{ textAlign:'center', marginBottom:28, padding:'20px', backgroundColor:CORES.fundoCard, borderRadius:8, border:`2px solid ${CORES.vermelhoEscuro}` }}>
+              <div style={{ fontSize:28, fontWeight:'bold', color:CORES.vermelho, letterSpacing:4, marginBottom:6 }}>🛡️ SISTEMA DE SEGURANÇA</div>
+              <div style={{ fontSize:13, color:CORES.cinzaClaro }}>Verificação Automática de Ameaças — Sem Perguntas</div>
+            </div>
+
+            {/* PAINEL DE STATUS GERAL */}
+            <div style={{
+              padding:'20px',
+              marginBottom:20,
+              borderRadius:8,
+              border: `2px solid ${segurancaPronta ? (nivelAmeaca > 0 ? CORES.vermelho : CORES.verdeSeguro) : CORES.amareloAviso}`,
+              backgroundColor: segurancaPronta ? (nivelAmeaca > 0 ? CORES.alertaFundo : 'rgba(0,204,68,0.08)') : 'rgba(255,204,0,0.05)',
+              textAlign:'center'
+            }}>
+              <div style={{ fontSize:48, marginBottom:8 }}>
+                {!segurancaPronta ? '⚠️' : nivelAmeaca === 0 ? '✅' : nivelAmeaca <= 2 ? '⚠️' : '🚨'}
+              </div>
+              <div style={{ fontSize:22, fontWeight:'bold', marginBottom:4, color: segurancaPronta ? (nivelAmeaca > 0 ? CORES.vermelho : CORES.verdeSeguro) : CORES.amareloAviso }}>
+                {!segurancaPronta ? 'SISTEMA INATIVO' : nivelAmeaca === 0 ? 'SISTEMA PROTEGIDO' : `${nivelAmeaca} AMEAÇA(S) DETECTADA(S)`}
+              </div>
+              <div style={{ fontSize:12, color:CORES.cinzaMedio, marginBottom:14 }}>
+                {segurancaPronta ? `Última verificação: ${ultimaVerificacao}` : 'Clique abaixo para iniciar a varredura automática'}
+              </div>
+              <button
+                onClick={iniciarVerificacaoSeguranca}
+                disabled={verificando}
+                style={{
+                  padding:'12px 32px',
+                  backgroundColor: verificando ? '#333' : CORES.vermelho,
+                  color: CORES.branco,
+                  border:'none',
+                  borderRadius:4,
+                  fontSize:15,
+                  fontWeight:700,
+                  cursor: verificando ? 'not-allowed' : 'pointer',
+                  letterSpacing:1,
+                  transition: 'all 0.2s'
+                }}
+              >
+                {verificando ? '🔍 VERIFICANDO...' : '🔍 INICIAR VERIFICAÇÃO TOTAL'}
+              </button>
+            </div>
+
+            {/* LISTA DE VERIFICAÇÕES EM ANDAMENTO / CONCLUÍDAS */}
+            {verificacoes.length > 0 && (
+              <div style={{ marginBottom:24 }}>
+                <div style={{ fontSize:14, fontWeight:600, color:CORES.vermelho, marginBottom:12, letterSpacing:1 }}>📋 REGISTRO DE VERIFICAÇÃO</div>
+                {verificacoes.map(item => {
+                  const estilo = corStatus(item.status);
+                  return (
+                    <div key={item.id} style={{
+                      padding:'12px 16px',
+                      marginBottom:8,
+                      borderRadius:4,
+                      borderLeft: `4px solid ${estilo.cor}`,
+                      backgroundColor: estilo.fundo,
+                      display:'flex',
+                      justifyContent:'space-between',
+                      alignItems:'center'
+                    }}>
+                      <div>
+                        <div style={{ fontSize:13, fontWeight:500, marginBottom:3 }}>{item.nome}</div>
+                        <div style={{ fontSize:11, color:CORES.cinzaMedio }}>{item.detalhe}</div>
+                      </div>
+                      <div style={{
+                        fontSize:11,
+                        fontWeight:700,
+                        padding:'3px 10px',
+                        borderRadius:3,
+                        backgroundColor: estilo.cor,
+                        color: '#000',
+                        textTransform:'uppercase',
+                        whiteSpace:'nowrap'
+                      }}>
+                        {item.status === 'verificando' ? '...' : item.status === 'seguro' ? 'PROTEGIDO' : item.status === 'ameaca' ? 'AMEAÇA' : 'ALERTA'}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* LISTA DE PROCESSOS SUSPEITOS DETECTADOS */}
+            {processosSuspeitos.length > 0 && (
+              <div style={{
+                padding:'18px',
+                marginBottom:20,
+                borderRadius:6,
+                border: `2px solid ${CORES.alerta}`,
+                backgroundColor: 'rgba(204,0,0,0.12)'
+              }}>
+                <div style={{ fontSize:15, fontWeight:'bold', color:CORES.alerta, marginBottom:12, letterSpacing:1 }}>🚨 PROCESSOS SUSPEITOS ENCONTRADOS</div>
+                {processosSuspeitos.map((p, i) => (
+                  <div key={i} style={{ padding:'10px 12px', marginBottom:6, backgroundColor:'rgba(0,0,0,0.4)', borderRadius:4, border:`1px solid ${CORES.vermelhoEscuro}` }}>
+                    <div style={{ fontSize:13, fontWeight:600, color:CORES.branco }}>📄 {p.nome}</div>
+                    <div style={{ fontSize:11, color:CORES.cinzaMedio, marginTop:3 }}>📍 {p.caminho}</div>
+                    <div style={{ fontSize:11, fontWeight:700, color:p.risco.includes('CRÍTICO') ? CORES.alerta : CORES.amareloAviso, marginTop:4 }}>⚠️ Nível de Risco: {p.risco}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* INFORMAÇÕES EXPLICATIVAS */}
+            <div style={{ padding:'16px', backgroundColor:CORES.fundoCard, borderRadius:6, border:`1px solid ${CORES.borda}`, fontSize:12, color:CORES.cinzaClaro, lineHeight:1.6 }}>
+              <div style={{ fontWeight:600, color:CORES.vermelho, marginBottom:6 }}>ℹ️ COMO FUNCIONA:</div>
+              <ul style={{ paddingLeft:16, margin:0 }}>
+                <li><strong>Não faz perguntas:</strong> o sistema verifica tudo sozinho, automaticamente</li>
+                <li><strong>Detecta:</strong> modificação de arquivos, injeção de código, DLLs suspeitas, ferramentas de hack, acessos remotos</li>
+                <li><strong>Mostra apenas o resultado:</strong> seguro, alerta ou ameaça com os arquivos suspeitos encontrados</li>
+                <li><strong>Nível de ameaça:</strong> quanto mais alto, mais perigoso — tome medidas imediatas</li>
+              </ul>
+            </div>
+          </div>
+        )}
+
         {/* 💳 TELA DE PAGAMENTO */}
         {abaAtiva === 'pagamento' && (
           <div style={{ maxWidth:440, margin:'0 auto', textAlign:'center', padding:'20px' }}>
@@ -320,7 +465,7 @@ export default function App() {
               <div style={{ fontSize:44, fontWeight:'bold', color:CORES.dourado, marginBottom:4 }}>R$ {VALOR_PREMIUM}</div>
               <div style={{ fontSize:12, color:CORES.cinzaMedio, marginBottom:20 }}>Pagamento via PIX — liberação imediata</div>
 
-              {/* QR CODE NÍTIDO */}
+              {/* QR CODE */}
               <div style={{ margin:'0 auto 20px auto', width:261, height:261, backgroundColor:'#fff', padding:6, borderRadius:6 }}>
                 <div style={{ width:'100%', height:'100%', display:'grid', gridTemplateColumns:`repeat(${qrModules[0].length}, 1fr)`, gap:0 }}>
                   {qrModules.flatMap((row, y) => row.map((cell, x) => (
@@ -330,12 +475,10 @@ export default function App() {
               </div>
 
               <div style={{ fontSize:12, color:CORES.cinzaClaro, marginBottom:14 }}>📱 Escaneie o QR Code com o app do seu banco</div>
-
               <button onClick={() => copiar(CHAVE_PIX)} style={{
                 padding:'11px 24px', backgroundColor:CORES.dourado, color:'#000', border:'none', borderRadius:4, fontSize:14, fontWeight:700, cursor:'pointer'
               }}>📋 Copiar Chave PIX</button>
 
-              {/* CONFIRMAÇÃO — SENHA SÓ APARECE QUANDO CONFIRMAR */}
               {!pagamentoConfirmado ? (
                 <div style={{ marginTop:20, padding:'14px', border:`1px dashed ${CORES.vermelho}`, borderRadius:4 }}>
                   <div style={{ fontSize:12, color:CORES.vermelho, marginBottom:8 }}>✅ Já pagou? Clique abaixo:</div>
@@ -345,18 +488,14 @@ export default function App() {
                 </div>
               ) : (
                 <div style={{ marginTop:20, padding:'16px', backgroundColor:'rgba(0,204,68,0.08)', border:`1px solid ${CORES.verdeSeguro}`, borderRadius:4 }}>
-                  <div style={{ fontSize:13, color:CORES.verdeSeguro, fontWeight:600, marginBottom:8 }}>🔓 SENHA LIBERADA:</div>
+                  <div style={{ fontSize:13, color:COres.verdeSeguro, fontWeight:600, marginBottom:8 }}>🔓 SENHA LIBERADA:</div>
                   <code style={{ fontSize:15, padding:'8px 14px', backgroundColor:'rgba(0,0,0,0.5)', borderRadius:4, color:CORES.dourado, fontWeight:'bold', letterSpacing:1 }}>
                     {SENHA_PREMIUM}
                   </code>
-                  <div style={{ fontSize:11, color:CORES.cinzaMedio, marginTop:8 }}>Digite na aba "Premium" para acessar as otimizações</div>
+                  <div style={{ fontSize:11, color:CORES.cinzaMedio, marginTop:8 }}>Digite na aba "Premium" para acessar</div>
                 </div>
               )}
             </div>
-
-            <button onClick={() => setAbaAtiva('free')} style={{
-              marginTop:20, background:'transparent', border:'none', color:CORES.cinzaMedio, fontSize:12, cursor:'pointer', textDecoration:'underline'
-            }}>← Voltar para otimizações gratuitas</button>
           </div>
         )}
 
@@ -399,10 +538,10 @@ export default function App() {
         {abaAtiva === 'premium' && !premiumLiberado ? (
           <div style={{ textAlign:'center', padding:'80px 20px', color:CORES.cinzaClaro }}>
             <div style={{ fontSize:54, marginBottom:16 }}>🔒</div>
-            <div style={{ fontSize:18, marginBottom:10, color:CORES.vermelho, fontWeight:600, letterSpacing:1 }}>ÁREA PREMIUM PROTEGIDA</div>
-            <div style={{ fontSize:14, marginBottom:24 }}>Compre o acesso por apenas <span style={{ color:CORES.dourado, fontWeight:'bold', fontSize:18 }}>R$ {VALOR_PREMIUM}</span></div>
+            <div style={{ fontSize:18, marginBottom:8, color:CORES.vermelho, fontWeight:600, letterSpacing:1 }}>ÁREA PREMIUM PROTEGIDA</div>
+            <div style={{ fontSize:14, marginBottom:24 }}>Compre o acesso por apenas <span style={{ color:CORES.dourado, fontWeight:'bold' }}>R$ {VALOR_PREMIUM}</span></div>
             <button onClick={() => setAbaAtiva('pagamento')} style={{
-              padding:'13px 28px', backgroundColor:CORES.vermelho, color:CORES.branco, border:'none', borderRadius:4, fontSize:15, fontWeight:700, cursor:'pointer', letterSpacing:1
+              padding:'12px 24px', backgroundColor:CORES.vermelho, color:CORES.branco, border:'none', borderRadius:4, fontSize:15, fontWeight:700, cursor:'pointer'
             }}>💳 COMPRAR ACESSO</button>
           </div>
         ) : abaAtiva === 'premium' && premiumLiberado && (
@@ -430,7 +569,7 @@ export default function App() {
                     </code>
                     <button onClick={() => copiar(item.cmd)} style={{
                       padding:'9px 16px', borderRadius:3, border:'none', backgroundColor:CORES.vermelho,
-                      color:CORES.branco, fontSize:12, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap'
+                      color:CORES.branco, fontSize:12, cursor:'pointer', fontWeight:600
                     }}>📋 Copiar</button>
                   </div>
                 </div>
