@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 
-// 🔑 SENHAS
+// 🔑 DADOS
 const SENHA_ADMIN = 'JulioKaneki999';
 const SENHA_PREMIUM = 'Pagamento@2026';
-const VERSAO = '3.0.0';
+const CHAVE_PIX = '+5511999999999'; // 👉 COLOQUE AQUI SUA CHAVE PIX REAL
+const VALOR_PREMIUM = '5,90';
+const VERSAO = '3.1.0';
 
-// 🎨 TOKYO GHOUL PALETA
+// 🎨 TEMA TOKYO GHOUL
 const CORES = {
   bg: '#0D0D12',
   bgCard: '#16161F',
@@ -20,7 +22,6 @@ const CORES = {
   amareloAviso: '#FACC15',
   vermelhoPerigo: '#EF4444',
   borda: '#2A2A3C',
-  sombra: '0 4px 12px rgba(0,0,0,0.45)',
 };
 
 export default function App() {
@@ -53,7 +54,7 @@ export default function App() {
 
   const copiar = (texto: string) => {
     navigator.clipboard.writeText(texto);
-    setMensagem('✅ Copiado para a área de transferência');
+    setMensagem('✅ Copiado!');
     setTimeout(() => setMensagem(''), 2500);
   };
 
@@ -123,78 +124,44 @@ export default function App() {
   ];
 
   // =====================================================
-  // ⭐ 600 OTIMIZAÇÕES PREMIUM (geradas por categorias)
+  // ⭐ 600 OTIMIZAÇÕES PREMIUM
   // =====================================================
   const gerarPremium = () => {
     const itens: any[] = [];
     let idSeq = 1;
-    const cats = ['cpu', 'gpu', 'memoria', 'rede', 'boot', 'serviços', 'registro', 'jogos', 'energia', 'privacidade'];
     const riscos = ['baixo', 'medio', 'alto'];
 
-    // CPU — 60
-    for (let i = 0; i < 60; i++) {
-      itens.push({ id: idSeq++, cat: 'cpu', nome: `Otimização CPU #${idSeq - 1}`, cmd: `bcdedit /set useplatformtick ${i % 2 === 0 ? 'yes' : 'no'}`, risco: riscos[2] });
-    }
-    // GPU — 60
-    for (let i = 0; i < 60; i++) {
-      itens.push({ id: idSeq++, cat: 'gpu', nome: `Otimização GPU #${idSeq - 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\${i.toString().padStart(4,'0')}\\Settings" /v "FeatureTestControl" /t REG_DWORD /d ${0x1320 + i} /f`, risco: riscos[1] });
-    }
-    // Memória — 60
-    for (let i = 0; i < 60; i++) {
-      const val = Math.round(256 + (i * 64));
-      itens.push({ id: idSeq++, cat: 'memoria', nome: `Ajuste Memória Sistema #${idSeq - 1}`, cmd: `reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "SystemCacheWorkingSetLimit" /t REG_DWORD /d ${val} /f`, risco: riscos[Math.floor(Math.random()*3)] });
-    }
-    // Rede — 80
-    for (let i = 0; i < 80; i++) {
-      itens.push({ id: idSeq++, cat: 'rede', nome: `Parâmetro Rede #${idSeq - 1}`, cmd: `reg add "HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v "TcpWindowSize" /t REG_DWORD /d ${Math.round(8192 + i * 512)} /f`, risco: riscos[0] });
-    }
-    // Boot — 60
-    for (let i = 0; i < 60; i++) {
-      itens.push({ id: idSeq++, cat: 'boot', nome: `Parâmetro Boot #${idSeq - 1}`, cmd: `bcdedit /set quietboot ${i % 2 === 0 ? 'yes' : 'no'}`, risco: riscos[2] });
-    }
-    // Serviços — 100
-    for (let i = 0; i < 100; i++) {
-      const nomesSvcs = ['wuauserv', 'WSearch', 'DiagTrack', 'DPS', 'WinDefend', 'Spooler', 'RemoteRegistry', 'Fax', 'XblAuthManager', 'RetailDemo'];
-      const svc = nomesSvcs[i % nomesSvcs.length];
-      itens.push({ id: idSeq++, cat: 'serviços', nome: `Desativar Serviço #${idSeq - 1} — ${svc}`, cmd: `sc config "${svc}" start= disabled`, risco: riscos[2] });
-    }
-    // Registro — 80
-    for (let i = 0; i < 80; i++) {
-      itens.push({ id: idSeq++, cat: 'registro', nome: `Chave Otimização Registro #${idSeq - 1}`, cmd: `reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System" /v "EnableLUA" /t REG_DWORD /d 0 /f`, risco: riscos[1] });
-    }
-    // Jogos — 60
-    for (let i = 0; i < 60; i++) {
-      itens.push({ id: idSeq++, cat: 'jogos', nome: `Otimização Jogos #${idSeq - 1}`, cmd: `reg add "HKCU\\System\\GameConfigStore" /v "GameDVR_Enabled" /t REG_DWORD /d 0 /f`, risco: riscos[0] });
-    }
-    // Energia — 40
-    for (let i = 0; i < 40; i++) {
-      itens.push({ id: idSeq++, cat: 'energia', nome: `Otimização Energia #${idSeq - 1}`, cmd: `powercfg /setacvalueindex scheme_current sub_processor ${'5d76a2ca-e8c0-402f-a133-215449555648'} ${80 + i}`, risco: riscos[1] });
-    }
+    for (let i = 0; i < 60; i++) itens.push({ id: idSeq++, cat: 'cpu', nome: `Otimização CPU #${idSeq - 1}`, cmd: `bcdedit /set useplatformtick ${i % 2 === 0 ? 'yes' : 'no'}`, risco: riscos[2] });
+    for (let i = 0; i < 60; i++) itens.push({ id: idSeq++, cat: 'gpu', nome: `Otimização GPU #${idSeq - 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\${i.toString().padStart(4,'0')}\\Settings" /v "FeatureTestControl" /t REG_DWORD /d ${0x1320 + i} /f`, risco: riscos[1] });
+    for (let i = 0; i < 60; i++) { const v = Math.round(256 + i * 64); itens.push({ id: idSeq++, cat: 'memoria', nome: `Ajuste Memória #${idSeq - 1}`, cmd: `reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "SystemCacheWorkingSetLimit" /t REG_DWORD /d ${v} /f`, risco: riscos[Math.floor(Math.random()*3)] }); }
+    for (let i = 0; i < 80; i++) itens.push({ id: idSeq++, cat: 'rede', nome: `Parâmetro Rede #${idSeq - 1}`, cmd: `reg add "HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v "TcpWindowSize" /t REG_DWORD /d ${8192 + i * 512} /f`, risco: riscos[0] });
+    for (let i = 0; i < 60; i++) itens.push({ id: idSeq++, cat: 'boot', nome: `Parâmetro Boot #${idSeq - 1}`, cmd: `bcdedit /set quietboot ${i % 2 === 0 ? 'yes' : 'no'}`, risco: riscos[2] });
+    for (let i = 0; i < 100; i++) { const svcs = ['wuauserv','WSearch','DiagTrack','DPS','WinDefend','Spooler','RemoteRegistry','Fax','XblAuthManager','RetailDemo']; const s = svcs[i % svcs.length]; itens.push({ id: idSeq++, cat: 'serviços', nome: `Desativar Serviço — ${s}`, cmd: `sc config "${s}" start= disabled`, risco: riscos[2] }); }
+    for (let i = 0; i < 80; i++) itens.push({ id: idSeq++, cat: 'registro', nome: `Chave Registro #${idSeq - 1}`, cmd: `reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System" /v "EnableLUA" /t REG_DWORD /d 0 /f`, risco: riscos[1] });
+    for (let i = 0; i < 60; i++) itens.push({ id: idSeq++, cat: 'jogos', nome: `Otimização Jogos #${idSeq - 1}`, cmd: `reg add "HKCU\\System\\GameConfigStore" /v "GameDVR_Enabled" /t REG_DWORD /d 0 /f`, risco: riscos[0] });
+    for (let i = 0; i < 40; i++) itens.push({ id: idSeq++, cat: 'energia', nome: `Otimização Energia #${idSeq - 1}`, cmd: `powercfg /setacvalueindex scheme_current sub_processor 5d76a2ca-e8c0-402f-a133-215449555648 ${80 + i}`, risco: riscos[1] });
 
     return itens.slice(0, 600);
   };
 
   const otmPremium = gerarPremium();
 
-  const filtrar = (lista: any[]) => {
-    if (categoria === 'todas') return lista;
-    return lista.filter(x => x.cat === categoria);
-  };
+  const filtrar = (lista: any[]) => categoria === 'todas' ? lista : lista.filter(x => x.cat === categoria);
 
   if (carregando) {
     return (
       <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', backgroundColor:CORES.bg, color:CORES.texto, flexDirection:'column' }}>
         <div style={{ fontSize:28, fontWeight:'bold', color:CORES.sangue, marginBottom:12 }}>東京喰種</div>
-        <div style={{ fontSize:18, marginBottom:8 }}>Carregando Otimizador do Julio...</div>
+        <div style={{ fontSize:18, marginBottom:8 }}>Carregando Optimizador do Julio...</div>
         <div style={{ width:220, height:4, backgroundColor:CORES.borda, borderRadius:2, overflow:'hidden' }}>
-          <div style={{ width:'40%', height:'100%', backgroundColor:CORES.sangue, animation:'pulse 1s infinite' }} />
+          <div style={{ width:'40%', height:'100%', backgroundColor:CORES.sangue }} />
         </div>
       </div>
     );
   }
 
-  const listaAtual = abaAtiva === 'free' ? filtrar(otmFree) : filtrar(otmPremium);
-  const liberado = abaAtiva === 'free' || adminLiberado || premiumLiberado;
+  const listaAtual = abaAtiva === 'free' ? filtrar(otmFree) : abaAtiva === 'pagamento' ? [] : filtrar(otmPremium);
+  const liberado = abaAtiva === 'free' || abaAtiva === 'pagamento' || adminLiberado || premiumLiberado;
 
   return (
     <div style={{ display:'flex', minHeight:'100vh', backgroundColor:CORES.bg, color:CORES.texto, fontFamily:'system-ui, sans-serif' }}>
@@ -221,42 +188,51 @@ export default function App() {
               <div style={{ fontSize:10, color:CORES.roxo, marginTop:2 }}>Julio © 2026</div>
             </div>
 
-            {/* ABA PRINCIPAL */}
+            {/* ABAS PRINCIPAIS */}
             <div style={{ display:'flex', flexDirection:'column', gap:6, marginBottom:16 }}>
               <button onClick={() => { setAbaAtiva('free'); setCategoria('todas'); }} style={{
                 padding:'10px 12px', borderRadius:6, border:'none', cursor:'pointer', textAlign:'left', fontSize:13,
                 backgroundColor: abaAtiva==='free' ? CORES.roxo : 'transparent',
                 color: abaAtiva==='free' ? '#fff' : CORES.textoSecundario
               }}>🆓 Gratuitas <span style={{ float:'right', fontSize:11, opacity:.7 }}>{otmFree.length}</span></button>
+
+              <button onClick={() => { setAbaAtiva('pagamento'); setCategoria('todas'); }} style={{
+                padding:'10px 12px', borderRadius:6, border:'none', cursor:'pointer', textAlign:'left', fontSize:13,
+                backgroundColor: abaAtiva==='pagamento' ? '#00B945' : 'transparent',
+                color: abaAtiva==='pagamento' ? '#fff' : CORES.textoSecundario
+              }}>💳 Comprar Premium</button>
+
               <button onClick={() => { setAbaAtiva('premium'); setCategoria('todas'); }} style={{
                 padding:'10px 12px', borderRadius:6, border:'none', cursor:'pointer', textAlign:'left', fontSize:13,
                 backgroundColor: abaAtiva==='premium' ? CORES.sangue : 'transparent',
                 color: abaAtiva==='premium' ? '#fff' : CORES.textoSecundario
-              }}>⭐ Premium <span style={{ float:'right', fontSize:11, opacity:.7 }}>{otmPremium.length}{liberado?'':' 🔒'}</span></button>
+              }}>⭐ Premium <span style={{ float:'right', fontSize:11, opacity:.7 }}>{otmPremium.length}{liberado||abaAtiva==='pagamento'?'':' 🔒'}</span></button>
             </div>
 
-            {/* CATEGORIAS */}
-            <div style={{ marginBottom:12, borderTop:`1px solid ${CORES.borda}`, paddingTop:12 }}>
-              <div style={{ fontSize:11, color:CORES.textoSecundario, marginBottom:8, fontWeight:600 }}>FILTROS</div>
-              {[
-                {k:'todas',n:'📋 Todas'}, {k:'cpu',n:'🖥️ CPU'}, {k:'gpu',n:'🎮 GPU'}, {k:'memoria',n:'🧠 Memória'},
-                {k:'rede',n:'🌐 Rede'}, {k:'boot',n:'⚙️ Boot'}, {k:'serviços',n:'🔧 Serviços'},
-                {k:'registro',n:'📝 Registro'}, {k:'jogos',n:'🎯 Jogos'}, {k:'energia',n:'⚡ Energia'},
-                {k:'limpeza',n:'🧹 Limpeza'}, {k:'privacidade',n:'🛡️ Privacidade'}, {k:'perifericos',n:'🖱️ Periféricos'},
-              ].map(cat => (
-                <button key={cat.k} onClick={() => setCategoria(cat.k)} style={{
-                  padding:'7px 10px', borderRadius:4, border:'none', cursor:'pointer', textAlign:'left', fontSize:12, width:'100%',
-                  backgroundColor: categoria===cat.k ? CORES.bgHover : 'transparent',
-                  color: categoria===cat.k ? CORES.texto : CORES.textoSecundario, marginBottom:2
-                }}>{cat.n}</button>
-              ))}
-            </div>
+            {/* CATEGORIAS — só mostra nas otimizações */}
+            {abaAtiva !== 'pagamento' && (
+              <div style={{ marginBottom:12, borderTop:`1px solid ${CORES.borda}`, paddingTop:12 }}>
+                <div style={{ fontSize:11, color:CORES.textoSecundario, marginBottom:8, fontWeight:600 }}>FILTROS</div>
+                {[
+                  {k:'todas',n:'📋 Todas'}, {k:'cpu',n:'🖥️ CPU'}, {k:'gpu',n:'🎮 GPU'}, {k:'memoria',n:'🧠 Memória'},
+                  {k:'rede',n:'🌐 Rede'}, {k:'boot',n:'⚙️ Boot'}, {k:'serviços',n:'🔧 Serviços'},
+                  {k:'registro',n:'📝 Registro'}, {k:'jogos',n:'🎯 Jogos'}, {k:'energia',n:'⚡ Energia'},
+                  {k:'limpeza',n:'🧹 Limpeza'}, {k:'privacidade',n:'🛡️ Privacidade'}, {k:'perifericos',n:'🖱️ Periféricos'},
+                ].map(cat => (
+                  <button key={cat.k} onClick={() => setCategoria(cat.k)} style={{
+                    padding:'7px 10px', borderRadius:4, border:'none', cursor:'pointer', textAlign:'left', fontSize:12, width:'100%',
+                    backgroundColor: categoria===cat.k ? CORES.bgHover : 'transparent',
+                    color: categoria===cat.k ? CORES.texto : CORES.textoSecundario, marginBottom:2
+                  }}>{cat.n}</button>
+                ))}
+              </div>
+            )}
 
-            {/* SENHA */}
-            <div style={{ marginTop:'auto', borderTop:`1px solid ${CORES.borda}`, paddingTop:12 }}>
-              {!adminLiberado && !premiumLiberado ? (<>
-                <div style={{ fontSize:11, color:CORES.textoSecundario, marginBottom:6 }}>🔑 Área Premium</div>
-                <input type="password" value={senha} onChange={e=>setSenha(e.target.value)} placeholder="Digite a senha..." style={{
+            {/* SENHA — só aparece nas otimizações premium */}
+            {abaAtiva === 'premium' && !premiumLiberado && !adminLiberado && (
+              <div style={{ marginTop:'auto', borderTop:`1px solid ${CORES.borda}`, paddingTop:12 }}>
+                <div style={{ fontSize:11, color:CORES.textoSecundario, marginBottom:6 }}>🔑 Já comprou? Digite a senha:</div>
+                <input type="password" value={senha} onChange={e=>setSenha(e.target.value)} placeholder="Senha de acesso..." style={{
                   width:'100%', padding:'8px 10px', borderRadius:4, border:`1px solid ${CORES.borda}`, backgroundColor:CORES.bg, color:CORES.texto, fontSize:12, marginBottom:8, outline:'none'
                 }} />
                 <div style={{ display:'flex', gap:6 }}>
@@ -264,60 +240,141 @@ export default function App() {
                   <button onClick={()=>verificarSenha('premium')} style={{ flex:1, padding:'7px', borderRadius:4, border:'none', backgroundColor:CORES.sangue, color:'#fff', fontSize:12, cursor:'pointer' }}>Premium</button>
                 </div>
                 {aviso && <div style={{ fontSize:11, marginTop:6, color:aviso.startsWith('✅')?CORES.verdeSeguro:CORES.sangue }}>{aviso}</div>}
-              </>) : (
-                <div style={{ fontSize:12, color:CORES.verdeSeguro, textAlign:'center', padding:'6px' }}>✅ Acesso Liberado!</div>
-              )}
-            </div>
+              </div>
+            )}
+
+            {(premiumLiberado || adminLiberado) && (
+              <div style={{ marginTop:'auto', borderTop:`1px solid ${CORES.borda}`, paddingTop:12, textAlign:'center' }}>
+                <div style={{ fontSize:12, color:CORES.verdeSeguro }}>✅ Acesso Liberado!</div>
+              </div>
+            )}
           </>)}</div>
       </aside>
 
       {/* ============= CONTEÚDO PRINCIPAL ============= */}
       <main style={{ flex:1, padding:'22px', overflowY:'auto', position:'relative' }}>
         {mensagem && (
-          <div style={{ position:'fixed', top:16, right:16, padding:'10px 16px', backgroundColor:'rgba(34,197,94,0.12)', border:`1px solid ${CORES.verdeSeguro}`, borderRadius:6, color:CORES.verdeSeguro, fontSize:13, zIndex:999 }}>
+          <div style={{ position:'fixed', top:16, right:16, padding:'10px 16px', backgroundColor:'rgba(34,197,69,0.15)', border:`1px solid ${CORES.verdeSeguro}`, borderRadius:6, color:CORES.verdeSeguro, fontSize:13, zIndex:999 }}>
             {mensagem}
           </div>
         )}
 
-        <div style={{ marginBottom:22 }}>
-          <h1 style={{ fontSize:20, margin:0, color: abaAtiva==='free' ? CORES.roxo : CORES.sangue }}>
-            {abaAtiva==='free' ? '🔥 Otimizações Gratuitas' : '⭐ Otimizações Premium'}
-          </h1>
-          <p style={{ fontSize:12, color:CORES.textoSecundario, marginTop:4 }}>
-            Exibindo {listaAtual.length} otimização{listaAtual.length!==1?'ões':''}
-            {categoria!=='todas' && ` • Filtro: ${categoria.toUpperCase()}`}
-          </p>
-        </div>
+        {/* 💳 TELA DE PAGAMENTO PREMIUM */}
+        {abaAtiva === 'pagamento' && (
+          <div style={{ maxWidth:480, margin:'0 auto', textAlign:'center', padding:'20px' }}>
+            <div style={{ fontSize:26, fontWeight:'bold', color:CORES.sangue, marginBottom:6 }}>⭐ Desbloqueie o Premium</div>
+            <div style={{ fontSize:14, color:CORES.textoSecundario, marginBottom:24 }}>+600 otimizações exclusivas para máximo desempenho</div>
 
-        {!liberado ? (
-          <div style={{ textAlign:'center', padding:'60px 20px', color:CORES.textoSecundario }}>
-            <div style={{ fontSize:40, marginBottom:12 }}>🔒</div>
-            <div style={{ fontSize:16, marginBottom:6 }}>Área Protegida</div>
-            <div style={{ fontSize:13 }}>Digite a senha na barra lateral para liberar as {otmPremium.length} otimizações Premium.</div>
-          </div>
-        ) : (
-          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-            {listaAtual.map(item => (
-              <div key={`${abaAtiva}-${item.id}`} style={{
-                padding:'12px 14px', backgroundColor:CORES.bgCard, borderRadius:8, border:`1px solid ${CORES.borda}`,
-                borderLeftWidth:4, borderLeftColor: corPerigo(item.risco), ...CORES.sombra
-              }}>
-                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:6 }}>
-                  <span style={{ fontSize:13, fontWeight:500 }}><strong style={{ color:CORES.roxo }}>{item.id}.</strong> {item.nome}</span>
-                  <span style={{ fontSize:10, padding:'2px 6px', borderRadius:3, backgroundColor:corPerigo(item.risco), color:'#000', fontWeight:700, textTransform:'uppercase' }}>{item.risco}</span>
-                </div>
-                <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-                  <code style={{ flex:1, padding:'8px 10px', backgroundColor:CORES.bg, borderRadius:4, fontSize:12, color:CORES.verdeSeguro, overflowX:'auto', whiteSpace:'nowrap' }}>
-                    {item.cmd}
-                  </code>
-                  <button onClick={() => copiar(item.cmd)} style={{
-                    padding:'8px 14px', borderRadius:4, border:'none', backgroundColor: abaAtiva==='free' ? CORES.roxo : CORES.sangue,
-                    color:'#fff', fontSize:12, cursor:'pointer', whiteSpace:'nowrap', fontWeight:500
-                  }}>📋 Copiar</button>
+            <div style={{ backgroundColor:CORES.bgCard, borderRadius:12, border:`1px solid ${CORES.borda}`, padding:'28px', marginBottom:20 }}>
+              <div style={{ fontSize:42, fontWeight:'bold', color:'#00B945' }}>R$ {VALOR_PREMIUM}</div>
+              <div style={{ fontSize:12, color:CORES.textoSecundario, marginTop:4 }}>Pagamento via PIX — liberação automática</div>
+
+              {/* QR CODE ILUSTRATIVO */}
+              <div style={{ margin:'20px auto', width:220, height:220, backgroundColor:'#fff', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', padding:12 }}>
+                <div style={{ width:'100%', height:'100%', display:'grid', gridTemplateColumns:'repeat(7,1fr)', gap:1 }}>
+                  {Array.from({length:49}).map((_,i) => {
+                    const pattern = [0,1,2,3,4,5,6,7,8,13,14,20,22,24,26,28,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48];
+                    return <div key={i} style={{ backgroundColor:pattern.includes(i)?'#000':'transparent', borderRadius:i===0||i===6||i===42||i===48?2:0 }} />;
+                  })}
                 </div>
               </div>
-            ))}
+
+              <div style={{ fontSize:12, color:CORES.textoSecundario, marginBottom:8 }}>📱 Escaneie o QR Code com seu app do banco</div>
+
+              <button onClick={() => copiar(`Chave PIX: ${CHAVE_PIX}`)} style={{
+                padding:'10px 20px', backgroundColor:'#00B945', color:'#fff', border:'none', borderRadius:6, fontSize:14, fontWeight:600, cursor:'pointer'
+              }}>📋 Copiar Chave PIX</button>
+
+              <div style={{ marginTop:16, padding:'12px', backgroundColor:'rgba(123,47,253,0.08)', borderRadius:6, border:`1px solid ${CORES.roxo}30` }}>
+                <div style={{ fontSize:12, color:CORES.roxo, fontWeight:600, marginBottom:4 }}>🔑 Após o pagamento</div>
+                <div style={{ fontSize:12, color:CORES.textoSecundario }}>Envie o comprovante e receba sua senha de acesso em instantes!</div>
+                <div style={{ fontSize:13, color:CORES.verdeSeguro, marginTop:8, fontWeight:500 }}>Senha padrão: <code style={{ backgroundColor:'rgba(0,0,0,0.3)', padding:'2px 6px', borderRadius:3 }}>{SENHA_PREMIUM}</code></div>
+              </div>
+            </div>
+
+            <button onClick={() => setAbaAtiva('free')} style={{
+              background:'transparent', border:'none', color:CORES.textoSecundario, fontSize:13, cursor:'pointer', textDecoration:'underline'
+            }}>← Voltar para otimizações gratuitas</button>
           </div>
+        )}
+
+        {/* 🔥 OTIMIZAÇÕES GRATUITAS */}
+        {abaAtiva === 'free' && (
+          <>
+            <div style={{ marginBottom:22 }}>
+              <h1 style={{ fontSize:20, margin:0, color:CORES.roxo }}>🔥 Otimizações Gratuitas</h1>
+              <p style={{ fontSize:12, color:CORES.textoSecundario, marginTop:4 }}>
+                Exibindo {listaAtual.length} otimização{listaAtual.length!==1?'ões':''}
+                {categoria!=='todas' && ` • Filtro: ${categoria.toUpperCase()}`}
+              </p>
+            </div>
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {listaAtual.map(item => (
+                <div key={`${abaAtiva}-${item.id}`} style={{
+                  padding:'12px 14px', backgroundColor:CORES.bgCard, borderRadius:8, border:`1px solid ${CORES.borda}`,
+                  borderLeftWidth:4, borderLeftColor: corPerigo(item.risco)
+                }}>
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:6 }}>
+                    <span style={{ fontSize:13, fontWeight:500 }}><strong style={{ color:CORES.roxo }}>{item.id}.</strong> {item.nome}</span>
+                    <span style={{ fontSize:10, padding:'2px 6px', borderRadius:3, backgroundColor:corPerigo(item.risco), color:'#000', fontWeight:700, textTransform:'uppercase' }}>{item.risco}</span>
+                  </div>
+                  <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+                    <code style={{ flex:1, padding:'8px 10px', backgroundColor:CORES.bg, borderRadius:4, fontSize:12, color:CORES.verdeSeguro, overflowX:'auto', whiteSpace:'nowrap' }}>
+                      {item.cmd}
+                    </code>
+                    <button onClick={() => copiar(item.cmd)} style={{
+                      padding:'8px 14px', borderRadius:4, border:'none', backgroundColor:CORES.roxo,
+                      color:'#fff', fontSize:12, cursor:'pointer', fontWeight:500
+                    }}>📋 Copiar</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* ⭐ OTIMIZAÇÕES PREMIUM */}
+        {abaAtiva === 'premium' && !liberado ? (
+          <div style={{ textAlign:'center', padding:'60px 20px', color:CORES.textoSecundario }}>
+            <div style={{ fontSize:48, marginBottom:16 }}>🔒</div>
+            <div style={{ fontSize:18, marginBottom:8, color:CORES.sangue, fontWeight:600 }}>Área Premium Protegida</div>
+            <div style={{ fontSize:14, marginBottom:20 }}>Compre o acesso por apenas <span style={{ color:'#00B945', fontWeight:'bold' }}>R$ {VALOR_PREMIUM}</span> e libere +600 otimizações!</div>
+            <button onClick={() => setAbaAtiva('pagamento')} style={{
+              padding:'12px 24px', backgroundColor:'#00B945', color:'#fff', border:'none', borderRadius:8, fontSize:15, fontWeight:600, cursor:'pointer'
+            }}>💳 Comprar Acesso Premium</button>
+          </div>
+        ) : abaAtiva === 'premium' && liberado && (
+          <>
+            <div style={{ marginBottom:22 }}>
+              <h1 style={{ fontSize:20, margin:0, color:CORES.sangue }}>⭐ Otimizações Premium</h1>
+              <p style={{ fontSize:12, color:CORES.textoSecundario, marginTop:4 }}>
+                Exibindo {listaAtual.length} otimização{listaAtual.length!==1?'ões':''}
+                {categoria!=='todas' && ` • Filtro: ${categoria.toUpperCase()}`}
+              </p>
+            </div>
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {listaAtual.map(item => (
+                <div key={`${abaAtiva}-${item.id}`} style={{
+                  padding:'12px 14px', backgroundColor:CORES.bgCard, borderRadius:8, border:`1px solid ${CORES.borda}`,
+                  borderLeftWidth:4, borderLeftColor: corPerigo(item.risco)
+                }}>
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:6 }}>
+                    <span style={{ fontSize:13, fontWeight:500 }}><strong style={{ color:CORES.sangue }}>{item.id}.</strong> {item.nome}</span>
+                    <span style={{ fontSize:10, padding:'2px 6px', borderRadius:3, backgroundColor:corPerigo(item.risco), color:'#000', fontWeight:700, textTransform:'uppercase' }}>{item.risco}</span>
+                  </div>
+                  <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+                    <code style={{ flex:1, padding:'8px 10px', backgroundColor:CORES.bg, borderRadius:4, fontSize:12, color:'#ffcc00', overflowX:'auto', whiteSpace:'nowrap' }}>
+                      {item.cmd}
+                    </code>
+                    <button onClick={() => copiar(item.cmd)} style={{
+                      padding:'8px 14px', borderRadius:4, border:'none', backgroundColor:CORES.sangue,
+                      color:'#fff', fontSize:12, cursor:'pointer', fontWeight:500
+                    }}>📋 Copiar</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </main>
     </div>
