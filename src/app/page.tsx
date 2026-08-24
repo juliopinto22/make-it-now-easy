@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 // 🔑 SENHAS DO SISTEMA
 const SENHA_ADMINISTRADOR = 'JulioKaneki999';
 const SENHA_PREMIUM = 'Pagamento@2026';
+const CHAVE_PIX = '+55 11947138400'; // ✅ Sua chave PIX
 
 export default function App() {
   const [carregando, setCarregando] = useState(true);
@@ -15,10 +16,9 @@ export default function App() {
   const [tipoAcesso, setTipoAcesso] = useState<'admin' | 'premium' | null>(null);
   const [erroSenha, setErroSenha] = useState('');
   const [status, setStatus] = useState('');
-  const [pixChave, setPixChave] = useState('');
+  const [pixChave, setPixChave] = useState(CHAVE_PIX);
 
   useEffect(() => {
-    setPixChave('julioserafim1234566@gmail.com');
     setTimeout(() => setCarregando(false), 2000);
   }, []);
 
@@ -115,5 +115,5 @@ export default function App() {
     { id:70, nome:'Limpeza geral disco', cmd:'cleanmgr /sagerun:1', perigo:'médio' },
   ];
 
-  // === 200 OTIMIZAÇÕES PREMIUM — AS MAIS PODEROSAS ===
+  // === 200 OTIMIZAÇÕES PREMIUM — AS MAIS PODEROSAS! ===
   const otimizacoesPremium = 
