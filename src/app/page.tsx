@@ -1,6 +1,6 @@
 'use client';
 
-// URL direta de fundo para evitar o problema da caixa preta por imagem ausente
+// Imagem do preview do aplicativo
 const IMG_HERO_APP = 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1000&auto=format&fit=crop';
 
 const CORES = {
@@ -16,13 +16,6 @@ const CORES = {
 };
 
 export default function Home() {
-  const jogos = [
-    { nome: 'Valorant', sem: '180 FPS', com: '280 FPS', ganho: '+55%' },
-    { nome: 'League of Legends', sem: '210 FPS', com: '320 FPS', ganho: '+52%' },
-    { nome: 'CS2', sem: '120 FPS', com: '185 FPS', ganho: '+54%' },
-    { nome: 'GTA V / FiveM', sem: '75 FPS', com: '115 FPS', ganho: '+53%' },
-  ];
-
   return (
     <div style={{ backgroundColor: CORES.fundo, color: CORES.textoClaro, fontFamily: 'system-ui, sans-serif', minHeight: '100vh', overflowX: 'hidden' }}>
       
@@ -34,15 +27,18 @@ export default function Home() {
         
         <div style={{ display: 'flex', gap: 30, fontSize: 14, color: CORES.textoCinza }}>
           <a href="#recursos" style={{ color: 'inherit', textDecoration: 'none' }}>Recursos</a>
-          <a href="#benchmarks" style={{ color: 'inherit', textDecoration: 'none' }}>Desempenho</a>
-          <a href="#precos" style={{ color: 'inherit', textDecoration: 'none' }}>Planos</a>
+          <a href="#planos" style={{ color: 'inherit', textDecoration: 'none' }}>Planos</a>
         </div>
 
         <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
-          <button style={{ background: 'transparent', border: 'none', color: CORES.textoClaro, cursor: 'pointer', fontSize: 14 }}>Entrar</button>
-          <button style={{ background: CORES.vermelho, color: '#FFF', border: 'none', padding: '10px 20px', borderRadius: 6, fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 0 15px ' + CORES.vermelhoGlow }}>
-            Baixar Agora
-          </button>
+          <a href="#login" style={{ color: CORES.textoClaro, textDecoration: 'none', fontSize: 14 }}>Entrar</a>
+          {/* BOTÃO HEADER REDIRECIONANDO PARA O SITE */}
+          <a 
+            href="https://seu-site-completo.com" 
+            style={{ background: CORES.vermelho, color: '#FFF', textDecoration: 'none', padding: '10px 20px', borderRadius: 6, fontWeight: 'bold', boxShadow: '0 0 15px ' + CORES.vermelhoGlow, fontSize: 14 }}
+          >
+            Acessar Site
+          </a>
         </div>
       </nav>
 
@@ -63,13 +59,22 @@ export default function Home() {
             Aumente seu FPS e reduza o input lag com otimizações inteligentes, automáticas e 100% reversíveis. Sem comandos complicados, sem risco.
           </p>
 
-          <div style={{ display: 'flex', gap: 16, marginBottom: 40 }}>
-            <button style={{ background: CORES.vermelho, color: '#FFF', border: 'none', padding: '16px 32px', borderRadius: 8, fontSize: 16, fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 0 25px ' + CORES.vermelhoGlow }}>
-              Download Grátis
-            </button>
-            <button style={{ background: CORES.card, color: CORES.textoClaro, border: '1px solid ' + CORES.borda, padding: '16px 28px', borderRadius: 8, fontSize: 16, cursor: 'pointer' }}>
+          <div style={{ display: 'flex', gap: 16, marginBottom: 40, flexWrap: 'wrap' }}>
+            {/* BOTÃO 1: REDIRECIONA PARA O SITE COMPLETO */}
+            <a 
+              href="https://seu-site-completo.com" 
+              style={{ background: CORES.vermelho, color: '#FFF', textDecoration: 'none', padding: '16px 32px', borderRadius: 8, fontSize: 16, fontWeight: 'bold', boxShadow: '0 0 25px ' + CORES.vermelhoGlow, display: 'inline-block' }}
+            >
+              Acessar Site
+            </a>
+
+            {/* BOTÃO 2: REDIRECIONA PARA A SEÇÃO OU PÁGINA DE PLANOS PREMIUM */}
+            <a 
+              href="#planos" 
+              style={{ background: CORES.card, color: CORES.textoClaro, textDecoration: 'none', border: '1px solid ' + CORES.borda, padding: '16px 28px', borderRadius: 8, fontSize: 16, display: 'inline-block' }}
+            >
               Ver Planos Premium
-            </button>
+            </a>
           </div>
 
           <div style={{ display: 'flex', gap: 35, borderTop: '1px solid ' + CORES.borda, paddingTop: 25 }}>
@@ -118,36 +123,6 @@ export default function Home() {
           </div>
         </div>
 
-      </section>
-
-      {/* BENCHMARKS */}
-      <section id="benchmarks" style={{ padding: '60px 8%', background: 'rgba(10,0,0,0.5)', borderTop: '1px solid ' + CORES.borda }}>
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <h2 style={{ fontSize: 32, fontWeight: 'bold', margin: '0 0 10px 0' }}>Ganho de FPS em Jogos Populares</h2>
-          <p style={{ color: CORES.textoCinza, fontSize: 14 }}>Resultados medidos em PCs de entrada e intermediários no Brasil.</p>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20 }}>
-          {jogos.map((jogo, index) => (
-            <div key={index} style={{ background: CORES.card, border: '1px solid ' + CORES.borda, borderRadius: 10, padding: 20, textAlign: 'center' }}>
-              <h3 style={{ margin: '0 0 15px 0', fontSize: 18, color: CORES.textoClaro }}>{jogo.nome}</h3>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: CORES.textoCinza, marginBottom: 8 }}>
-                <span>Sem Optimizer:</span>
-                <span style={{ textDecoration: 'line-through' }}>{jogo.sem}</span>
-              </div>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 'bold', color: CORES.verdeGanho, marginBottom: 12 }}>
-                <span>Com Optimizer:</span>
-                <span>{jogo.com}</span>
-              </div>
-
-              <div style={{ background: 'rgba(0,255,102,0.1)', color: CORES.verdeGanho, padding: '4px 8px', borderRadius: 4, fontSize: 12, fontWeight: 'bold', display: 'inline-block' }}>
-                {jogo.ganho} de Desempenho
-              </div>
-            </div>
-          ))}
-        </div>
       </section>
 
     </div>
