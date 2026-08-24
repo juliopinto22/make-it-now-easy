@@ -1,33 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function PainelPage() {
   const [status, setStatus] = useState('');
+  const [qrData, setQrData] = useState('');
 
+  // ✅ CHAVE PIX — FICA ESCONDIDA, NÃO APARECE NA TELA
   useEffect(() => {
-    // Carrega a biblioteca QR Code
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js';
-    script.onload = gerarQRCode;
-    document.body.appendChild(script);
+    const chavePix = "+55 11947138400";
+    setQrData(chavePix);
   }, []);
-
-  // ⚠️ CHAVE PIX AQUI — NÃO APARECE NA TELA
-  const dadosPix = "+55 11947138400";
-
-  const gerarQRCode = () => {
-    if (window.QRCode) {
-      const qrContainer = document.getElementById('qr-code-svg');
-      window.QRCode.toCanvas(qrContainer, dadosPix, {
-        width: 220,
-        margin: 2,
-        color: { dark: '#cc0000', light: '#1a001a' }
-      }, function (err) {
-        if (err) console.error(err)
-      });
-    }
-  };
 
   const comandos = {
     roblox: `:: Roblox FPS Boost — cole no Executor
@@ -58,7 +41,7 @@ cleanmgr /sagerun:1`
   };
 
   const estilo = {
-    body: {
+    container: {
       background: 'linear-gradient(135deg, #2b003d, #4b0000)',
       minHeight: '100vh',
       display: 'flex',
@@ -82,14 +65,14 @@ cleanmgr /sagerun:1`
     grupo: { margin: '18px 0', padding: '15px', background: 'rgba(40,0,60,0.35)', borderRadius: '8px' },
     botao: { margin: '5px', padding: '10px 15px', background: 'linear-gradient(90deg, #660066, #990000)', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', transition: '0.3s' },
     voltarBtn: { background: '#770000', marginBottom: '15px', padding: '10px 15px', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer' },
-    premium: { border: '2px solid #cc0000', background: 'rgba(80,0,80,0.4)', boxShadow: '0 0 15px #cc0000', marginTop: '25px', padding: '15px', borderRadius: '8px' },
-    qrContainer: { textAlign: 'center', padding: '15px' },
+    premium: { border: '2px solid #cc0000', background: 'rgba(80,0,80,0.4)', boxShadow: '0 0 15px #cc0000', marginTop: '25px', padding: '15px', borderRadius: '8px', textAlign: 'center' },
+    qrImg: { width: '220px', height: '220px', borderRadius: '10px', border: '3px solid #990000', boxShadow: '0 0 20px #660066' },
     aviso: { color: '#eeccff', marginTop: '12px', fontSize: '14px' },
     statusTxt: { color: '#99ff99', marginTop: '15px', textAlign: 'center' }
   };
 
   return (
-    <div style={estilo.body}>
+    <div style={estilo.container}>
       <div style={estilo.caixa}>
         <button style={estilo.voltarBtn} onClick={voltar}>← Voltar</button>
         <h1 style={estilo.titulo}>Painel</h1>
@@ -113,13 +96,19 @@ cleanmgr /sagerun:1`
           <button style={estilo.botao} onClick={() => copiarComando('sistema')}>Copiar Comandos</button>
         </div>
 
+        {/* ✅ QR CODE CORRIGIDO — SEM BIBLIOTECA EXTERNA = SEM ERRO */}
         <div style={estilo.premium}>
-          <h3 style={{color:'#ffcc00', textAlign:'center', fontSize:'22px'}}>👑 ÁREA PREMIUM</h3>
-          <div style={estilo.qrContainer}>
-            <canvas id="qr-code-svg" width="220" height="220" style={{borderRadius:'10px', border:'3px solid #990000', boxShadow:'0 0 20px #660066'}}></canvas>
-            <p style={estilo.aviso}>💳 Escaneie para pagamento via PIX</p>
-            <p style={{color:'#999', fontSize:'11px', marginTop:'5px'}}>🔒 Chave protegida — apenas QR Code</p>
-          </div>
+          <h3 style={{color:'#ffcc00', fontSize:'22px'}}>👑 ÁREA PREMIUM</h3>
+          
+          {/* QR Code gerado automaticamente — CORES DO TEMA KANEKI */}
+          <img 
+            src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&color=C80000&bgcolor=2A0033&data=${encodeURIComponent(qrData)}`}
+            alt="QR Code PIX"
+            style={estilo.qrImg}
+          />
+          
+          <p style={estilo.aviso}>💳 Escaneie para pagamento via PIX</p>
+          <p style={{color:'#999', fontSize:'11px', marginTop:'5px'}}>🔒 Chave protegida — apenas QR Code</p>
         </div>
 
         <p style={estilo.statusTxt}>{status}</p>
