@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react';
 
-// 🔑 DADOS DE PAGAMENTO — SEU PIX
 const SENHA_PREMIUM = 'Pagamento@2026';
 const CHAVE_PIX = '+5511947138400';
 const VALOR_PREMIUM = '5,90';
-const VERSAO = '4.4.0';
+const VERSAO = '4.5.0';
 
-// 🎨 TEMA TOKYO GHOUL — PRETO + VERMELHO SANGUE
 const CORES = {
   fundo: '#050505',
   fundoCard: '#111111',
@@ -30,13 +28,12 @@ const CORES = {
   sombraVermelha: '0 0 15px rgba(228, 2, 0, 0.25)',
 };
 
-// 🔥 40 OTIMIZAÇÕES SIMPLES — ABA GRATUITA
 const otmFree = [
   { id: 1, cat: 'sistema', nome: 'Desativar inicialização rápida', cmd: 'powercfg /hibernate off', risco: 'baixo' },
   { id: 2, cat: 'sistema', nome: 'Otimizar agendador de CPU', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 38 /f', risco: 'medio' },
   { id: 3, cat: 'sistema', nome: 'Desativar serviços desnecessários', cmd: 'sc config "SysMain" start= disabled', risco: 'medio' },
   { id: 4, cat: 'sistema', nome: 'Desativar depuração do sistema', cmd: 'bcdedit /debug off', risco: 'baixo' },
-  { id: 5, cat: 'sistema', nome: 'Desativar proteção de tempo real', cmd: "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender' /v 'DisableRealtimeMonitoring' /t REG_DWORD /d 1 /f", risco: 'medio' },
+  { id: 5, cat: 'sistema', nome: 'Desativar proteção de tempo real', cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender" /v "DisableRealtimeMonitoring" /t REG_DWORD /d 1 /f', risco: 'medio' },
   { id: 6, cat: 'cpu', nome: 'Desativar C-States do processador', cmd: 'bcdedit /set useplatformtick yes', risco: 'medio' },
   { id: 7, cat: 'cpu', nome: 'Desativar gerenciamento de energia', cmd: 'powercfg -setacvalueindex scheme_current sub_processor 5d76a2ca-e8c0-402f-a133-215442442393 100', risco: 'medio' },
   { id: 8, cat: 'cpu', nome: 'Definir desempenho máximo', cmd: 'powercfg -setactive scheme_current', risco: 'baixo' },
@@ -58,7 +55,7 @@ const otmFree = [
   { id: 24, cat: 'disco', nome: 'Reparo de imagem do sistema', cmd: 'DISM /Online /Cleanup-Image /RestoreHealth', risco: 'baixo' },
   { id: 25, cat: 'disco', nome: 'Desfragmentar disco', cmd: 'defrag C: /O', risco: 'baixo' },
   { id: 26, cat: 'disco', nome: 'Limpar arquivos temporários', cmd: 'cleanmgr /sagerun:1', risco: 'baixo' },
-  { id: 27, cat: 'disco', nome: 'Excluir arquivos temporários', cmd: 'del /q /s "%temp%"\*.*', risco: 'baixo' },
+  { id: 27, cat: 'disco', nome: 'Excluir arquivos temporários', cmd: 'del /q /s "%temp%"\\*.*', risco: 'baixo' },
   { id: 28, cat: 'jogos', nome: 'Desativar aceleração de ponteiro', cmd: 'reg add "HKCU\\Control Panel\\Mouse" /v "MouseSpeed" /t REG_SZ /d "0" /f', risco: 'baixo' },
   { id: 29, cat: 'jogos', nome: 'Remover aceleração do mouse', cmd: 'reg add "HKCU\\Control Panel\\Mouse" /v "MouseThreshold1" /t REG_SZ /d "0" /f', risco: 'baixo' },
   { id: 30, cat: 'jogos', nome: 'Remover aceleração do mouse 2', cmd: 'reg add "HKCU\\Control Panel\\Mouse" /v "MouseThreshold2" /t REG_SZ /d "0" /f', risco: 'baixo' },
@@ -75,7 +72,7 @@ const otmFree = [
 ];
 
 const gerarPremium = () => {
-  const itens: any[] = [];
+  const itens = [];
   let id = 1;
   const riscos = ['baixo', 'medio', 'alto'];
   for (let i = 0; i < 100; i++) itens.push({ id: id++, cat: 'cpu', nome: `Otimização CPU ${i + 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "Opt${i}" /t REG_DWORD /d ${i * 4} /f`, risco: riscos[i % 3] });
@@ -111,13 +108,13 @@ export default function App() {
     setSenha('');
   };
 
-  const copiar = (texto: string) => {
+  const copiar = (texto) => {
     navigator.clipboard.writeText(texto);
     setMensagem('✅ Copiado!');
     setTimeout(() => setMensagem(''), 2500);
   };
 
-  const corNivel = (nivel?: string) => {
+  const corNivel = (nivel) => {
     switch (nivel) {
       case 'baixo': return CORES.verdeSeguro;
       case 'medio': return CORES.amareloAviso;
@@ -126,32 +123,33 @@ export default function App() {
     }
   };
 
-  const gerarQR = (texto: string) => {
+  const gerarQR = (texto) => {
     const size = 29;
-    const modules: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
-    const posicoes = [[0, 0], [0, size - 7], [size - 7, 0]];
-    posicoes.forEach(([ox, oy]) => {
+    const modules = Array.from({ length: size }, () => Array(size).fill(false));
+    const desenharMarcador = (ox, oy) => {
       for (let dy = 0; dy < 7; dy++) {
         for (let dx = 0; dx < 7; dx++) {
-          const borda = dy === 0 || dy === 6 || dx === 0 || dx === 6;
-          const centro = dy >= 2 && dy <= 4 && dx >= 2 && dx <= 4;
-          modules[oy + dy][ox + dx] = borda || centro;
+          const ehBorda = dy === 0 || dy === 6 || dx === 0 || dx === 6;
+          const ehCentro = dy >= 2 && dy <= 4 && dx >= 2 && dx <= 4;
+          modules[oy + dy][ox + dx] = ehBorda || ehCentro;
         }
       }
-    });
+    };
+    desenharMarcador(0, 0);
+    desenharMarcador(size - 7, 0);
+    desenharMarcador(0, size - 7);
     const dados = texto.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
     for (let y = 8; y < size - 8; y++) {
       for (let x = 8; x < size - 8; x++) {
-        modules[y][x] = ((x * dados + y * (dados / 2)) % 3) !== 0;
+        modules[y][x] = ((x * 7 + y * 13 + dados) % 5) !== 0;
       }
     }
     return modules;
   };
   const qrDados = gerarQR(CHAVE_PIX);
 
-  const filtrar = (lista: any[]) => categoria === 'todas' ? lista : lista.filter((x: any) => x.cat === categoria);
+  const filtrar = (lista) => categoria === 'todas' ? lista : lista.filter((x) => x.cat === categoria);
 
-  // Elementos decorativos do tema Tokyo Ghoul
   const GhoulPattern = () => (
     <>
       <div style={{ position: 'fixed', top: 60, left: '28%', fontSize: 120, opacity: 0.03, color: CORES.vermelho, pointerEvents: 'none', zIndex: 0, transform: 'rotate(15deg)' }}>☠</div>
@@ -180,7 +178,6 @@ export default function App() {
       
       <GhoulPattern />
 
-      {/* ⚠️ AVISO FLUTUANTE */}
       <div style={{
         position: 'fixed',
         top: 12,
@@ -200,7 +197,6 @@ export default function App() {
         ⚠️ <strong style={{ color: CORES.amareloAviso }}>AVISO:</strong> Este site é totalmente pago. Abaixo gratuita contém poucos itens. Adquira o Premium para acesso completo.
       </div>
 
-      {/* 📐 BARRA LATERAL — TEMA TOKYO GHOUL COM BORDAS ARREDONDADAS */}
       <aside style={{ 
         width: lateralAberta ? 270 : 60, 
         backgroundColor: '#0a0000', 
@@ -212,10 +208,9 @@ export default function App() {
         flexDirection: 'column',
         borderTopRightRadius: 20,
         borderBottomRightRadius: 20,
-        boxShadow: `${CORES.sombraVermelha}`,
+        boxShadow: CORES.sombraVermelha,
         position: 'relative'
       }}>
-        {/* Padrão decorativo interno da barra */}
         <div style={{ position: 'absolute', top: 80, left: 10, fontSize: 80, opacity: 0.04, color: CORES.vermelho, pointerEvents: 'none' }}>👁</div>
         <div style={{ position: 'absolute', bottom: 60, right: 5, fontSize: 60, opacity: 0.04, color: CORES.vermelho, pointerEvents: 'none' }}>🩸</div>
 
@@ -400,15 +395,13 @@ export default function App() {
           </>)}</div>
       </aside>
 
-      {/* 📄 CONTEÚDO PRINCIPAL */}
       <main style={{ flex: 1, padding: '30px 40px', overflowY: 'auto', position: 'relative', zIndex: 1 }}>
         {mensagem && (
-          <div style={{ position: 'fixed', top: 60, right: 16, padding: '10px 18px', backgroundColor: 'rgba(0,204,68,0.15)', border: `1px solid ${CORES.verdeSeguro}`, borderRadius: 10, color: CORES.verdeSeguro, fontSize: 12, zIndex: 9999, backdropFilter: 'blur(8px)' }}>
+          <div style={{ position: 'fixed, top: 60px, right: 16px, padding: 10px 18px, backgroundColor: rgba(0,204,68,0.15), border: 1px solid ${CORES.verdeSeguro}, borderRadius: 10px, color: ${CORES.verdeSeguro}, fontSize: 12px, zIndex: 9999, backdropFilter: blur(8px)' }}>
             {mensagem}
           </div>
         )}
 
-        {/* 🔥 ABA GRATUITA — 40 OTIMIZAÇÕES */}
         {abaAtiva === 'free' && (
           <div style={{ marginTop: 20 }}>
             <div style={{ marginBottom: 24, paddingBottom: 12, borderBottom: `1px solid ${CORES.borda}` }}>
@@ -424,9 +417,9 @@ export default function App() {
                     backgroundColor: CORES.fundoCard, 
                     borderRadius: 14, 
                     borderLeft: `4px solid ${corNivel(item.risco)}`,
-                    borderTop: `1px solid rgba(228,2,0,0.08)`,
-                    borderRight: `1px solid rgba(228,2,0,0.08)`,
-                    borderBottom: `1px solid rgba(228,2,0,0.08)`,
+                    borderTop: '1px solid rgba(228,2,0,0.08)',
+                    borderRight: '1px solid rgba(228,2,0,0.08)',
+                    borderBottom: '1px solid rgba(228,2,0,0.08)',
                     transition: 'all 0.2s'
                   }}
                   onMouseOver={(e) => { e.currentTarget.style.backgroundColor = CORES.fundoCardHover; e.currentTarget.style.boxShadow = CORES.sombraVermelha; }}
@@ -475,7 +468,6 @@ export default function App() {
           </div>
         )}
 
-        {/* 💳 PAGAMENTO */}
         {abaAtiva === 'pagamento' && (
           <div style={{ maxWidth: 440, margin: '20px auto 0', textAlign: 'center', padding: 10 }}>
             <div style={{ fontSize: 28, fontWeight: 800, color: CORES.vermelho, marginBottom: 6, letterSpacing: 1, textShadow: `0 0 12px rgba(228,2,0,0.3)` }}>⭐ DESBLOQUEAR PREMIUM</div>
@@ -485,16 +477,35 @@ export default function App() {
               <div style={{ fontSize: 42, fontWeight: 900, color: CORES.dourado, marginBottom: 4, textShadow: '0 0 8px rgba(184,134,11,0.25)' }}>R$ {VALOR_PREMIUM}</div>
               <div style={{ fontSize: 12, color: CORES.cinzaMedio, marginBottom: 20 }}>Escaneie o QR Code ou copie a chave abaixo</div>
 
-              {/* QR Code */}
-              <div style={{ margin: '0 auto 20px auto', width: 240, height: 240, backgroundColor: '#FFFFFF', padding: 8, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `3px solid ${CORES.vermelhoEscuro}` }}>
-                <div style={{ width: '100%', height: '100%', display: 'grid', gridTemplateColumns: `repeat(${qrDados[0].length}, 1fr)`, gap: 0 }}>
+              <div style={{ 
+                margin: '0 auto 20px auto', 
+                width: 240, 
+                height: 240, 
+                backgroundColor: '#FFFFFF', 
+                padding: 10, 
+                borderRadius: 14, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                border: '4px solid #111',
+                boxShadow: 'inset 0 0 0 2px #eee'
+              }}>
+                <div style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  display: 'grid', 
+                  gridTemplateColumns: `repeat(${qrDados[0].length}, 1fr)`, 
+                  gap: 0 
+                }}>
                   {qrDados.flatMap((linha, y) => linha.map((p, x) => (
-                    <div key={`${x}-${y}`} style={{ aspectRatio: 1, backgroundColor: p ? '#000000' : 'transparent' }} />
+                    <div key={`${x}-${y}`} style={{ 
+                      aspectRatio: 1, 
+                      backgroundColor: p ? '#000000' : 'transparent' 
+                    }} />
                   )))}
                 </div>
               </div>
 
-              {/* Chave PIX */}
               <div style={{ fontSize: 12, color: CORES.cinzaClaro, marginBottom: 14, padding: '12px', backgroundColor: 'rgba(228,2,0,0.06)', borderRadius: 10, fontFamily: 'Consolas, monospace', letterSpacing: 0.8, border: `1px dashed ${CORES.vermelhoEscuro}` }}>
                 🔑 {CHAVE_PIX}
               </div>
@@ -549,7 +560,6 @@ export default function App() {
           </div>
         )}
 
-        {/* ⭐ PREMIUM */}
         {abaAtiva === 'premium' && !premiumLiberado ? (
           <div style={{ textAlign: 'center', padding: '100px 20px', marginTop: 20 }}>
             <div style={{ fontSize: 72, marginBottom: 16, filter: 'drop-shadow(0 0 10px rgba(228,2,0,0.3))' }}>🔒</div>
@@ -576,4 +586,18 @@ export default function App() {
         ) : abaAtiva === 'premium' && premiumLiberado && (
           <div style={{ marginTop: 20 }}>
             <div style={{ marginBottom: 24, paddingBottom: 12, borderBottom: `1px solid ${CORES.borda}` }}>
-              <h1 style={{ fontSize: 26, margin: 0, color: CORES.dourado, fontWeight: 800, letterSpacing: 1, textShadow: `0 0 10px rgba(184,134,11,0.25)` }}>⭐ OTIMIZAÇÕES PREMIUM</h1
+              <h1 style={{ fontSize: 26, margin: 0, color: CORES.dourado, fontWeight: 800, letterSpacing: 1, textShadow: `0 0 10px rgba(184,134,11,0.25)` }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
+              <p style={{ fontSize: 13, color: CORES.cinzaMedio, marginTop: 6 }}>{listaAtual.length} comandos exclusivos para desempenho máximo</p>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {listaAtual.map(item => (
+                <div 
+                  key={item.id} 
+                  style={{ 
+                    padding: '14px 18px', 
+                    backgroundColor: CORES.fundoCard, 
+                    borderRadius: 14, 
+                    borderLeft: `4px solid ${corNivel(item.risco)}`,
+                    borderTop: '1px solid rgba(184,134,11,0.15)',
+                    borderRight: '1px solid rgba(184,134,11,0.15)',
+                    borderBottom
