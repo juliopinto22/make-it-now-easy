@@ -127,7 +127,7 @@ export default function Page() {
     });
   };
 
-  // 1. TELA DE CARREGAMENTO / VERIFICAÇÃO (KANEKI NA CADEIRA)
+  // 1. TELA DE CARREGAMENTO / VERIFICAÇÃO
   if (carregando) {
     return (
       <div style={{ 
@@ -141,8 +141,8 @@ export default function Page() {
         color: CORES.branco, 
         flexDirection: 'column' 
       }}>
-        <div style={{ fontSize: 42, fontWeight: 'bold', color: CORES.vermelho, marginBottom: 10, letterSpacing: 8, textShadow: '0 0 20px #E40200' }}>
-          TOKYO GHOUL
+        <div style={{ fontSize: 40, fontWeight: 'bold', color: CORES.vermelho, marginBottom: 10, letterSpacing: 6, textShadow: '0 0 20px #E40200', textAlign: 'center' }}>
+          OPTIMIZER KANEKI
         </div>
         <div style={{ fontSize: 13, color: CORES.cinzaClaro, marginBottom: 25, letterSpacing: 2 }}>
           INICIALIZANDO SISTEMA DE OTIMIZAÇÃO...
@@ -157,7 +157,7 @@ export default function Page() {
   const listaExibida = abaAtiva === 'free' ? filtrar(otmFree) : abaAtiva === 'premium' ? filtrar(otmPremium) : [];
 
   return (
-    // 2. TELA PRINCIPAL (KANEKI DE MÁSCARA)
+    // 2. TELA PRINCIPAL
     <div style={{ 
       display: 'flex', 
       minHeight: '100vh', 
@@ -181,7 +181,7 @@ export default function Page() {
 
         {lateralAberta ? (
           <div style={{ textAlign: 'center', marginBottom: 16, paddingBottom: 12, borderBottom: '1px solid ' + CORES.borda }}>
-            <div style={{ fontSize: 18, fontWeight: 'bold', color: CORES.vermelho, letterSpacing: 2 }}>OPTIMIZADOR</div>
+            <div style={{ fontSize: 16, fontWeight: 'bold', color: CORES.vermelho, letterSpacing: 2 }}>OPTIMIZER KANEKI</div>
             <div style={{ fontSize: 11, color: CORES.vermelhoClaro }}>v{VERSAO}</div>
           </div>
         ) : null}
