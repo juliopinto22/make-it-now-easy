@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 // 🔑 CONFIGURAÇÕES
 const SENHA_PREMIUM = 'Pagamento@2026';
-const CHAVE_PIX = '+5511999999999'; // ⚠️ COLOQUE AQUI SUA CHAVE PIX REAL
+const CHAVE_PIX = '+5511999999999'; // +55 11947138400
 const VALOR_PREMIUM = '5,90';
 const VERSAO = '4.1.0';
 
