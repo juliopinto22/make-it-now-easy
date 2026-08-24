@@ -6,14 +6,15 @@ import { useState, useEffect } from 'react';
 const IMG_CARREGANDO = '/KKTG-696x392.webp'; // Kaneki na cadeira
 const IMG_FUNDO_PRINCIPAL = '/kaneki6.webp'; // Kaneki de máscara
 
-const SENHA_PREMIUM = 'Pagamento@2026';
+const SENHA_PREMIUM = 'Pagamento@2026'; // Senha que você enviará ao cliente após confirmar o Pix
 const CHAVE_PIX = '+5511947138400';
+const NUMERO_WHATSAPP = '5511947138400'; // Seu número para receber os comprovantes
 const VALOR_PREMIUM = '5,90';
 const VERSAO = '4.5.0';
 
 const CORES = {
   fundo: '#050505',
-  fundoCard: 'rgba(17, 17, 17, 0.88)', // Leve transparência para ver o fundo
+  fundoCard: 'rgba(17, 17, 17, 0.88)',
   vermelho: '#E40200',
   vermelhoEscuro: '#8B0000',
   vermelhoClaro: '#FF3333',
@@ -85,7 +86,6 @@ export default function Page() {
   const [categoria, setCategoria] = useState('todas');
   const [busca, setBusca] = useState('');
   const [premiumLiberado, setPremiumLiberado] = useState(false);
-  const [pagamentoConfirmado, setPagamentoConfirmado] = useState(false);
   const [senha, setSenha] = useState('');
   const [aviso, setAviso] = useState('');
   const [mensagem, setMensagem] = useState('');
@@ -110,6 +110,11 @@ export default function Page() {
     navigator.clipboard.writeText(texto);
     setMensagem('✅ Copiado para a área de transferência!');
     setTimeout(() => setMensagem(''), 2500);
+  };
+
+  const enviarComprovanteWhatsApp = () => {
+    const texto = encodeURIComponent('Olá! Realizei o pagamento do OPTIMIZER KANEKI no valor de R$ 5,90. Segue em anexo o meu comprovante para liberação da senha.');
+    window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${texto}`, '_blank');
   };
 
   const corNivel = (nivel: string) => {
@@ -301,14 +306,23 @@ export default function Page() {
           </div>
         )}
 
-        {/* ABA: PAGAMENTO (COM QR CODE VISÍVEL) */}
+        {/* ABA: PAGAMENTO (ENVIO DE COMPROVANTE MANUAMENTE) */}
         {abaAtiva === 'pagamento' && (
-          <div style={{ maxWidth: 450, margin: '20px auto', textAlign: 'center' }}>
+          <div style={{ maxWidth: 480, margin: '20px auto', textAlign: 'center' }}>
             <h2 style={{ color: CORES.dourado, fontSize: 32, margin: '0 0 10px 0', textShadow: '0 0 10px rgba(184,134,11,0.5)' }}>R$ {VALOR_PREMIUM}</h2>
             <p style={{ color: CORES.cinzaClaro, fontSize: 14, marginBottom: 20 }}>Acesso vitalício a mais de 150 otimizações exclusivas</p>
             
             <div style={{ background: CORES.fundoCard, padding: 24, borderRadius: 16, border: '1px solid ' + CORES.borda, backdropFilter: 'blur(10px)' }}>
               
+              {/* PASSO A PASSO */}
+              <div style={{ textAlign: 'left', marginBottom: 16, fontSize: 13, color: CORES.cinzaClaro, background: 'rgba(0,0,0,0.5)', padding: 12, borderRadius: 8, border: '1px solid #222' }}>
+                <div style={{ color: CORES.dourado, fontWeight: 'bold', marginBottom: 6 }}>📌 PASSO A PASSO PARA LIBERAÇÃO:</div>
+                1. Escaneie o QR Code ou copie a chave Pix.<br />
+                2. Realize o pagamento de R$ {VALOR_PREMIUM}.<br />
+                3. Clique no botão verde abaixo e **envie o comprovante**.<br />
+                4. Após a verificação na conta, você receberá sua **senha de acesso**!
+              </div>
+
               {/* BOX DO QR CODE REAL */}
               <div style={{ padding: 16, background: '#fff', borderRadius: 8, marginBottom: 16, color: '#000', fontWeight: 'bold' }}>
                 <img 
@@ -330,22 +344,13 @@ export default function Page() {
                 📋 Copiar Chave PIX
               </button>
 
-              {/* BOTÃO JÁ REALIZEI O PAGAMENTO */}
-              {!pagamentoConfirmado ? (
-                <button 
-                  onClick={() => setPagamentoConfirmado(true)} 
-                  style={{ marginTop: 12, width: '100%', padding: 12, background: 'transparent', color: CORES.verdeSeguro, border: '1px solid ' + CORES.verdeSeguro, borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}
-                >
-                  ✅ Já realizei o pagamento
-                </button>
-              ) : (
-                <div style={{ marginTop: 16, padding: 14, background: 'rgba(0,204,68,0.1)', borderRadius: 8, border: '1px solid ' + CORES.verdeSeguro }}>
-                  <p style={{ color: CORES.verdeSeguro, margin: '0 0 6px 0', fontSize: 12, fontWeight: 'bold' }}>SUA SENHA DE ACESSO:</p>
-                  <code style={{ fontSize: 18, color: CORES.dourado, background: '#000', padding: '6px 12px', borderRadius: 6, display: 'inline-block', fontWeight: 'bold' }}>
-                    {SENHA_PREMIUM}
-                  </code>
-                </div>
-              )}
+              {/* BOTÃO ENVIAR COMPROVANTE (WHATSAPP) */}
+              <button 
+                onClick={enviarComprovanteWhatsApp} 
+                style={{ marginTop: 14, width: '100%', padding: 14, background: CORES.verdeSeguro, color: '#000', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold', fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+              >
+                📲 ENVIAR COMPROVANTE
+              </button>
             </div>
           </div>
         )}
@@ -355,7 +360,9 @@ export default function Page() {
           <div style={{ textAlign: 'center', paddingTop: 60 }}>
             <div style={{ fontSize: 60, marginBottom: 10 }}>🔒</div>
             <h2 style={{ color: CORES.dourado }}>ÁREA PREMIUM PROTEGIDA</h2>
-            <p style={{ color: CORES.cinzaMedio }}>Insira a senha de acesso no menu lateral para liberar as otimizações.</p>
+            <p style={{ color: CORES.cinzaMedio, maxWidth: 400, margin: '0 auto 20px auto' }}>
+              Realize o pagamento na aba <b>COMPRAR PREMIUM</b> e envie o comprovante para receber sua senha de liberação.
+            </p>
           </div>
         )}
 
