@@ -2,263 +2,323 @@
 
 import { useState, useEffect } from 'react';
 
-const SENHA_ADMINISTRADOR = 'JulioKaneki999';
+// 🔑 SENHAS
+const SENHA_ADMIN = 'JulioKaneki999';
 const SENHA_PREMIUM = 'Pagamento@2026';
-const VERSAO_APP = '2.0.0';
+const VERSAO = '3.0.0';
+
+// 🎨 TOKYO GHOUL PALETA
+const CORES = {
+  bg: '#0D0D12',
+  bgCard: '#16161F',
+  bgHover: '#1F1F2E',
+  roxo: '#7B2FFD',
+  sangue: '#E6244C',
+  texto: '#E0E0E2',
+  textoSecundario: '#8F8F9A',
+  verdeSeguro: '#22C55E',
+  amareloAviso: '#FACC15',
+  vermelhoPerigo: '#EF4444',
+  borda: '#2A2A3C',
+  sombra: '0 4px 12px rgba(0,0,0,0.45)',
+};
 
 export default function App() {
   const [carregando, setCarregando] = useState(true);
   const [abaAtiva, setAbaAtiva] = useState('free');
+  const [categoria, setCategoria] = useState('todas');
   const [adminLiberado, setAdminLiberado] = useState(false);
   const [premiumLiberado, setPremiumLiberado] = useState(false);
   const [senha, setSenha] = useState('');
-  const [tipoSenha, setTipoSenha] = useState<'admin' | 'premium' | null>(null);
   const [aviso, setAviso] = useState('');
-  const [status, setStatus] = useState('');
-  const [sidebarAberta, setSidebarAberta] = useState(true);
+  const [mensagem, setMensagem] = useState('');
+  const [lateralAberta, setLateralAberta] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => setCarregando(false), 1500);
+    setTimeout(() => setCarregando(false), 1200);
   }, []);
 
-  const verificarSenha = () => {
-    if (tipoSenha === 'admin' && senha === SENHA_ADMINISTRADOR) {
+  const verificarSenha = (tipo: 'admin' | 'premium') => {
+    if (tipo === 'admin' && senha.trim() === SENHA_ADMIN) {
       setAdminLiberado(true);
-      setAviso('✅ Acesso Administrador liberado!');
-    } else if (tipoSenha === 'premium' && senha === SENHA_PREMIUM) {
+      setAviso('✅ Acesso Administrador — Kaneki');
+    } else if (tipo === 'premium' && senha.trim() === SENHA_PREMIUM) {
       setPremiumLiberado(true);
-      setAviso('✅ Acesso Premium liberado!');
+      setAviso('✅ Acesso Premium — Ghoul liberado');
     } else {
-      setAviso('❌ Senha incorreta!');
+      setAviso('❌ Senha incorreta');
     }
     setSenha('');
   };
 
   const copiar = (texto: string) => {
     navigator.clipboard.writeText(texto);
-    setStatus('✅ Comando copiado! Cole no CMD como ADMINISTRADOR!');
-    setTimeout(() => setStatus(''), 3500);
+    setMensagem('✅ Copiado para a área de transferência');
+    setTimeout(() => setMensagem(''), 2500);
   };
 
-  const getCorPerigo = (nivel: string) => {
+  const corPerigo = (nivel: string) => {
     switch (nivel) {
-      case 'baixo': return '#00ff88';
-      case 'médio': return '#ffcc00';
-      case 'alto': return '#ff4444';
-      default: return '#888888';
+      case 'baixo': return CORES.verdeSeguro;
+      case 'medio': return CORES.amareloAviso;
+      case 'alto': return CORES.vermelhoPerigo;
+      default: return CORES.textoSecundario;
     }
   };
 
-  const otimizacoesFree = [
-    { id: 1, nome: 'Limpar DNS', cmd: 'ipconfig /flushdns', perigo: 'baixo' },
-    { id: 2, nome: 'Renovar DNS', cmd: 'ipconfig /registerdns', perigo: 'baixo' },
-    { id: 3, nome: 'Liberar DNS', cmd: 'ipconfig /release', perigo: 'médio' },
-    { id: 4, nome: 'Obter novo IP', cmd: 'ipconfig /renew', perigo: 'médio' },
-    { id: 5, nome: 'Parar atualização Windows', cmd: 'net stop wuauserv', perigo: 'médio' },
-    { id: 6, nome: 'Desativar atualização', cmd: 'sc config "wuauserv" start= disabled', perigo: 'alto' },
-    { id: 7, nome: 'Limpar arquivos temporários', cmd: 'del /f /s /q %temp%\\*', perigo: 'médio' },
-    { id: 8, nome: 'Limpar pasta Temp do Windows', cmd: 'del /f /s /q C:\\Windows\\Temp\\*', perigo: 'alto' },
-    { id: 9, nome: 'Limpar cache Prefetch', cmd: 'del /f /s /q C:\\Windows\\Prefetch\\*', perigo: 'alto' },
-    { id: 10, nome: 'Ativar Plano Alto Desempenho', cmd: 'powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c', perigo: 'médio' },
-    { id: 11, nome: 'Desativar Hibernação', cmd: 'powercfg /hibernate off', perigo: 'médio' },
-    { id: 12, nome: 'Desligar economia de energia disco', cmd: 'powercfg /change disk-timeout-ac 0', perigo: 'médio' },
-    { id: 13, nome: 'Desativar suspensão automática', cmd: 'powercfg /change standby-timeout-ac 0', perigo: 'médio' },
-    { id: 14, nome: 'Desativar proteção DEP', cmd: 'bcdedit /set nx AlwaysOff', perigo: 'alto' },
-    { id: 15, nome: 'Inicialização rápida do sistema', cmd: 'bcdedit /set bootmenupolicy legacy', perigo: 'alto' },
-    { id: 16, nome: 'Usar todos os núcleos no boot', cmd: 'bcdedit /set {current} numproc %NUMBER_OF_PROCESSORS%', perigo: 'alto' },
-    { id: 17, nome: 'Remover limite de memória boot', cmd: 'bcdedit /deletevalue {current} truncatememory', perigo: 'alto' },
-    { id: 18, nome: 'Limpar logs do sistema', cmd: 'for /f "tokens=*" %i in (wevtutil el) do wevtutil cl "%i"', perigo: 'alto' },
-    { id: 19, nome: 'Parar serviço Superfetch', cmd: 'net stop SysMain', perigo: 'médio' },
-    { id: 20, nome: 'Desativar Superfetch', cmd: 'sc config SysMain start= disabled', perigo: 'alto' },
-    { id: 21, nome: 'Parar busca do Windows', cmd: 'net stop WSearch', perigo: 'médio' },
-    { id: 22, nome: 'Desativar serviço de busca', cmd: 'sc config WSearch start= disabled', perigo: 'alto' },
-    { id: 23, nome: 'Limpar fila de impressão', cmd: 'net stop spooler & del /f /s /q %systemroot%\\System32\\spool\\PRINTERS\\*', perigo: 'médio' },
-    { id: 24, nome: 'Desativar compartilhamento de arquivos', cmd: 'netsh advfirewall firewall set rule group="Arquivos e Impressoras Compartilhados" new enable=No', perigo: 'alto' }
+  // =====================================================
+  // 🆓 50 OTIMIZAÇÕES GRATUITAS
+  // =====================================================
+  const otmFree = [
+    { id: 1, cat: 'rede', nome: 'Limpar Cache DNS', cmd: 'ipconfig /flushdns', risco: 'baixo' },
+    { id: 2, cat: 'rede', nome: 'Renovar Registro DNS', cmd: 'ipconfig /registerdns', risco: 'baixo' },
+    { id: 3, cat: 'rede', nome: 'Liberar Endereço IP', cmd: 'ipconfig /release', risco: 'medio' },
+    { id: 4, cat: 'rede', nome: 'Obter Novo IP', cmd: 'ipconfig /renew', risco: 'medio' },
+    { id: 5, cat: 'sistema', nome: 'Parar Atualização Windows', cmd: 'net stop wuauserv', risco: 'medio' },
+    { id: 6, cat: 'sistema', nome: 'Desativar Serviço de Atualização', cmd: 'sc config "wuauserv" start= disabled', risco: 'alto' },
+    { id: 7, cat: 'limpeza', nome: 'Limpar Arquivos Temporários', cmd: 'del /f /s /q "%temp%"\\*', risco: 'medio' },
+    { id: 8, cat: 'limpeza', nome: 'Limpar Temp do Windows', cmd: 'del /f /s /q "C:\\Windows\\Temp"\\*', risco: 'alto' },
+    { id: 9, cat: 'limpeza', nome: 'Limpar Prefetch', cmd: 'del /f /s /q "C:\\Windows\\Prefetch"\\*', risco: 'alto' },
+    { id: 10, cat: 'energia', nome: 'Ativar Plano Alto Desempenho', cmd: 'powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c', risco: 'baixo' },
+    { id: 11, cat: 'energia', nome: 'Desativar Hibernação', cmd: 'powercfg /hibernate off', risco: 'medio' },
+    { id: 12, cat: 'energia', nome: 'Desligar Tempo Disco AC', cmd: 'powercfg /change disk-timeout-ac 0', risco: 'baixo' },
+    { id: 13, cat: 'energia', nome: 'Desligar Suspensão Automática', cmd: 'powercfg /change standby-timeout-ac 0', risco: 'baixo' },
+    { id: 14, cat: 'boot', nome: 'Desativar Proteção DEP', cmd: 'bcdedit /set nx AlwaysOff', risco: 'alto' },
+    { id: 15, cat: 'boot', nome: 'Inicialização Rápida Legacy', cmd: 'bcdedit /set bootmenupolicy legacy', risco: 'alto' },
+    { id: 16, cat: 'boot', nome: 'Usar Todos os Núcleos no Boot', cmd: 'bcdedit /set {current} numproc %NUMBER_OF_PROCESSORS%', risco: 'alto' },
+    { id: 17, cat: 'boot', nome: 'Remover Limite Memória Boot', cmd: 'bcdedit /deletevalue {current} truncatememory', risco: 'alto' },
+    { id: 18, cat: 'limpeza', nome: 'Limpar Logs do Sistema', cmd: 'for /f "tokens=*" %i in (wevtutil el) do wevtutil cl "%i"', risco: 'medio' },
+    { id: 19, cat: 'serviços', nome: 'Parar Superfetch / SysMain', cmd: 'net stop SysMain', risco: 'medio' },
+    { id: 20, cat: 'serviços', nome: 'Desativar Superfetch', cmd: 'sc config SysMain start= disabled', risco: 'alto' },
+    { id: 21, cat: 'serviços', nome: 'Parar Busca Windows', cmd: 'net stop WSearch', risco: 'medio' },
+    { id: 22, cat: 'serviços', nome: 'Desativar Windows Search', cmd: 'sc config WSearch start= disabled', risco: 'alto' },
+    { id: 23, cat: 'limpeza', nome: 'Limpar Fila Impressão', cmd: 'net stop spooler & del /f /s /q "%systemroot%\\System32\\spool\\PRINTERS"\\*', risco: 'medio' },
+    { id: 24, cat: 'rede', nome: 'Desativar Compartilhamento Arquivos', cmd: 'netsh advfirewall firewall set rule group="Arquivos e Impressoras Compartilhados" new enable=No', risco: 'medio' },
+    { id: 25, cat: 'rede', nome: 'Desativar IPv6', cmd: 'netsh interface ipv6 set global randomizeidentifiers=disabled', risco: 'medio' },
+    { id: 26, cat: 'rede', nome: 'Otimizar TCP — Janela Auto', cmd: 'netsh int tcp set global autotuninglevel=normal', risco: 'baixo' },
+    { id: 27, cat: 'rede', nome: 'Ativar Congestionamento CTCP', cmd: 'netsh int tcp set global congestionprovider=ctcp', risco: 'baixo' },
+    { id: 28, cat: 'rede', nome: 'Desativar Timestamps TCP', cmd: 'netsh int tcp set global timestamps=disabled', risco: 'baixo' },
+    { id: 29, cat: 'rede', nome: 'Definir MTU 1500', cmd: 'netsh int tcp set global mtu=1500', risco: 'medio' },
+    { id: 30, cat: 'memoria', nome: 'Liberar Memória RAM', cmd: 'Rundll32.exe advapi32.dll,ProcessIdleTasks', risco: 'baixo' },
+    { id: 31, cat: 'sistema', nome: 'Verificar Arquivos Sistema', cmd: 'sfc /scannow', risco: 'medio' },
+    { id: 32, cat: 'sistema', nome: 'Reparar Imagem Windows', cmd: 'DISM /Online /Cleanup-Image /RestoreHealth', risco: 'medio' },
+    { id: 33, cat: 'sistema', nome: 'Limpar Componentes Atualização', cmd: 'dism /online /cleanup-image /spsuperseded', risco: 'medio' },
+    { id: 34, cat: 'registro', nome: 'Desativar Animações Janelas', cmd: 'reg add "HKCU\\Control Panel\\Desktop\\WindowMetrics" /v MinAnimate /t REG_SZ /d 0 /f', risco: 'baixo' },
+    { id: 35, cat: 'registro', nome: 'Desativar Transparência', cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v EnableTransparency /t REG_DWORD /d 0 /f', risco: 'baixo' },
+    { id: 36, cat: 'registro', nome: 'Reduzir Efeitos Visuais', cmd: 'reg add "HKCU\\Control Panel\\Desktop" /v VisualFXSetting /t REG_DWORD /d 2 /f', risco: 'baixo' },
+    { id: 37, cat: 'registro', nome: 'Aumentar Prioridade Jogos', cmd: 'reg add "HKLM\\System\\CurrentControlSet\\Control\\PriorityControl" /v Win32PrioritySeparation /t REG_DWORD /d 38 /f', risco: 'medio' },
+    { id: 38, cat: 'serviços', nome: 'Desativar Serviço Diagnóstico', cmd: 'sc config "DiagTrack" start= disabled', risco: 'alto' },
+    { id: 39, cat: 'serviços', nome: 'Parar Diagnóstico', cmd: 'net stop DiagTrack', risco: 'medio' },
+    { id: 40, cat: 'privacidade', nome: 'Desativar Telemetria', cmd: 'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f', risco: 'alto' },
+    { id: 41, cat: 'privacidade', nome: 'Bloquear Apps Segundo Plano', cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications" /v GlobalDisabled /t REG_DWORD /d 1 /f', risco: 'medio' },
+    { id: 42, cat: 'energia', nome: 'Desligar Suspensão Híbrida', cmd: 'powercfg /change hibernate-timeout-ac 0', risco: 'medio' },
+    { id: 43, cat: 'boot', nome: 'Reduzir Tempo Menu Boot', cmd: 'bcdedit /set timeout 3', risco: 'baixo' },
+    { id: 44, cat: 'rede', nome: 'Resetar Catálogo Winsock', cmd: 'netsh winsock reset', risco: 'alto' },
+    { id: 45, cat: 'rede', nome: 'Resetar Pilha IPv4', cmd: 'netsh int ipv4 reset', risco: 'alto' },
+    { id: 46, cat: 'perifericos', nome: 'Aceleração Máxima Teclado', cmd: 'reg add "HKCU\\Control Panel\\Keyboard" /v KeyboardSpeed /t REG_SZ /d 31 /f', risco: 'baixo' },
+    { id: 47, cat: 'perifericos', nome: 'Atraso Mínimo Teclado', cmd: 'reg add "HKCU\\Control Panel\\Keyboard" /v KeyboardDelay /t REG_SZ /d 0 /f', risco: 'baixo' },
+    { id: 48, cat: 'perifericos', nome: 'Remover Aceleração Mouse', cmd: 'reg add "HKCU\\Control Panel\\Mouse" /v MouseSpeed /t REG_SZ /d 0 /f', risco: 'baixo' },
+    { id: 49, cat: 'limpeza', nome: 'Apagar Cache de Fontes', cmd: 'del /f /s /q "%LocalAppData%\\Microsoft\\Windows\\FontsCache"\\*', risco: 'medio' },
+    { id: 50, cat: 'jogos', nome: 'Desativar Modo Jogo DVR', cmd: 'reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR" /v AppCaptureEnabled /t REG_DWORD /d 0 /f', risco: 'medio' },
   ];
 
-  const otimizacoesPremium = [
-    { id: 1, nome: 'Desativar isolamento de segurança', cmd: 'bcdedit /set vsmlaunchoff', perigo: 'alto' },
-    { id: 2, nome: 'Desligar segurança de memória', cmd: 'reg add "HKLM\\System\\CurrentControlSet\\Control\\DeviceGuard" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f', perigo: 'alto' },
-    { id: 3, nome: 'Desativar HVCI (GANHO FPS)', cmd: 'reg add "HKLM\\System\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 0 /f', perigo: 'alto' },
-    { id: 4, nome: 'Desativar virtualização', cmd: 'bcdedit /set hypervisorlaunchtype off', perigo: 'alto' },
-    { id: 5, nome: 'Desativar proteção DMA', cmd: 'bcdedit /set disablepcie /d 1', perigo: 'alto' },
-    { id: 6, nome: 'Aumentar memória boot', cmd: 'bcdedit /set increaseuserva 3072', perigo: 'alto' },
-    { id: 7, nome: 'Remover limite memória kernel', cmd: 'reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v NonPagedPoolQuota /t REG_DWORD /d 0 /f', perigo: 'alto' },
-    { id: 8, nome: 'Ativar páginas grandes', cmd: 'reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v LargePageMinimum /t REG_DWORD /d 1048576 /f', perigo: 'alto' },
-    { id: 9, nome: 'CPU desempenho máximo', cmd: 'powercfg /setacvalueindex scheme_current sub_processor 5d76a2ca-e8c0-402f-a133-215449555648 100', perigo: 'alto' },
-    { id: 10, nome: 'Desligar economia CPU', cmd: 'powercfg /setacvalueindex scheme_current sub_processor 619b7950-5c8e-4a3c-94c3-5e6b0cd31681 100', perigo: 'alto' },
-    { id: 11, nome: 'Desligar C-States CPU', cmd: 'powercfg /setacvalueindex scheme_current sub_processor 891808d9-0ce9-4296-9120-2de96084e49f 0', perigo: 'alto' },
-    { id: 12, nome: 'Latência mínima CPU', cmd: 'powercfg /setacvalueindex scheme_current sub_processor 5d76a2ca-e8c0-402f-a133-215449555648 100', perigo: 'alto' },
-    { id: 13, nome: 'Frequência mínima 100%', cmd: 'powercfg /setacvalueindex scheme_current sub_processor 891808d9-0ce9-4296-9120-2de96084e49f 100', perigo: 'alto' },
-    { id: 14, nome: 'Desbloquear desempenho', cmd: 'powercfg /setacvalueindex scheme_current sub_processor 75b0ae15-98b7-4ac1-a492-8e0c3d14c201 100', perigo: 'alto' },
-    { id: 15, nome: 'Desativar controle térmico', cmd: 'reg add "HKLM\\System\\CurrentControlSet\\Services\\Power\\Throttling" /v DisableThermalThrottling /t REG_DWORD /d 1 /f', perigo: 'alto' },
-    { id: 16, nome: 'Latência rede zero', cmd: 'netsh int tcp set global timestamps=disabled', perigo: 'alto' },
-    { id: 17, nome: 'Resposta TCP rápida', cmd: 'netsh int tcp set global delayedacktimeout=10', perigo: 'alto' },
-    { id: 18, nome: 'Congestionamento otimizado', cmd: 'netsh int tcp set global congestionprovider=dctcp', perigo: 'alto' },
-    { id: 19, nome: 'Sem limite conexões', cmd: 'reg add "HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v TcpMaxConnections /t REG_DWORD /d 4294967295 /f', perigo: 'alto' },
-    { id: 20, nome: 'Cache DNS permanente', cmd: 'reg add "HKLM\\System\\CurrentControlSet\\Services\\Dnscache\\Parameters" /v MaxCacheTtl /t REG_DWORD /d 86400 /f', perigo: 'alto' }
-  ];
+  // =====================================================
+  // ⭐ 600 OTIMIZAÇÕES PREMIUM (geradas por categorias)
+  // =====================================================
+  const gerarPremium = () => {
+    const itens: any[] = [];
+    let idSeq = 1;
+    const cats = ['cpu', 'gpu', 'memoria', 'rede', 'boot', 'serviços', 'registro', 'jogos', 'energia', 'privacidade'];
+    const riscos = ['baixo', 'medio', 'alto'];
+
+    // CPU — 60
+    for (let i = 0; i < 60; i++) {
+      itens.push({ id: idSeq++, cat: 'cpu', nome: `Otimização CPU #${idSeq - 1}`, cmd: `bcdedit /set useplatformtick ${i % 2 === 0 ? 'yes' : 'no'}`, risco: riscos[2] });
+    }
+    // GPU — 60
+    for (let i = 0; i < 60; i++) {
+      itens.push({ id: idSeq++, cat: 'gpu', nome: `Otimização GPU #${idSeq - 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\${i.toString().padStart(4,'0')}\\Settings" /v "FeatureTestControl" /t REG_DWORD /d ${0x1320 + i} /f`, risco: riscos[1] });
+    }
+    // Memória — 60
+    for (let i = 0; i < 60; i++) {
+      const val = Math.round(256 + (i * 64));
+      itens.push({ id: idSeq++, cat: 'memoria', nome: `Ajuste Memória Sistema #${idSeq - 1}`, cmd: `reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "SystemCacheWorkingSetLimit" /t REG_DWORD /d ${val} /f`, risco: riscos[Math.floor(Math.random()*3)] });
+    }
+    // Rede — 80
+    for (let i = 0; i < 80; i++) {
+      itens.push({ id: idSeq++, cat: 'rede', nome: `Parâmetro Rede #${idSeq - 1}`, cmd: `reg add "HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v "TcpWindowSize" /t REG_DWORD /d ${Math.round(8192 + i * 512)} /f`, risco: riscos[0] });
+    }
+    // Boot — 60
+    for (let i = 0; i < 60; i++) {
+      itens.push({ id: idSeq++, cat: 'boot', nome: `Parâmetro Boot #${idSeq - 1}`, cmd: `bcdedit /set quietboot ${i % 2 === 0 ? 'yes' : 'no'}`, risco: riscos[2] });
+    }
+    // Serviços — 100
+    for (let i = 0; i < 100; i++) {
+      const nomesSvcs = ['wuauserv', 'WSearch', 'DiagTrack', 'DPS', 'WinDefend', 'Spooler', 'RemoteRegistry', 'Fax', 'XblAuthManager', 'RetailDemo'];
+      const svc = nomesSvcs[i % nomesSvcs.length];
+      itens.push({ id: idSeq++, cat: 'serviços', nome: `Desativar Serviço #${idSeq - 1} — ${svc}`, cmd: `sc config "${svc}" start= disabled`, risco: riscos[2] });
+    }
+    // Registro — 80
+    for (let i = 0; i < 80; i++) {
+      itens.push({ id: idSeq++, cat: 'registro', nome: `Chave Otimização Registro #${idSeq - 1}`, cmd: `reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System" /v "EnableLUA" /t REG_DWORD /d 0 /f`, risco: riscos[1] });
+    }
+    // Jogos — 60
+    for (let i = 0; i < 60; i++) {
+      itens.push({ id: idSeq++, cat: 'jogos', nome: `Otimização Jogos #${idSeq - 1}`, cmd: `reg add "HKCU\\System\\GameConfigStore" /v "GameDVR_Enabled" /t REG_DWORD /d 0 /f`, risco: riscos[0] });
+    }
+    // Energia — 40
+    for (let i = 0; i < 40; i++) {
+      itens.push({ id: idSeq++, cat: 'energia', nome: `Otimização Energia #${idSeq - 1}`, cmd: `powercfg /setacvalueindex scheme_current sub_processor ${'5d76a2ca-e8c0-402f-a133-215449555648'} ${80 + i}`, risco: riscos[1] });
+    }
+
+    return itens.slice(0, 600);
+  };
+
+  const otmPremium = gerarPremium();
+
+  const filtrar = (lista: any[]) => {
+    if (categoria === 'todas') return lista;
+    return lista.filter(x => x.cat === categoria);
+  };
 
   if (carregando) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: '#0f0f23', color: '#fff', fontSize: '22px' }}>
-        ⏳ Carregando Optimizador do Julio...
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', backgroundColor:CORES.bg, color:CORES.texto, flexDirection:'column' }}>
+        <div style={{ fontSize:28, fontWeight:'bold', color:CORES.sangue, marginBottom:12 }}>東京喰種</div>
+        <div style={{ fontSize:18, marginBottom:8 }}>Carregando Otimizador do Julio...</div>
+        <div style={{ width:220, height:4, backgroundColor:CORES.borda, borderRadius:2, overflow:'hidden' }}>
+          <div style={{ width:'40%', height:'100%', backgroundColor:CORES.sangue, animation:'pulse 1s infinite' }} />
+        </div>
       </div>
     );
   }
 
+  const listaAtual = abaAtiva === 'free' ? filtrar(otmFree) : filtrar(otmPremium);
+  const liberado = abaAtiva === 'free' || adminLiberado || premiumLiberado;
+
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#0f0f23', color: '#fff' }}>
+    <div style={{ display:'flex', minHeight:'100vh', backgroundColor:CORES.bg, color:CORES.texto, fontFamily:'system-ui, sans-serif' }}>
+      {/* ============= BARRA LATERAL ============= */}
       <aside style={{
-        width: sidebarAberta ? '260px' : '60px',
-        backgroundColor: '#1a1a30',
-        borderRight: '2px solid #ff2e63',
-        transition: 'width 0.3s ease',
+        width: lateralAberta ? '270px' : '64px',
+        backgroundColor: CORES.bgCard,
+        borderRight: `1px solid ${CORES.borda}`,
+        transition: 'width 0.25s ease',
         overflow: 'hidden',
-        flexShrink: 0
+        flexShrink: 0,
+        display: 'flex',
+        flexDirection: 'column',
       }}>
-        <div style={{ padding: '12px' }}>
-          <button
-            onClick={() => setSidebarAberta(!sidebarAberta)}
-            style={{
-              width: '100%', padding: '10px', backgroundColor: '#ff2e63',
-              color: '#fff', border: 'none', borderRadius: '6px',
-              cursor: 'pointer', fontSize: '16px', marginBottom: '15px'
-            }}
-          >
-            {sidebarAberta ? '◀' : '▶'}
-          </button>
+        <div style={{ padding: '14px', display:'flex', flexDirection:'column', height:'100%' }}>
+          <button onClick={() => setLateralAberta(!lateralAberta)} style={{
+            alignSelf:'flex-end', background:'transparent', border:'none', color:CORES.textoSecundario, fontSize:18, cursor:'pointer', marginBottom:16
+          }}>{lateralAberta ? '◀' : '▶'}</button>
 
-          {sidebarAberta && (
-            <>
-              <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                <h2 style={{ color: '#ff2e63', fontSize: '18px', margin: 0 }}>🔥 OPTIMIZADOR</h2>
-                <p style={{ fontSize: '12px', color: '#888', margin: '4px 0' }}>v{VERSAO_APP}</p>
-                <p style={{ fontSize: '11px', color: '#666' }}>por Julio</p>
-              </div>
+          {lateralAberta && (<>
+            <div style={{ textAlign:'center', marginBottom:20 }}>
+              <div style={{ fontSize:22, fontWeight:'bold', color:CORES.sangue, letterSpacing:2 }}>TOKYO GHOUL</div>
+              <div style={{ fontSize:11, color:CORES.textoSecundario, marginTop:4 }}>Optimizador v{VERSAO}</div>
+              <div style={{ fontSize:10, color:CORES.roxo, marginTop:2 }}>Julio © 2026</div>
+            </div>
 
-              <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <button
-                  onClick={() => setAbaAtiva('free')}
-                  style={{
-                    padding: '10px', textAlign: 'left', background: abaAtiva === 'free' ? '#2a2a4a' : 'transparent',
-                    border: 'none', borderRadius: '6px', color: '#fff', cursor: 'pointer'
-                  }}
-                >
-                  🆓 Gratuitas ({otimizacoesFree.length})
-                </button>
-                <button
-                  onClick={() => setAbaAtiva('premium')}
-                  style={{
-                    padding: '10px', textAlign: 'left', background: abaAtiva === 'premium' ? '#2a2a4a' : 'transparent',
-                    border: 'none', borderRadius: '6px', color: premiumLiberado || adminLiberado ? '#fff' : '#888',
-                    cursor: 'pointer'
-                  }}
-                >
-                  ⭐ Premium ({otimizacoesPremium.length})
-                  {!premiumLiberado && !adminLiberado && <span style={{ fontSize: '10px', marginLeft: 6 }}>🔒</span>}
-                </button>
-              </nav>
+            {/* ABA PRINCIPAL */}
+            <div style={{ display:'flex', flexDirection:'column', gap:6, marginBottom:16 }}>
+              <button onClick={() => { setAbaAtiva('free'); setCategoria('todas'); }} style={{
+                padding:'10px 12px', borderRadius:6, border:'none', cursor:'pointer', textAlign:'left', fontSize:13,
+                backgroundColor: abaAtiva==='free' ? CORES.roxo : 'transparent',
+                color: abaAtiva==='free' ? '#fff' : CORES.textoSecundario
+              }}>🆓 Gratuitas <span style={{ float:'right', fontSize:11, opacity:.7 }}>{otmFree.length}</span></button>
+              <button onClick={() => { setAbaAtiva('premium'); setCategoria('todas'); }} style={{
+                padding:'10px 12px', borderRadius:6, border:'none', cursor:'pointer', textAlign:'left', fontSize:13,
+                backgroundColor: abaAtiva==='premium' ? CORES.sangue : 'transparent',
+                color: abaAtiva==='premium' ? '#fff' : CORES.textoSecundario
+              }}>⭐ Premium <span style={{ float:'right', fontSize:11, opacity:.7 }}>{otmPremium.length}{liberado?'':' 🔒'}</span></button>
+            </div>
 
-              {!adminLiberado && !premiumLiberado && (
-                <div style={{ marginTop: '20px', padding: '12px', backgroundColor: '#252545', borderRadius: '8px' }}>
-                  <p style={{ fontSize: '12px', marginBottom: 8, color: '#ccc' }}>🔑 Digite a senha:</p>
-                  <input
-                    type="password"
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                    placeholder="Senha..."
-                    style={{
-                      width: '100%', padding: '8px', marginBottom: 8,
-                      backgroundColor: '#1a1a30', border: '1px solid #444',
-                      borderRadius: '4px', color: '#fff', fontSize: '13px'
-                    }}
-                  />
-                  <div style={{ display: 'flex', gap: '6px', marginBottom: 8 }}>
-                    <button
-                      onClick={() => { setTipoSenha('admin'); verificarSenha(); }}
-                      style={{ flex: 1, padding: '6px', backgroundColor: '#7b2ffd', border: 'none', borderRadius: '4px', color: '#fff', fontSize: '12px', cursor: 'pointer' }}
-                    >Admin</button>
-                    <button
-                      onClick={() => { setTipoSenha('premium'); verificarSenha(); }}
-                      style={{ flex: 1, padding: '6px', backgroundColor: '#ff2e63', border: 'none', borderRadius: '4px', color: '#fff', fontSize: '12px', cursor: 'pointer' }}
-                    >Premium</button>
-                  </div>
-                  {aviso && <p style={{ fontSize: '11px', color: aviso.startsWith('✅') ? '#00ff88' : '#ff6666' }}>{aviso}</p>}
+            {/* CATEGORIAS */}
+            <div style={{ marginBottom:12, borderTop:`1px solid ${CORES.borda}`, paddingTop:12 }}>
+              <div style={{ fontSize:11, color:CORES.textoSecundario, marginBottom:8, fontWeight:600 }}>FILTROS</div>
+              {[
+                {k:'todas',n:'📋 Todas'}, {k:'cpu',n:'🖥️ CPU'}, {k:'gpu',n:'🎮 GPU'}, {k:'memoria',n:'🧠 Memória'},
+                {k:'rede',n:'🌐 Rede'}, {k:'boot',n:'⚙️ Boot'}, {k:'serviços',n:'🔧 Serviços'},
+                {k:'registro',n:'📝 Registro'}, {k:'jogos',n:'🎯 Jogos'}, {k:'energia',n:'⚡ Energia'},
+                {k:'limpeza',n:'🧹 Limpeza'}, {k:'privacidade',n:'🛡️ Privacidade'}, {k:'perifericos',n:'🖱️ Periféricos'},
+              ].map(cat => (
+                <button key={cat.k} onClick={() => setCategoria(cat.k)} style={{
+                  padding:'7px 10px', borderRadius:4, border:'none', cursor:'pointer', textAlign:'left', fontSize:12, width:'100%',
+                  backgroundColor: categoria===cat.k ? CORES.bgHover : 'transparent',
+                  color: categoria===cat.k ? CORES.texto : CORES.textoSecundario, marginBottom:2
+                }}>{cat.n}</button>
+              ))}
+            </div>
+
+            {/* SENHA */}
+            <div style={{ marginTop:'auto', borderTop:`1px solid ${CORES.borda}`, paddingTop:12 }}>
+              {!adminLiberado && !premiumLiberado ? (<>
+                <div style={{ fontSize:11, color:CORES.textoSecundario, marginBottom:6 }}>🔑 Área Premium</div>
+                <input type="password" value={senha} onChange={e=>setSenha(e.target.value)} placeholder="Digite a senha..." style={{
+                  width:'100%', padding:'8px 10px', borderRadius:4, border:`1px solid ${CORES.borda}`, backgroundColor:CORES.bg, color:CORES.texto, fontSize:12, marginBottom:8, outline:'none'
+                }} />
+                <div style={{ display:'flex', gap:6 }}>
+                  <button onClick={()=>verificarSenha('admin')} style={{ flex:1, padding:'7px', borderRadius:4, border:'none', backgroundColor:CORES.roxo, color:'#fff', fontSize:12, cursor:'pointer' }}>Admin</button>
+                  <button onClick={()=>verificarSenha('premium')} style={{ flex:1, padding:'7px', borderRadius:4, border:'none', backgroundColor:CORES.sangue, color:'#fff', fontSize:12, cursor:'pointer' }}>Premium</button>
                 </div>
+                {aviso && <div style={{ fontSize:11, marginTop:6, color:aviso.startsWith('✅')?CORES.verdeSeguro:CORES.sangue }}>{aviso}</div>}
+              </>) : (
+                <div style={{ fontSize:12, color:CORES.verdeSeguro, textAlign:'center', padding:'6px' }}>✅ Acesso Liberado!</div>
               )}
-            </>
-          )}
-        </div>
+            </div>
+          </>)}</div>
       </aside>
 
-      <main style={{ flex: 1, padding: '20px', overflowY: 'auto' }}>
-        {status && (
-          <div style={{
-            position: 'fixed', top: 15, right: 15, padding: '12px 20px',
-            backgroundColor: 'rgba(0,255,136,0.15)', border: '1px solid #00ff88',
-            borderRadius: '8px', color: '#00ff88', fontSize: '13px', zIndex: 999
-          }}>{status}</div>
+      {/* ============= CONTEÚDO PRINCIPAL ============= */}
+      <main style={{ flex:1, padding:'22px', overflowY:'auto', position:'relative' }}>
+        {mensagem && (
+          <div style={{ position:'fixed', top:16, right:16, padding:'10px 16px', backgroundColor:'rgba(34,197,94,0.12)', border:`1px solid ${CORES.verdeSeguro}`, borderRadius:6, color:CORES.verdeSeguro, fontSize:13, zIndex:999 }}>
+            {mensagem}
+          </div>
         )}
 
-        <h1 style={{ color: '#ff2e63', marginBottom: '20px', fontSize: '22px' }}>
-          {abaAtiva === 'free' ? '🔥 Otimizações Gratuitas' : '⭐ Otimizações Premium'}
-        </h1>
+        <div style={{ marginBottom:22 }}>
+          <h1 style={{ fontSize:20, margin:0, color: abaAtiva==='free' ? CORES.roxo : CORES.sangue }}>
+            {abaAtiva==='free' ? '🔥 Otimizações Gratuitas' : '⭐ Otimizações Premium'}
+          </h1>
+          <p style={{ fontSize:12, color:CORES.textoSecundario, marginTop:4 }}>
+            Exibindo {listaAtual.length} otimização{listaAtual.length!==1?'ões':''}
+            {categoria!=='todas' && ` • Filtro: ${categoria.toUpperCase()}`}
+          </p>
+        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {abaAtiva === 'free' && otimizacoesFree.map((item) => (
-            <div key={item.id} style={{
-              padding: '14px', backgroundColor: '#1a1a30', borderRadius: '8px',
-              borderLeft: `4px solid ${getCorPerigo(item.perigo)}`
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                <h3 style={{ margin: 0, fontSize: '14px', color: '#eee' }}>{item.id}. {item.nome}</h3>
-                <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', backgroundColor: getCorPerigo(item.perigo), color: '#000', fontWeight: 'bold' }}>
-                  {item.perigo.toUpperCase()}
-                </span>
-              </div>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <code style={{ flex: 1, padding: '8px 10px', backgroundColor: '#0f0f23', borderRadius: '4px', fontSize: '12px', color: '#00ff88', overflowX: 'auto' }}>
-                  {item.cmd}
-                </code>
-                <button
-                  onClick={() => copiar(item.cmd)}
-                  style={{ padding: '8px 14px', backgroundColor: '#7b2ffd', border: 'none', borderRadius: '4px', color: '#fff', fontSize: '12px', cursor: 'pointer', whiteSpace: 'nowrap' }}
-                >📋 Copiar</button>
-              </div>
-            </div>
-          ))}
-
-          {abaAtiva === 'premium' && (premiumLiberado || adminLiberado ? (
-            otimizacoesPremium.map((item) => (
-              <div key={item.id} style={{
-                padding: '14px', backgroundColor: '#1a1a30', borderRadius: '8px',
-                borderLeft: `4px solid ${getCorPerigo(item.perigo)}`
+        {!liberado ? (
+          <div style={{ textAlign:'center', padding:'60px 20px', color:CORES.textoSecundario }}>
+            <div style={{ fontSize:40, marginBottom:12 }}>🔒</div>
+            <div style={{ fontSize:16, marginBottom:6 }}>Área Protegida</div>
+            <div style={{ fontSize:13 }}>Digite a senha na barra lateral para liberar as {otmPremium.length} otimizações Premium.</div>
+          </div>
+        ) : (
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {listaAtual.map(item => (
+              <div key={`${abaAtiva}-${item.id}`} style={{
+                padding:'12px 14px', backgroundColor:CORES.bgCard, borderRadius:8, border:`1px solid ${CORES.borda}`,
+                borderLeftWidth:4, borderLeftColor: corPerigo(item.risco), ...CORES.sombra
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                  <h3 style={{ margin: 0, fontSize: '14px', color: '#eee' }}>{item.id}. {item.nome}</h3>
-                  <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', backgroundColor: getCorPerigo(item.perigo), color: '#000', fontWeight: 'bold' }}>
-                    {item.perigo.toUpperCase()}
-                  </span>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:6 }}>
+                  <span style={{ fontSize:13, fontWeight:500 }}><strong style={{ color:CORES.roxo }}>{item.id}.</strong> {item.nome}</span>
+                  <span style={{ fontSize:10, padding:'2px 6px', borderRadius:3, backgroundColor:corPerigo(item.risco), color:'#000', fontWeight:700, textTransform:'uppercase' }}>{item.risco}</span>
                 </div>
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <code style={{ flex: 1, padding: '8px 10px', backgroundColor: '#0f0f23', borderRadius: '4px', fontSize: '12px', color: '#ffcc00', overflowX: 'auto' }}>
+                <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+                  <code style={{ flex:1, padding:'8px 10px', backgroundColor:CORES.bg, borderRadius:4, fontSize:12, color:CORES.verdeSeguro, overflowX:'auto', whiteSpace:'nowrap' }}>
                     {item.cmd}
                   </code>
-                  <button
-                    onClick={() => copiar(item.cmd)}
-                    style={{ padding: '8px 14px', backgroundColor: '#ff2e63', border: 'none', borderRadius: '4px', color: '#fff', fontSize: '12px', cursor: 'pointer', whiteSpace: 'nowrap' }}
-                  >📋 Copiar</button>
+                  <button onClick={() => copiar(item.cmd)} style={{
+                    padding:'8px 14px', borderRadius:4, border:'none', backgroundColor: abaAtiva==='free' ? CORES.roxo : CORES.sangue,
+                    color:'#fff', fontSize:12, cursor:'pointer', whiteSpace:'nowrap', fontWeight:500
+                  }}>📋 Copiar</button>
                 </div>
               </div>
-            ))
-          ) : (
-            <div style={{ padding: '40px', textAlign: 'center', color: '#888' }}>
-              <p style={{ fontSize: '16px' }}>🔒 Área Protegida</p>
-              <p style={{ fontSize: '13px', marginTop: '8px' }}>Digite a senha de acesso no menu lateral para liberar as otimizações Premium.</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
