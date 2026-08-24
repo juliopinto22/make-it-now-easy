@@ -25,7 +25,7 @@ export default function App() {
     setTimeout(() => setCarregando(false), 2000);
   }, []);
 
-  // ✅ FUNÇÃO DE SENHA
+  // ✅ FUNÇÃO DE VERIFICAR SENHA
   const verificarSenha = () => {
     if (tipoAcesso === 'admin' && senhaDigitada === SENHA_ADMINISTRADOR) {
       setAdminLiberado(true);
@@ -34,17 +34,19 @@ export default function App() {
       setPremiumPagoLiberado(true);
       setErroSenha('✅ Acesso Premium LIBERADO! Aproveite o FPS MÁXIMO!');
     } else {
-      setErroSenha('❌ Senha incorreta! Compre para receber acesso.");
+      setErroSenha('❌ Senha incorreta! Compre para receber acesso.');
     }
     setSenhaDigitada('');
   };
 
+  // ✅ FUNÇÃO PARA COPIAR COMANDO
   const copiar = (texto: string) => {
     navigator.clipboard.writeText(texto);
     setStatus('✅ Copiado! Cole no CMD como ADMINISTRADOR!');
     setTimeout(() => setStatus(''), 4000);
   };
 
+  // ✅ FUNÇÃO PARA COMPARTILHAR APP
   const compartilharApp = () => {
     const link = window.location.href;
     navigator.clipboard.writeText(link);
@@ -53,7 +55,7 @@ export default function App() {
   };
 
   // ==============================================
-  // 🔥 OTIMIZAÇÕES GRATUITAS — CORRIGIDAS
+  // 🔥 OTIMIZAÇÕES GRATUITAS — 60 OPÇÕES
   // ==============================================
   const otimizacoesGratuitas = [
     { id: 1, nome: 'Limpar DNS', cmd: 'ipconfig /flushdns', perigo: 'baixo' },
@@ -119,7 +121,7 @@ export default function App() {
   ];
 
   // ==============================================
-  // 🚀 120 OTIMIZAÇÕES PREMIUM — CORRIGIDAS
+  // 🚀 120 OTIMIZAÇÕES PREMIUM
   // ==============================================
   const otimizacoesPremium = [
     { id: 1, nome: '🚀 Desativar isolamento de segurança', cmd: 'bcdedit /set vsmlaunchoff', perigo: 'alto' },
@@ -182,7 +184,7 @@ export default function App() {
     { id: 58, nome: '🚀 Sem hibernação', cmd: 'powercfg /hibernate off', perigo: 'alto' },
     { id: 59, nome: '🚀 Disco nunca desliga', cmd: 'powercfg /change disk-timeout-ac 0', perigo: 'alto' },
     { id: 60, nome: '🚀 Desligar telemetria total', cmd: 'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\System" /v DisableTelemetry /t REG_DWORD /d 1 /f', perigo: 'alto' },
-    { id: 61, nome: '🚀 Remover rastreamento publicidade', cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo" /v Enabled /t REG_DWORD /d 0 /f', perigo: 'alto' },
+    { id: 61, nome: '🚀 Remover rastreamento publicidade', cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo" /v Enabled /t REG_DWORD /d 0 /f', perigo: '同时' },
     { id: 62, nome: '🚀 Desligar reconhecimento fala', cmd: 'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\Speech" /v AllowSpeech /t REG_DWORD /d 0 /f', perigo: 'alto' },
     { id: 63, nome: '🚀 Desligar localização', cmd: 'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\LocationAndSensors" /v DisableLocation /t REG_DWORD /d 1 /f', perigo: 'alto' },
     { id: 64, nome: '🚀 Desligar câmera padrão', cmd: 'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\PrivacySettings" /v DisableCamera /t REG_DWORD /d 1 /f', perigo: 'alto' },
@@ -245,7 +247,7 @@ export default function App() {
   ];
 
   // ==============================================
-  // 🎨 INTERFACE COMPLETA
+  // 🎨 TELA DE CARREGAMENTO
   // ==============================================
   if (carregando) {
     return (
@@ -255,6 +257,9 @@ export default function App() {
     );
   }
 
+  // ==============================================
+  // 🖥️ TELA PRINCIPAL
+  // ==============================================
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#0f0f23', color: '#fff' }}>
       {/* ============= BARRA LATERAL ============= */}
@@ -267,7 +272,7 @@ export default function App() {
         flexShrink: 0
       }}>
         <div style={{ padding: '15px' }}>
-          {/* Botão abrir/fechar */}
+          {/* Botão abrir/fechar barra */}
           <button
             onClick={() => setSidebarAberta(!sidebarAberta)}
             style={{
@@ -287,8 +292,6 @@ export default function App() {
 
           {sidebarAberta && (
             <>
-              {/* Logo / Título */}
+              {/* Título e Versão */}
               <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                <h2 style={{ color: '#ff2e63', fontSize: '20px', margin: '0' }}>🔥 OPTIMIZADOR</h2>
-                <p style={{ fontSize: '12px', color: '#888', margin: '5px 0 0 0' }}>Versão {VERSAO_APP}</p>
-              </div>
+                <h2 style={{ color: '#ff2e63', fontSize
