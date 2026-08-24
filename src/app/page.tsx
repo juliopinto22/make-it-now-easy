@@ -105,7 +105,7 @@ export default function Page() {
 
   const copiar = (texto: string) => {
     navigator.clipboard.writeText(texto);
-    setMensagem('✅ Comando Copiado!');
+    setMensagem('✅ Copiado para a área de transferência!');
     setTimeout(() => setMensagem(''), 2500);
   };
 
@@ -182,7 +182,7 @@ export default function Page() {
           </button>
         </div>
 
-        {/* CATEGORIAS (Exibidas tanto no Free quanto no Premium) */}
+        {/* CATEGORIAS */}
         {lateralAberta && (abaAtiva === 'free' || (abaAtiva === 'premium' && premiumLiberado)) && (
           <div style={{ marginTop: 20, borderTop: '1px solid ' + CORES.borda, paddingTop: 12, overflowY: 'auto', maxHeight: '50vh' }}>
             <div style={{ fontSize: 11, color: CORES.vermelhoClaro, marginBottom: 8, fontWeight: 'bold' }}>CATEGORIAS</div>
@@ -198,7 +198,7 @@ export default function Page() {
           </div>
         )}
 
-        {/* INPUT DE SENHA NA SIDEBAR SE ESTIVER EM PREMIUM BLOQUEADO */}
+        {/* INPUT DE SENHA NA SIDEBAR */}
         {lateralAberta && abaAtiva === 'premium' && !premiumLiberado && (
           <div style={{ marginTop: 20, borderTop: '1px solid ' + CORES.borda, paddingTop: 12 }}>
             <input 
@@ -229,7 +229,7 @@ export default function Page() {
           </div>
         )}
 
-        {/* BARRA DE PESQUISA (Apenas nas abas de otimização) */}
+        {/* BARRA DE PESQUISA */}
         {(abaAtiva === 'free' || (abaAtiva === 'premium' && premiumLiberado)) && (
           <div style={{ marginBottom: 20 }}>
             <input 
@@ -273,15 +273,21 @@ export default function Page() {
           </div>
         )}
 
-      {/* ABA: PAGAMENTO */}
+        {/* ABA: PAGAMENTO (COM QR CODE VISÍVEL) */}
         {abaAtiva === 'pagamento' && (
           <div style={{ maxWidth: 450, margin: '20px auto', textAlign: 'center' }}>
             <h2 style={{ color: CORES.dourado, fontSize: 32, margin: '0 0 10px 0' }}>R$ {VALOR_PREMIUM}</h2>
             <p style={{ color: CORES.cinzaClaro, fontSize: 14, marginBottom: 20 }}>Acesso vitalício a mais de 150 otimizações exclusivas</p>
             
             <div style={{ background: CORES.fundoCard, padding: 24, borderRadius: 16, border: '1px solid ' + CORES.borda }}>
-              <div style={{ padding: 20, background: '#fff', borderRadius: 8, marginBottom: 16, color: '#000', fontWeight: 'bold' }}>
-                <div style={{ fontSize: 40, marginBottom: 8 }}>📱</div>
+              
+              {/* BOX DO QR CODE REAL */}
+              <div style={{ padding: 16, background: '#fff', borderRadius: 8, marginBottom: 16, color: '#000', fontWeight: 'bold' }}>
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(CHAVE_PIX)}`} 
+                  alt="QR Code PIX" 
+                  style={{ width: 180, height: 180, margin: '0 auto 10px auto', display: 'block' }}
+                />
                 Escaneie o QR Code ou copie a chave abaixo
               </div>
 
@@ -296,7 +302,7 @@ export default function Page() {
                 📋 Copiar Chave PIX
               </button>
 
-              {/* A SENHA SÓ APARECE DEPOIS DE CLICAR NO BOTÃO ABAIXO */}
+              {/* A SENHA SÓ APARECE SE CLICAR NESSE BOTÃO */}
               {!pagamentoConfirmado ? (
                 <button 
                   onClick={() => setPagamentoConfirmado(true)} 
