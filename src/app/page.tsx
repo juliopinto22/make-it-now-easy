@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 
-// 🔑 SENHAS DO SISTEMA
+// 🔑 DADOS DO SISTEMA
 const SENHA_ADMINISTRADOR = 'JulioKaneki999';
 const SENHA_PREMIUM = 'Pagamento@2026';
-const CHAVE_PIX = '+55 11947138400'; // ✅ Sua chave PIX
+const CHAVE_PIX = '+55 11947138400'; // ✅ Sua chave PIX por telefone
 
 export default function App() {
   const [carregando, setCarregando] = useState(true);
@@ -16,7 +16,6 @@ export default function App() {
   const [tipoAcesso, setTipoAcesso] = useState<'admin' | 'premium' | null>(null);
   const [erroSenha, setErroSenha] = useState('');
   const [status, setStatus] = useState('');
-  const [pixChave, setPixChave] = useState(CHAVE_PIX);
 
   useEffect(() => {
     setTimeout(() => setCarregando(false), 2000);
@@ -115,5 +114,162 @@ export default function App() {
     { id:70, nome:'Limpeza geral disco', cmd:'cleanmgr /sagerun:1', perigo:'médio' },
   ];
 
-  // === 200 OTIMIZAÇÕES PREMIUM — AS MAIS PODEROSAS! ===
-  const otimizacoesPremium = 
+  // === 130 OTIMIZAÇÕES PREMIUM (GANHO MÁXIMO DE FPS) ===
+  const otimizacoesPremium = [
+    { id:1, nome:'🚀 Desativar Segurança Memória', cmd:'bcdedit /set vsmlaunchoff', perigo:'alto' },
+    { id:2, nome:'🚀 Desativar Isolamento Core', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Control\\DeviceGuard" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:3, nome:'🚀 Desativar HVCI (GANHO FPS)', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:4, nome:'🚀 Desativar Virtualização Base', cmd:'bcdedit /set {current} hypervisoriommupolicy off', perigo:'alto' },
+    { id:5, nome:'🚀 Desativar DMA Remapping', cmd:'bcdedit /set disablepcie /d 1', perigo:'alto' },
+    { id:6, nome:'🚀 Kernel em Memória Física', cmd:'bcdedit /set removememory 0', perigo:'alto' },
+    { id:7, nome:'🚀 Aumentar Tamanho de Página', cmd:'bcdedit /set increaseuserva 3072', perigo:'alto' },
+    { id:8, nome:'🚀 Tempo de Resposta Zero', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v SystemCacheWorkingSetLimit /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:9, nome:'🚀 Sem Limite de Memória App', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v NonPagedPoolQuota /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:10, nome:'🚀 Acelerar Execução Kernel', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v LargePageMinimum /t REG_DWORD /d 1048576 /f', perigo:'alto' },
+    { id:11, nome:'🚀 Prioridade JOGO Máxima', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Control\\PriorityControl" /v Win32PrioritySeparation /t REG_DWORD /d 38 /f', perigo:'alto' },
+    { id:12, nome:'🚀 CPU sempre em 100%', cmd:'powercfg /setacvalueindex scheme_current sub_processor 5d76a2ca-e8c0-402f-a133-215449555648 100', perigo:'alto' },
+    { id:13, nome:'🚀 Sem Economia de CPU', cmd:'powercfg /setacvalueindex scheme_current sub_processor 619b7950-5c8e-4a3c-94c3-5e6b0cd31681 100', perigo:'alto' },
+    { id:14, nome:'🚀 Desativar C-States CPU', cmd:'powercfg /setacvalueindex scheme_current sub_processor 891808d9-0ce9-4296-9120-2de96084e49f 0', perigo:'alto' },
+    { id:15, nome:'🚀 Latência Mínima CPU', cmd:'powercfg /setacvalueindex scheme_current sub_processor 5d76a2ca-e8c0-402f-a133-215449555648 100', perigo:'alto' },
+    { id:16, nome:'🚀 Desbloquear Frequência Máxima', cmd:'powercfg /setacvalueindex scheme_current sub_processor 75b0ae15-98b7-4ac1-a492-8e0c3d14c201 100', perigo:'alto' },
+    { id:17, nome:'🚀 Resposta Instantânea CPU', cmd:'powercfg /setacvalueindex scheme_current sub_processor 45b1e35a-98f5-4b8b-a840-9b9161720e62 0', perigo:'alto' },
+    { id:18, nome:'🚀 Desativar Throttling', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Services\\Power\\Throttling" /v NoThrottling /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:19, nome:'🚀 Desativar Estagnação Térmica', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Services\\Power\\Throttling" /v DisableThermalThrottling /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:20, nome:'🚀 Potência Ilimitada', cmd:'powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c', perigo:'alto' },
+    { id:21, nome:'🚀 Latência de Rede Zero', cmd:'netsh int tcp set global timestamps=disabled', perigo:'alto' },
+    { id:22, nome:'🚀 Sem ACK Atrasado', cmd:'netsh int tcp set global delayedacktimeout=10', perigo:'alto' },
+    { id:23, nome:'🚀 Pacotes Imediatos', cmd:'netsh int tcp set global ecncapability=enabled', perigo:'alto' },
+    { id:24, nome:'🚀 Congestionamento Mais Rápido', cmd:'netsh int tcp set global congestionprovider=dctcp', perigo:'alto' },
+    { id:25, nome:'🚀 Buffer de Rede Máximo', cmd:'netsh int tcp set global initialrto=2000', perigo:'alto' },
+    { id:26, nome:'🚀 Sem Limite de Conexões', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v TcpMaxConnections /t REG_DWORD /d 4294967295 /f', perigo:'alto' },
+    { id:27, nome:'🚀 DNS em Cache Permanente', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Services\\Dnscache\\Parameters" /v MaxCacheTtl /t REG_DWORD /d 86400 /f', perigo:'alto' },
+    { id:28, nome:'🚀 Resposta DNS Instantânea', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v TcpUseRFC1122UrgentPointer /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:29, nome:'🚀 Sem Espera de Conexão', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v TcpTimedWaitDelay /t REG_DWORD /d 5 /f', perigo:'alto' },
+    { id:30, nome:'🚀 Mais Dados por Segundo', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters" /v TcpWindowSize /t REG_DWORD /d 65535 /f', perigo:'alto' },
+    { id:31, nome:'🚀 Acelerar DirectX', cmd:'reg add "HKLM\\Software\\Microsoft\\Direct3D" /v DisableAGPSupport /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:32, nome:'🚀 Acelerar OpenGL', cmd:'reg add "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\OpenGL" /v DisableGenericDriver /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:33, nome:'🚀 GPU em Prioridade Alta', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers" /v SchedulePriority /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:34, nome:'🚀 Sem Limite de VRAM', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v NonPagedPoolSize /t REG_DWORD /d 4294967295 /f', perigo:'alto' },
+    { id:35, nome:'🚀 Desativar VSync Sistema', cmd:'reg add "HKLM\\Software\\Microsoft\\Direct3D" /v VSyncEnable /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:36, nome:'🚀 Acelerar Renderização', cmd:'reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer" /v DesktopLivePreviewHoverTime /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:37, nome:'🚀 Desativar Cursor Sombra', cmd:'reg add "HKCU\\Control Panel\\Desktop" /v CursorShadow /t REG_SZ /d 0 /f', perigo:'médio' },
+    { id:38, nome:'🚀 Cursor Instantâneo', cmd:'reg add "HKCU\\Control Panel\\Mouse" /v MouseHoverTime /t REG_SZ /d 1 /f', perigo:'médio' },
+    { id:39, nome:'🚀 Sem Rastro do Mouse', cmd:'reg add "HKCU\\Control Panel\\Mouse" /v MouseTrails /t REG_SZ /d 0 /f', perigo:'baixo' },
+    { id:40, nome:'🚀 Aceleração Máxima Mouse', cmd:'reg add "HKCU\\Control Panel\\Mouse" /v MouseThreshold1 /t REG_SZ /d 0 /f', perigo:'médio' },
+    { id:41, nome:'🚀 Aceleração Máxima Mouse 2', cmd:'reg add "HKCU\\Control Panel\\Mouse" /v MouseThreshold2 /t REG_SZ /d 0 /f', perigo:'médio' },
+    { id:42, nome:'🚀 Precisão do Mouse OFF', cmd:'reg add "HKCU\\Control Panel\\Mouse" /v MouseSpeed /t REG_SZ /d 0 /f', perigo:'alto' },
+    { id:43, nome:'🚀 Resposta Teclado Zero', cmd:'reg add "HKCU\\Control Panel\\Keyboard" /v KeyboardDelay /t REG_SZ /d 0 /f', perigo:'médio' },
+    { id:44, nome:'🚀 Repetição Instantânea', cmd:'reg add "HKCU\\Control Panel\\Keyboard" /v KeyboardSpeed /t REG_SZ /d 31 /f', perigo:'médio' },
+    { id:45, nome:'🚀 Limpar Arquivo de Páginas', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v ClearPageFileAtShutdown /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:46, nome:'🚀 Memória RAM Ilimitada (PAE)', cmd:'bcdedit /set pae ForceEnable', perigo:'alto' },
+    { id:47, nome:'🚀 AWE Habilitado (Grandes Páginas)', cmd:'reg add "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options" /v LargePages /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:48, nome:'🚀 Cache de Disco em RAM', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v StandbyPageListHighThreshold /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:49, nome:'🚀 Sem Arquivo de Paginação', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v PagingFiles /t REG_SZ /d "" /f', perigo:'alto' },
+    { id:50, nome:'🚀 RAM para Disco Direto', cmd:'reg add "HKLM\\System\\CurrentControlSet\\Services\\Dnscache" /v MaxNegativeCacheTtl /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:51, nome:'🚀 Desativar Windows Defender', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:52, nome:'🚀 Desativar Proteção em Tempo Real', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection" /v DisableRealtimeMonitoring /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:53, nome:'🚀 Desativar Firewall Público', cmd:'netsh advfirewall set publicprofile state off', perigo:'alto' },
+    { id:54, nome:'🚀 Desativar Firewall Privado', cmd:'netsh advfirewall set privateprofile state off', perigo:'alto' },
+    { id:55, nome:'🚀 Desativar Firewall Domínio', cmd:'netsh advfirewall set domainprofile state off', perigo:'alto' },
+    { id:56, nome:'🚀 Bloquear Windows Update', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU" /v NoAutoUpdate /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:57, nome:'🚀 Sem Acesso a Atualização', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate" /v DisableWindowsUpdateAccess /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:58, nome:'🚀 Desativar Serviço Defender', cmd:'sc config WinDefend start= disabled', perigo:'alto' },
+    { id:59, nome:'🚀 Desativar Notificações Defender', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows Defender" /v DisableNotifications /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:60, nome:'🚀 Desativar SmartScreen', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\System" /v EnableSmartScreen /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:61, nome:'🚀 Remover App 3D Builder', cmd:'powershell -Command "Get-AppxPackage *3dbuilder* | Remove-AppxPackage"', perigo:'alto' },
+    { id:62, nome:'🚀 Remover Alarmes e Relógio', cmd:'powershell -Command "Get-AppxPackage *windowsalarms* | Remove-AppxPackage"', perigo:'alto' },
+    { id:63, nome:'🚀 Remover Calendário e Email', cmd:'powershell -Command "Get-AppxPackage *windowscommunicationsapps* | Remove-AppxPackage"', perigo:'alto' },
+    { id:64, nome:'🚀 Remover Câmera', cmd:'powershell -Command "Get-AppxPackage *windowscamera* | Remove-AppxPackage"', perigo:'alto' },
+    { id:65, nome:'🚀 Remover Get Office', cmd:'powershell -Command "Get-AppxPackage *officehub* | Remove-AppxPackage"', perigo:'alto' },
+    { id:66, nome:'🚀 Remover Calculadora', cmd:'powershell -Command "Get-AppxPackage *calculator* | Remove-AppxPackage"', perigo:'alto' },
+    { id:67, nome:'🚀 Remover Loja Windows', cmd:'powershell -Command "Get-AppxPackage *windowsstore* | Remove-AppxPackage"', perigo:'alto' },
+    { id:68, nome:'🚀 Remover Mapas', cmd:'powershell -Command "Get-AppxPackage *windowsmaps* | Remove-AppxPackage"', perigo:'alto' },
+    { id:69, nome:'🚀 Remover Notícias Bing', cmd:'powershell -Command "Get-AppxPackage *bingnews* | Remove-AppxPackage"', perigo:'alto' },
+    { id:70, nome:'🚀 Remover Clima Bing', cmd:'powershell -Command "Get-AppxPackage *bingweather* | Remove-AppxPackage"', perigo:'alto' },
+    { id:71, nome:'🚀 Remover OneNote', cmd:'powershell -Command "Get-AppxPackage *onenote* | Remove-AppxPackage"', perigo:'alto' },
+    { id:72, nome:'🚀 Remover Pessoas', cmd:'powershell -Command "Get-AppxPackage *people* | Remove-AppxPackage"', perigo:'alto' },
+    { id:73, nome:'🚀 Remover Fotos', cmd:'powershell -Command "Get-AppxPackage *photos* | Remove-AppxPackage"', perigo:'alto' },
+    { id:74, nome:'🚀 Remover Gravação Áudio', cmd:'powershell -Command "Get-AppxPackage *soundrecorder* | Remove-AppxPackage"', perigo:'alto' },
+    { id:75, nome:'🚀 Remover Esportes Bing', cmd:'powershell -Command "Get-AppxPackage *bingsports* | Remove-AppxPackage"', perigo:'alto' },
+    { id:76, nome:'🚀 Remover Xbox App', cmd:'powershell -Command "Get-AppxPackage *xboxapp* | Remove-AppxPackage"', perigo:'alto' },
+    { id:77, nome:'🚀 Remover Música Zune', cmd:'powershell -Command "Get-AppxPackage *zunemusic* | Remove-AppxPackage"', perigo:'alto' },
+    { id:78, nome:'🚀 Remover Vídeo Zune', cmd:'powershell -Command "Get-AppxPackage *zunevideo* | Remove-AppxPackage"', perigo:'alto' },
+    { id:79, nome:'🚀 Remover Mensagens', cmd:'powershell -Command "Get-AppxPackage *messaging* | Remove-AppxPackage"', perigo:'alto' },
+    { id:80, nome:'🚀 Remover Solitário', cmd:'powershell -Command "Get-AppxPackage *solitaire* | Remove-AppxPackage"', perigo:'alto' },
+    { id:81, nome:'🚀 Desativar Xbox DVR (GANHO FPS)', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\GameDVR" /v AllowGameDVR /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:82, nome:'🚀 Desativar Barra de Jogo', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\GameBar" /v AllowGameBar /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:83, nome:'🚀 Desativar Gravação de Tela', cmd:'reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR" /v AppCaptureEnabled /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:84, nome:'🚀 Desativar Transmissão', cmd:'reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR" /v BroadcastEnabled /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:85, nome:'🚀 Sem Codificação em 2º Plano', cmd:'reg add "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR" /v EncodingEnabled /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:86, nome:'🚀 Desativar Serviço Xbox Rede', cmd:'sc config XboxNetApiSvc start= disabled', perigo:'alto' },
+    { id:87, nome:'🚀 Desativar Serviço Xbox Live', cmd:'sc config XblAuthManager start= disabled', perigo:'alto' },
+    { id:88, nome:'🚀 Desativar Presença Xbox', cmd:'sc config XblGameSave start= disabled', perigo:'alto' },
+    { id:89, nome:'🚀 Desativar Dispositivos Xbox', cmd:'sc config XboxGipSvc start= disabled', perigo:'alto' },
+    { id:90, nome:'🚀 Desativar Barra Completa', cmd:'reg add "HKCU\\Software\\Microsoft\\GameBar" /v UseNexusForGameBarEnabled /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:91, nome:'🚀 Desativar Gerenciador Licenças', cmd:'sc config LicenseManager start= disabled', perigo:'alto' },
+    { id:92, nome:'🚀 Desativar Experiência Consumidor', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\CloudContent" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:93, nome:'🚀 Sem Coleta de Dados App', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\System" /v DisableTelemetry /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:94, nome:'🚀 Sem Compartilhamento Diagnóstico', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\System" /v AllowTelemetry /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:95, nome:'🚀 Desativar ID de Publicidade', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo" /v Enabled /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:96, nome:'🚀 Desativar Reconhecimento de Fala', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\Speech" /v AllowSpeech /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:97, nome:'🚀 Desativar Entrada de Tinta', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\TabletPC" /v AllowInk /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:98, nome:'🚀 Desativar Acesso à Localização', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\LocationAndSensors" /v DisableLocation /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:99, nome:'🚀 Desativar Câmera Sistema', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\LocationAndSensors" /v DisableCamera /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:100, nome:'🚀 Desativar Microfone Sistema', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\PrivacySettings" /v DisableMicrophone /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:101, nome:'🚀 Desativar Cortana', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\Windows Search" /v AllowCortana /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:102, nome:'🚀 Sem Busca na Web', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\Windows Search" /v DisableWebSearch /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:103, nome:'🚀 Sem Busca na Nuvem', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\Windows Search" /v AllowSearchToUseLocation /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:104, nome:'🚀 Desativar Tela Privacidade OOBE', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\OOBE" /v DisablePrivacyScreen /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:105, nome:'🚀 Sem Experiências Personalizadas', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\CloudContent" /v DisableTailoredExperiencesWithDiagnosticData /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:106, nome:'🚀 Sem Dicas do Windows', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\System" /v DisableTips /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:107, nome:'🚀 Sem Conteúdo em Destaque', cmd:'reg add "HKLM\\Software\\Policies\\Microsoft\\Windows\\CloudContent" /v DisableWindowsSpotlight /t REG_DWORD /d 1 /f', perigo:'alto' },
+    { id:108, nome:'🚀 Desativar Notícias e Interesses', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Feeds" /v ShellFeedsEnabled /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:109, nome:'🚀 Desativar Ícone Clima Barra', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Feeds" /v TaskbarDa /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:110, nome:'🚀 Desativar Widgets', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced" /v TaskbarDa /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:111, nome:'🚀 Desativar Acesso Rápido', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer" /v ShowRecent /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:112, nome:'🚀 Sem Arquivos Recentes', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer" /v ShowFrequent /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:113, nome:'🚀 Sem Pastas Usadas', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer" /v ShowRecentApps /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:114, nome:'🚀 Desativar Histórico de Arquivos', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer" /v Start_TrackDocs /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:115, nome:'🚀 Sem Pré-visualização de Pasta', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer" /v PreviewPane /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:116, nome:'🚀 Sem Painel de Detalhes', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer" /v DetailsPane /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:117, nome:'🚀 Desativar Animação Janela', cmd:'reg add "HKCU\\Control Panel\\Desktop\\WindowMetrics" /v MinAnimate /t REG_SZ /d 0 /f', perigo:'alto' },
+    { id:118, nome:'🚀 Desativar Rolagem Suave', cmd:'reg add "HKCU\\Control Panel\\Desktop" /v SmoothScroll /t REG_SZ /d 0 /f', perigo:'alto' },
+    { id:119, nome:'🚀 Sem Fade de Menu', cmd:'reg add "HKCU\\Control Panel\\Desktop" /v MenuFade /t REG_SZ /d 0 /f', perigo:'alto' },
+    { id:120, nome:'🚀 Sem Fade de Dica', cmd:'reg add "HKCU\\Control Panel\\Desktop" /v ToolTipFade /t REG_SZ /d 0 /f', perigo:'alto' },
+    { id:121, nome:'🚀 Sem Fade de Seleção', cmd:'reg add "HKCU\\Control Panel\\Desktop" /v SelectionFade /t REG_SZ /d 0 /f', perigo:'alto' },
+    { id:122, nome:'🚀 Desativar Composição Área Trabalho', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\Dwm" /v Composition /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:123, nome:'🚀 Sem Transparência DWM', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\Dwm" /v EnableAeroPeek /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:124, nome:'🚀 Sem Pré-visualização Aero Peek', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\Dwm" /v AlwaysHibernateThumbnails /t REG_DWORD /d 0 /f', perigo:'alto' },
+    { id:125, nome:'🚀 Desativar Temas', cmd:'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v ThemeActive /t REG_SZ /d "" /f', perigo:'alto' },
+    { id:126, nome:'🚀 Sem Protetor de Tela', cmd:'reg add "HKCU\\Control Panel\\Desktop" /v ScreenSaveActive /t REG_SZ /d 0 /f', perigo:'alto' },
+    { id:127, nome:'🚀 Plano Máximo Desempenho', cmd:'powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c', perigo:'alto' },
+    { id:128, nome:'🚀 Sem Suspensão Automática', cmd:'powercfg /change standby-timeout-ac 0', perigo:'alto' },
+    { id:129, nome:'🚀 Sem Hibernação', cmd:'powercfg /hibernate off', perigo:'alto' },
+    { id:130, nome:'🚀 Sem Desligamento Disco', cmd:'powercfg /change hibernate-timeout-ac 0', perigo:'alto' },
+  ];
+
+  // === RENDERIZAÇÃO ===
+  if (carregando) {
+    return (
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', backgroundColor:'#0f0f23', color:'#fff', fontSize:'24px' }}>
+        ⏳ Carregando Optimizador do Julio...
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ minHeight:'100vh', backgroundColor:'#0f0f23', color:'#fff', padding:'20px', fontFamily:'sans-serif' }}>
+      <h1 style={{ textAlign:'center', color:'#ff2e63', fontSize:'36px', marginBottom:'10px' }}>🔥 OPTIMIZADOR DO JULIO — FPS MÁXIMO</h1>
+      <p style={{ textAlign:'center', color:'#aaa', marginBottom:'30px' }}>Deixe o Windows limpo, rápido e extraia TODO o FPS do seu PC!</p>
+
+      {status && <div style={{ backgroundColor:'#00b894', padding:'10px', borderRadius:'8px', textAlign:'center', marginBottom:'20px', fontWeight:'bold' }}>{status}</div>}
+
+      {/* PIX / COMPRA */}
+      {!premiumPagoLiberado && !adminLiberado && (
+        <div style={{ backgroundColor:'#1a1a30', padding:'25px', borderRadius:'12px', marginBottom:'30px', border:'2px solid #ff2e63' }}>
+          <h2 style={{ color:'#fffa65', textAlign:'center', marginTop:0 }}>💳 ACESSO PREMIUM — 200 OTIMIZAÇÕES</h2>
+          <p style={{ textAlign:'center', fontSize:'18px', margin:'15px 0' }}>Pague via PIX e receba a senha de acesso!</p>
+          <div style={{ backgroundColor:'#2a2a40', padding:'15px', borderRadius:'8px', textAlign:'center', fontSize:'20px', fontWeight:'bold', color:'#00ff88' }}>
+            PIX: {CHAVE_PIX}
+          </div>
+          <p style={{ textAlign:'center', color
