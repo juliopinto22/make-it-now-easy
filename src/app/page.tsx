@@ -2,18 +2,20 @@
 
 import { useState, useEffect } from 'react';
 
-// 🔒 SENHA DE ACESSO PREMIUM — SÓ VOCÊ SABE!
-const SENHA_PREMIUM = 'Kaneki123';
+// 🔑 SENHAS DO SISTEMA
+const SENHA_ADMINISTRADOR = 'JulioKaneki999'; // ← SENHA SÓ SUA!
+const SENHA_PREMIUM = 'Pagamento@2026'; // ← Senha para usuários que pagaram
 
 export default function App() {
   // Segurança automática
   const [carregando, setCarregando] = useState(true);
-  const [autorizado, setAutorizado] = useState(false);
   
-  // Navegação e acesso premium
+  // Navegação e acessos
   const [abaAtiva, setAbaAtiva] = useState('free');
-  const [premiumLiberado, setPremiumLiberado] = useState(false);
+  const [adminLiberado, setAdminLiberado] = useState(false);
+  const [premiumPagoLiberado, setPremiumPagoLiberado] = useState(false);
   const [senhaDigitada, setSenhaDigitada] = useState('');
+  const [tipoAcesso, setTipoAcesso] = useState<'admin' | 'premium' | null>(null);
   const [erroSenha, setErroSenha] = useState('');
   const [status, setStatus] = useState('');
   const [pixChave, setPixChave] = useState('');
@@ -22,23 +24,28 @@ export default function App() {
     setPixChave('julioserafim1234566@gmail.com');
     
     // Validação de segurança automática
-    const validarAcesso = () => {
-      setTimeout(() => {
-        setAutorizado(true);
-        setCarregando(false);
-      }, 2000);
-    };
-
-    validarAcesso();
+    setTimeout(() => {
+      setCarregando(false);
+    }, 2000);
   }, []);
 
-  const verificarSenhaPremium = () => {
-    if (senhaDigitada === SENHA_PREMIUM) {
-      setPremiumLiberado(true);
-      setErroSenha('');
+  const verificarSenha = () => {
+    if (tipoAcesso === 'admin' && senhaDigitada === SENHA_ADMINISTRADOR) {
+      setAdminLiberado(true);
+      setErroSenha('✅ Bem-vindo, Administrador! Acesso total liberado!');
+    } else if (tipoAcesso === 'premium' && senhaDigitada === SENHA_PREMIUM) {
+      setPremiumPagoLiberado(true);
+      setErroSenha('✅ Acesso Premium liberado! Obrigado pelo pagamento!');
     } else {
       setErroSenha('❌ Senha incorreta! Acesso negado.');
     }
+    setSenhaDigitada('');
+  };
+
+  const iniciarLogin = (tipo: 'admin' | 'premium') => {
+    setTipoAcesso(tipo);
+    setErroSenha('');
+    setSenhaDigitada('');
   };
 
   const copiar = (texto: string) => {
@@ -189,7 +196,7 @@ export default function App() {
       background: 'linear-gradient(180deg, #0a0a0a, #1a0000)',
       minHeight: '100vh',
       display: 'flex',
-      fontFamily: 'Segoe UI, sans-serif',
+      fontFamily: 'Segoe UI, sans-serif,',
       color: '#fff'
     }}>
       {/* BARRA LATERAL */}
@@ -211,11 +218,12 @@ export default function App() {
         {[
           { key:'free', icon:'⚙️', label:'Otimizações CMD' },
           { key:'flags', icon:'🎮', label:'Fast Flags Roblox' },
-          { key:'premium', icon:'👑', label:'Área Premium 🔒' }
+          { key:'premium', icon:'👑', label:'Área Premium' },
+          { key:'admin', icon:'🔐', label:'Painel do Administrador 🔒' }
         ].map(item => (
           <button
             key={item.key}
-            onClick={() => setAbaAtiva(item.key)}
+            onClick={() => { setAbaAtiva(item.key); setTipoAcesso(null); setErroSenha(''); }}
             style={{
               background: abaAtiva === item.key ? 'rgba(100,0,0,0.3)' : 'transparent',
               color: abaAtiva === item.key ? '#ff6666' : '#999',
@@ -237,7 +245,7 @@ export default function App() {
       {/* CONTEÚDO PRINCIPAL */}
       <div style={{ marginLeft: 240, flex: 1, padding: '30px 40px', maxWidth: 900 }}>
         
-        {/* ABA — OTIMIZAÇÕES CMD */}
+        {/* ABA — OTIMIZAÇÕES GRATUITAS */}
         {abaAtiva === 'free' && (
           <>
             <h2 style={{ color: '#fff', marginBottom: 8 }}>⚙️ 70 Otimizações do Sistema</h2>
@@ -304,7 +312,7 @@ export default function App() {
           </>
         )}
 
-        {/* ABA — FAST FLAGS ROBLOX */}
+        {/* ABA — FAST FLAGS GRATUITAS */}
         {abaAtiva === 'flags' && (
           <>
             <h2 style={{ color: '#fff', marginBottom: 8 }}>🎮 Fast Flags — Roblox</h2>
@@ -352,96 +360,257 @@ export default function App() {
           </>
         )}
 
-        {/* ABA — PREMIUM */}
+        {/* ABA — PREMIUM (VISÍVEL PARA TODOS, MAS BLOQUEADO) */}
         {abaAtiva === 'premium' && (
           <>
             <h2 style={{ color: '#ffcc00', marginBottom: 25, textAlign: 'center' }}>👑 ÁREA PREMIUM</h2>
 
-            {!premiumLiberado ? (
+            <div style={{
+              maxWidth: 400,
+              margin: '0 auto',
+              textAlign: 'center',
+              background: 'rgba(40,0,0,0.5)',
+              border: '2px solid #ffcc00',
+              borderRadius: 12,
+              padding: 30,
+              boxShadow: '0 0 30px rgba(255,204,0,0.2)'
+            }}>
+              <h3 style={{ color: '#ffcc00', margin: '0 0 15px 0', letterSpacing: 2, fontSize: 16 }}>🔒 CONTEÚDO EXCLUSIVO</h3>
+              <p style={{ color: '#aaa', fontSize: 13, marginBottom: 20 }}>
+                Veja as otimizações avançadas e desbloqueie tudo pagando o valor abaixo.
+              </p>
+
+              {/* ✅ QR CODE BRANCO E CENTRALIZADO — VISÍVEL PARA TODOS */}
+              <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
+                {pixChave && (
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&color=FFFFFF&bgcolor=0F0505&data=${encodeURIComponent(pixChave)}`}
+                    alt="QR Code PIX"
+                    style={{ 
+                      width: 220, 
+                      height: 220, 
+                      borderRadius: 8, 
+                      border: '3px solid #FFFFFF',
+                      boxShadow: '0 0 25px rgba(255,255,255,0.3)'
+                    }}
+                  />
+                )}
+              </div>
+              
+              <p style={{ color: '#cccccc', marginTop: 5, fontSize: 14 }}>💳 Escaneie o QR Code</p>
+              <p style={{ color: '#666', fontSize: 11, marginTop: 5, marginBottom: 20 }}>Chave PIX: protegida</p>
+              
               <div style={{
-                maxWidth: 380,
+                background: 'rgba(0,0,0,0.6)',
+                border: '1px dashed #ffcc00',
+                borderRadius: 8,
+                padding: 15,
+                marginTop: 10
+              }}>
+                <p style={{ color: '#ffcc00', margin: 0, fontSize: 13 }}>✅ Após o pagamento, solicite a senha de acesso</p>
+                <p style={{ color: '#888', fontSize: 11, marginTop: 8 }}>Comprovante → Liberação → Senha de acesso</p>
+              </div>
+
+              {!premiumPagoLiberado ? (
+                <div style={{ marginTop: 20 }}>
+                  <p style={{ color: '#888', fontSize: 12, marginBottom: 10 }}>Já pagou? Digite a senha aqui:</p>
+                  <input
+                    type="password"
+                    value={tipoAcesso === 'premium' ? senhaDigitada : ''}
+                    onChange={(e) => { setTipoAcesso('premium'); setSenhaDigitada(e.target.value); }}
+                    placeholder="Senha do comprador..."
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      background: '#0a0a0a',
+                      border: '1px solid #ffcc00',
+                      borderRadius: 6,
+                      color: '#fff',
+                      fontSize: 13,
+                      marginBottom: 10,
+                      outline: 'none',
+                      textAlign: 'center'
+                    }}
+                    onKeyDown={(e) => e.key === 'Enter' && verificarSenha()}
+                  />
+                  <button
+                    onClick={verificarSenha}
+                    style={{
+                      width: '100%',
+                      padding: '9px',
+                      background: '#ffcc00',
+                      color: '#000',
+                      border: 'none',
+                      borderRadius: 6,
+                      cursor: 'pointer',
+                      fontSize: 13,
+                      fontWeight: 600
+                    }}
+                  >
+                    🔓 Liberar Conteúdo
+                  </button>
+                  {erroSenha && tipoAcesso === 'premium' && (
+                    <p style={{ color: erroSenha.includes('✅') ? '#00ff66' : '#ff4444', marginTop: 10, fontSize: 12 }}>{erroSenha}</p>
+                  )}
+                </div>
+              ) : (
+                <div style={{ marginTop: 20 }}>
+                  <p style={{ color: '#00ff66', fontSize: 14 }}>✅ TODAS AS OTIMIZAÇÕES LIBERADAS!</p>
+                  <p style={{ color: '#aaa', fontSize: 12, marginTop: 5 }}>Aqui aparecerão os comandos exclusivos após liberação.</p>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* ABA — ADMINISTRADOR (SÓ VOCÊ) */}
+        {abaAtiva === 'admin' && (
+          <>
+            <h2 style={{ color: '#00ff88', marginBottom: 25, textAlign: 'center' }}>🔐 PAINEL DO ADMINISTRADOR</h2>
+
+            {!adminLiberado ? (
+              <div style={{
+                maxWidth: 400,
                 margin: '0 auto',
                 textAlign: 'center',
-                background: 'rgba(40,0,0,0.5)',
-                border: '2px solid #8b0000',
+                background: 'rgba(0,50,30,0.4)',
+                border: '2px solid #00ff88',
                 borderRadius: 12,
                 padding: 30,
-                boxShadow: '0 0 30px rgba(139,0,0,0.3)'
+                boxShadow: '0 0 30px rgba(0,255,136,0.2)'
               }}>
-                <h3 style={{ color: '#ffcc00', margin: '0 0 20px 0', letterSpacing: 2, fontSize: 16 }}>🔒 ACESSO RESTRITO</h3>
-                <p style={{ color: '#aaa', fontSize: 13, marginBottom: 20 }}>Digite a senha para liberar a área Premium</p>
+                <h3 style={{ color: '#00ff88', margin: '0 0 15px 0', letterSpacing: 3, fontSize: 16 }}>ACESSO RESTRITO</h3>
+                <p style={{ color: '#aaa', fontSize: 13, marginBottom: 20 }}>
+                  Esta área é exclusiva do criador do sistema.<br/>
+                  Digite sua senha para ver TODAS as opções Premium de graça.
+                </p>
                 <input
                   type="password"
-                  value={senhaDigitada}
-                  onChange={(e) => setSenhaDigitada(e.target.value)}
-                  placeholder="Digite a senha..."
+                  value={tipoAcesso === 'admin' ? senhaDigitada : ''}
+                  onChange={(e) => { setTipoAcesso('admin'); setSenhaDigitada(e.target.value); }}
+                  placeholder="Digite sua senha mestra..."
                   style={{
                     width: '100%',
                     padding: '12px',
                     background: '#0a0a0a',
-                    border: '1px solid #440000',
+                    border: '1px solid #00ff88',
                     borderRadius: 6,
                     color: '#fff',
                     fontSize: 14,
-                    marginBottom: 15,
-                    outline: 'none'
+                    marginBottom: 12,
+                    outline: 'none',
+                    textAlign: 'center'
                   }}
-                  onKeyDown={(e) => e.key === 'Enter' && verificarSenhaPremium()}
+                  onKeyDown={(e) => e.key === 'Enter' && verificarSenha()}
                 />
                 <button
-                  onClick={verificarSenhaPremium}
+                  onClick={verificarSenha}
                   style={{
                     width: '100%',
-                    padding: '10px',
-                    background: '#8b0000',
-                    color: '#fff',
+                    padding: '11px',
+                    background: '#00ff88',
+                    color: '#000',
                     border: 'none',
                     borderRadius: 6,
                     cursor: 'pointer',
-                    fontSize: 14
+                    fontSize: 14,
+                    fontWeight: 600
                   }}
                 >
-                  🔓 Liberar Acesso
+                  🔑 Entrar como Administrador
                 </button>
-                {erroSenha && <p style={{ color: '#ff4444', marginTop: 15, fontSize: 13 }}>{erroSenha}</p>}
+                {erroSenha && tipoAcesso === 'admin' && (
+                  <p style={{ color: erroSenha.includes('✅') ? '#00ff66' : '#ff4444', marginTop: 12, fontSize: 13 }}>{erroSenha}</p>
+                )}
+
+                <div style={{ marginTop: 25, padding: 12, background: 'rgba(0,0,0,0.5)', borderRadius: 6 }}>
+                  <p style={{ color: '#00ff88', fontSize: 12, margin: 0 }}>🔑 Sua senha: JulioKaneki999</p>
+                  <p style={{ color: '#666', fontSize: 10, marginTop: 5 }}>Guarde bem, não compartilhe com ninguém!</p>
+                </div>
               </div>
             ) : (
-              <div style={{
-                maxWidth: 380,
-                margin: '0 auto',
-                textAlign: 'center',
-                background: 'rgba(40,0,0,0.5)',
-                border: '2px solid #8b0000',
-                borderRadius: 12,
-                padding: 30,
-                boxShadow: '0 0 30px rgba(139,0,0,0.3)'
-              }}>
-                <h3 style={{ color: '#00ff66', margin: '0 0 20px 0', letterSpacing: 2, fontSize: 16 }}>✅ ACESSO LIBERADO</h3>
-                <h4 style={{ color: '#fff', margin: '0 0 20px 0', letterSpacing: 3, fontSize: 15 }}>PAGAMENTO VIA PIX</h4>
-                
-                {/* ✅ QR CODE BRANCO E CENTRALIZADO */}
-                <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
-                  {pixChave && (
-                    <img 
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&color=FFFFFF&bgcolor=0F0505&data=${encodeURIComponent(pixChave)}`}
-                      alt="QR Code PIX"
-                      style={{ 
-                        width: 220, 
-                        height: 220, 
-                        borderRadius: 8, 
-                        border: '3px solid #FFFFFF',
-                        boxShadow: '0 0 25px rgba(255,255,255,0.2)'
-                      }}
-                    />
-                  )}
+              <>
+                <div style={{
+                  background: 'rgba(0,50,30,0.3)',
+                  border: '2px solid #00ff88',
+                  borderRadius: 10,
+                  padding: 20,
+                  marginBottom: 25,
+                  textAlign: 'center'
+                }}>
+                  <h3 style={{ color: '#00ff88', margin: '0 0 10px 0', fontSize: 18 }}>✅ BEM-VINDO, JÚLIO!</h3>
+                  <p style={{ color: '#aaa', fontSize: 13, margin: 0 }}>Acesso TOTAL liberado. Você pode ver e copiar TODAS as opções Premium abaixo.</p>
                 </div>
-                
-                <p style={{ color: '#cccccc', marginTop: 10, fontSize: 14 }}>💳 Escaneie o QR Code branco</p>
-                <p style={{ color: '#666', fontSize: 11, marginTop: 5 }}>🔒 Chave protegida — não é exibida publicamente</p>
-                <p style={{ color: '#888', fontSize: 12, marginTop: 20, lineHeight: 1.5 }}>
-                  Após o pagamento envie o comprovante<br/>para liberação das otimizações avançadas
-                </p>
-              </div>
+
+                {/* COMANDOS AVANÇADOS — SÓ VOCÊ VÊ */}
+                <h3 style={{ color: '#ffcc00', marginTop: 30, marginBottom: 15 }}>👑 OTIMIZAÇÕES AVANÇADAS (PREMIUM)</h3>
+                <div style={{ display: 'grid', gap: 10 }}>
+                  {otimizacoesCMD.filter(o => o.perigo === 'alto').map(opt => (
+                    <div key={opt.id} style={{
+                      background: 'rgba(50,30,0,0.4)',
+                      borderLeft: '3px solid #ffcc00',
+                      padding: '12px 16px',
+                      borderRadius: 4,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}>
+                      <div>
+                        <span style={{ fontWeight: 500, fontSize: 14 }}>{opt.id}. {opt.nome}</span>
+                        <p style={{ fontSize: 11, color: '#ffcc88', marginTop: 4, fontFamily: 'monospace' }}>{opt.cmd}</p>
+                      </div>
+                      <button
+                        onClick={() => copiar(opt.cmd)}
+                        style={{
+                          background: 'transparent',
+                          border: '1px solid #ffcc00',
+                          color: '#ffcc00',
+                          padding: '6px 12px',
+                          borderRadius: 4,
+                          cursor: 'pointer',
+                          fontSize: 12
+                        }}
+                      >
+                        Copiar
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <h3 style={{ color: '#ffcc00', marginTop: 40, marginBottom: 15 }}>🎮 TODAS AS FAST FLAGS</h3>
+                {fastFlags.map(flag => (
+                  <div key={flag.id} style={{
+                    background: 'rgba(50,30,0,0.4)',
+                    border: '1px solid #442200',
+                    borderRadius: 6,
+                    padding: 14,
+                    marginBottom: 10,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <div>
+                      <strong style={{ fontSize: 14 }}>{flag.id}. {flag.nome}</strong>
+                      <p style={{ fontSize: 12, color: '#ffcc88', marginTop: 6, fontFamily: 'monospace' }}>{flag.flag}</p>
+                    </div>
+                    <button
+                      onClick={() => copiar(flag.flag)}
+                      style={{
+                        background: 'transparent',
+                        border: '1px solid #ffcc00',
+                        color: '#ffcc00',
+                        padding: '6px 12px',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        fontSize: 12
+                      }}
+                    >
+                      Copiar
+                    </button>
+                  </div>
+                ))}
+                {status && <p style={{ color: '#00ff66', marginTop: 15 }}>{status}</p>}
+              </>
             )}
           </>
         )}
