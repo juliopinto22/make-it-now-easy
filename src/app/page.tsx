@@ -72,9 +72,15 @@ const gerarPremium = () => {
   const itens = [];
   let id = 1;
   const riscos = ['baixo', 'medio', 'alto'];
-  for (let i = 0; i < 100; i++) itens.push({ id: id++, cat: 'cpu', nome: `Otimização CPU ${i + 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "Opt${i}" /t REG_DWORD /d ${i * 4} /f`, risco: riscos[i % 3] });
-  for (let i = 0; i < 100; i++) itens.push({ id: id++, cat: 'gpu', nome: `Otimização GPU ${i + 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\${i}\\Settings" /v "Perf${i}" /t REG_DWORD /d 1 /f`, risco: riscos[(i + 1) % 3] });
-  for (let i = 0; i < 100; i++) itens.push({ id: id++, cat: 'memoria', nome: `Ajuste Memória ${i + 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "RAM${i}" /t REG_DWORD /d ${512 + i} /f`, risco: riscos[(i + 2) % 3] });
+  for (let i = 0; i < 100; i++) {
+    itens.push({ id: id++, cat: 'cpu', nome: `Otimização CPU ${i + 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "Opt${i}" /t REG_DWORD /d ${i * 4} /f`, risco: riscos[i % 3] });
+  }
+  for (let i = 0; i < 100; i++) {
+    itens.push({ id: id++, cat: 'gpu', nome: `Otimização GPU ${i + 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\${i}\\Settings" /v "Perf${i}" /t REG_DWORD /d 1 /f`, risco: riscos[(i + 1) % 3] });
+  }
+  for (let i = 0; i < 100; i++) {
+    itens.push({ id: id++, cat: 'memoria', nome: `Ajuste Memória ${i + 1}`, cmd: `reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" /v "RAM${i}" /t REG_DWORD /d ${512 + i} /f`, risco: riscos[(i + 2) % 3] });
+  }
   return itens;
 };
 
@@ -105,13 +111,13 @@ export default function App() {
     setSenha('');
   };
 
-  const copiar = (texto) => {
+  const copiar = (texto: string) => {
     navigator.clipboard.writeText(texto);
     setMensagem('✅ Copiado!');
     setTimeout(() => setMensagem(''), 2500);
   };
 
-  const corNivel = (nivel) => {
+  const corNivel = (nivel: string) => {
     switch (nivel) {
       case 'baixo': return CORES.verdeSeguro;
       case 'medio': return CORES.amareloAviso;
@@ -120,10 +126,10 @@ export default function App() {
     }
   };
 
-  const gerarQR = (texto) => {
+  const gerarQR = (texto: string) => {
     const size = 29;
-    const modules = Array.from({ length: size }, () => Array(size).fill(false));
-    const desenharMarcador = (ox, oy) => {
+    const modules: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
+    const desenharMarcador = (ox: number, oy: number) => {
       for (let dy = 0; dy < 7; dy++) {
         for (let dx = 0; dx < 7; dx++) {
           const ehBorda = dy === 0 || dy === 6 || dx === 0 || dx === 6;
@@ -145,7 +151,9 @@ export default function App() {
   };
   const qrDados = gerarQR(CHAVE_PIX);
 
-  const filtrar = (lista) => categoria === 'todas' ? lista : lista.filter((x) => x.cat === categoria);
+  const filtrar = (lista: typeof otmFree) => {
+    return categoria === 'todas' ? lista : lista.filter((x) => x.cat === categoria);
+  };
 
   const GhoulPattern = () => (
     <>
@@ -184,76 +192,111 @@ export default function App() {
         <div style={{ position: 'absolute', bottom: 60, right: 5, fontSize: 60, opacity: 0.04, color: CORES.vermelho, pointerEvents: 'none' }}>🩸</div>
 
         <div style={{ padding: '18px 14px', display: 'flex', flexDirection: 'column', height: '100%', position: 'relative', zIndex: 1 }}>
-          <button onClick={() => setLateralAberta(!lateralAberta)} style={{ alignSelf: 'flex-end', background: 'transparent', border: `1px solid ${CORES.vermelhoEscuro}`, color: CORES.vermelho, fontSize: 16, cursor: 'pointer', marginBottom: 16, width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
+          <button 
+            onClick={() => setLateralAberta(!lateralAberta)} 
+            style={{ alignSelf: 'flex-end', background: 'transparent', border: `1px solid ${CORES.vermelhoEscuro}`, color: CORES.vermelho, fontSize: 16, cursor: 'pointer', marginBottom: 16, width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
             onMouseOver={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelho; e.currentTarget.style.color = CORES.branco; }}
-            onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = CORES.vermelho; }}>
+            onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = CORES.vermelho; }}
+          >
             {lateralAberta ? '◀' : '▶'}
           </button>
 
-          {lateralAberta && (<>
-            <div style={{ textAlign: 'center', marginBottom: 20, paddingBottom: 16, borderBottom: `1px solid ${CORES.borda}` }}>
-              <div style={{ fontSize: 20, fontWeight: 'bold', color: CORES.vermelho, letterSpacing: 3, textShadow: `0 0 8px ${CORES.vermelho}`, marginBottom: 4 }}>OPTIMIZADOR</div>
-              <div style={{ fontSize: 10, color: CORES.vermelhoClaro, opacity: 0.7 }}>東京喰種 v{VERSAO}</div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
-              <button onClick={() => { setAbaAtiva('free'); setCategoria('todas'); }} style={{ padding: '12px 14px', borderRadius: 12, border: abaAtiva === 'free' ? `1px solid ${CORES.vermelho}` : '1px solid transparent', cursor: 'pointer', textAlign: 'left', fontSize: 13, fontWeight: abaAtiva === 'free' ? 700 : 500, backgroundColor: abaAtiva === 'free' ? CORES.alertaFundo : 'transparent', color: abaAtiva === 'free' ? CORES.vermelhoClaro : CORES.cinzaClaro, transition: 'all 0.25s' }}
-                onMouseOver={(e) => { if (abaAtiva !== 'free') { e.currentTarget.style.backgroundColor = 'rgba(228, 2, 0, 0.06)'; e.currentTarget.style.borderColor = CORES.vermelhoEscuro; }}}
-                onMouseOut={(e) => { if (abaAtiva !== 'free') { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}}>
-                🔥 GRATUITAS <span style={{ float: 'right', fontSize: 11, backgroundColor: CORES.vermelho, color: '#000', padding: '1px 6px', borderRadius: 10, fontWeight: 700 }}>{otmFree.length}</span>
-              </button>
-
-              <button onClick={() => { setAbaAtiva('pagamento'); setCategoria('todas'); }} style={{ padding: '12px 14px', borderRadius: 12, border: abaAtiva === 'pagamento' ? `1px solid ${CORES.dourado}` : '1px solid transparent', cursor: 'pointer', textAlign: 'left', fontSize: 13, fontWeight: abaAtiva === 'pagamento' ? 700 : 500, backgroundColor: abaAtiva === 'pagamento' ? 'rgba(184, 134, 11, 0.12)' : 'transparent', color: abaAtiva === 'pagamento' ? CORES.dourado : CORES.cinzaClaro, transition: 'all 0.25s' }}
-                onMouseOver={(e) => { if (abaAtiva !== 'pagamento') { e.currentTarget.style.backgroundColor = 'rgba(184, 134, 11, 0.06)'; e.currentTarget.style.borderColor = '#886000'; }}}
-                onMouseOut={(e) => { if (abaAtiva !== 'pagamento') { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}}>
-                💳 COMPRAR PREMIUM
-              </button>
-
-              <button onClick={() => { setAbaAtiva('premium'); setCategoria('todas'); }} style={{ padding: '12px 14px', borderRadius: 12, border: abaAtiva === 'premium' ? `1px solid ${CORES.dourado}` : '1px solid transparent', cursor: 'pointer', textAlign: 'left', fontSize: 13, fontWeight: abaAtiva === 'premium' ? 700 : 500, backgroundColor: abaAtiva === 'premium' ? 'rgba(184, 134, 11, 0.12)' : 'transparent', color: abaAtiva === 'premium' ? CORES.dourado : CORES.cinzaClaro, transition: 'all 0.25s' }}
-                onMouseOver={(e) => { if (abaAtiva !== 'premium') { e.currentTarget.style.backgroundColor = 'rgba(184, 134, 11, 0.06)'; e.currentTarget.style.borderColor = '#886000'; }}}
-                onMouseOut={(e) => { if (abaAtiva !== 'premium') { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}}>
-                ⭐ PREMIUM {premiumLiberado ? <span style={{ float: 'right', color: CORES.verdeSeguro }}>✓</span> : <span style={{ float: 'right' }}>🔒</span>}
-              </button>
-            </div>
-
-            {abaAtiva !== 'pagamento' && abaAtiva !== 'premium' && (
-              <div style={{ marginBottom: 12, borderTop: `1px solid ${CORES.borda}`, paddingTop: 14 }}>
-                <div style={{ fontSize: 10, color: CORES.vermelhoClaro, marginBottom: 8, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', opacity: 0.8 }}>Categorias</div>
-                {[
-                  { k: 'todas', n: '📋 Todas' }, { k: 'sistema', n: '⚙️ Sistema' }, { k: 'cpu', n: '🖥️ CPU' }, { k: 'memoria', n: '🧠 Memória' },
-                  { k: 'gpu', n: '🎮 GPU' }, { k: 'rede', n: '🌐 Rede' }, { k: 'disco', n: '💿 Disco' },
-                  { k: 'jogos', n: '🎮 Jogos' }, { k: 'visual', n: '🎨 Visual' }, { k: 'energia', n: '⚡ Energia' },
-                ].map(cat => (
-                  <button key={cat.k} onClick={() => setCategoria(cat.k)} style={{ padding: '8px 12px', borderRadius: 8, border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: 12, width: '100%', backgroundColor: categoria === cat.k ? CORES.alertaFundo : 'transparent', color: categoria === cat.k ? CORES.vermelhoClaro : CORES.cinzaClaro, marginBottom: 3, transition: 'all 0.15s' }}
-                    onMouseOver={(e) => { if (categoria !== cat.k) e.currentTarget.style.backgroundColor = 'rgba(228, 2, 0, 0.04)'; }}
-                    onMouseOut={(e) => { if (categoria !== cat.k) e.currentTarget.style.backgroundColor = 'transparent'; }}>
-                    {cat.n}
-                  </button>
-                ))}
+          {lateralAberta && (
+            <>
+              <div style={{ textAlign: 'center', marginBottom: 20, paddingBottom: 16, borderBottom: `1px solid ${CORES.borda}` }}>
+                <div style={{ fontSize: 20, fontWeight: 'bold', color: CORES.vermelho, letterSpacing: 3, textShadow: `0 0 8px ${CORES.vermelho}`, marginBottom: 4 }}>OPTIMIZADOR</div>
+                <div style={{ fontSize: 10, color: CORES.vermelhoClaro, opacity: 0.7 }}>東京喰種 v{VERSAO}</div>
               </div>
-            )}
 
-            {abaAtiva === 'premium' && !premiumLiberado && (
-              <div style={{ marginTop: 'auto', borderTop: `1px solid ${CORES.borda}`, paddingTop: 14 }}>
-                <div style={{ fontSize: 11, color: CORES.cinzaMedio, marginBottom: 8 }}>🔑 Digite a senha de acesso:</div>
-                <input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} placeholder="Senha..." style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: `1px solid ${CORES.vermelhoEscuro}`, backgroundColor: 'rgba(0,0,0,0.5)', color: CORES.branco, fontSize: 12, marginBottom: 8, outline: 'none', transition: 'border 0.2s' }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = CORES.vermelho; e.currentTarget.style.boxShadow = '0 0 6px rgba(228,2,0,0.3)'; }}
-                  onBlur={(e) => { e.currentTarget.style.borderColor = CORES.vermelhoEscuro; e.currentTarget.style.boxShadow = 'none'; }} />
-                <button onClick={verificarSenha} style={{ width: '100%', padding: '10px', borderRadius: 10, border: 'none', backgroundColor: CORES.vermelho, color: CORES.branco, fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: `0 0 8px rgba(228,2,0,0.3)`, transition: 'all 0.2s' }}
-                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelhoClaro; e.currentTarget.style.boxShadow = `0 0 14px rgba(228,2,0,0.5)`; }}
-                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelho; e.currentTarget.style.boxShadow = `0 0 8px rgba(228,2,0,0.3)`; }}>
-                  🔓 DESBLOQUEAR
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+                <button 
+                  onClick={() => { setAbaAtiva('free'); setCategoria('todas'); }} 
+                  style={{ padding: '12px 14px', borderRadius: 12, border: abaAtiva === 'free' ? `1px solid ${CORES.vermelho}` : '1px solid transparent', cursor: 'pointer', textAlign: 'left', fontSize: 13, fontWeight: abaAtiva === 'free' ? 700 : 500, backgroundColor: abaAtiva === 'free' ? CORES.alertaFundo : 'transparent', color: abaAtiva === 'free' ? CORES.vermelhoClaro : CORES.cinzaClaro, transition: 'all 0.25s' }}
+                  onMouseOver={(e) => { if (abaAtiva !== 'free') { e.currentTarget.style.backgroundColor = 'rgba(228, 2, 0, 0.06)'; e.currentTarget.style.borderColor = CORES.vermelhoEscuro; }}}
+                  onMouseOut={(e) => { if (abaAtiva !== 'free') { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}}
+                >
+                  🔥 GRATUITAS <span style={{ float: 'right', fontSize: 11, backgroundColor: CORES.vermelho, color: '#000', padding: '1px 6px', borderRadius: 10, fontWeight: 700 }}>{otmFree.length}</span>
                 </button>
-                {aviso && <div style={{ fontSize: 11, marginTop: 8, color: aviso.startsWith('✅') ? CORES.verdeSeguro : CORES.vermelho, textAlign: 'center' }}>{aviso}</div>}
-              </div>
-            )}
 
-            {premiumLiberado && (
-              <div style={{ marginTop: 'auto', textAlign: 'center', paddingTop: 14, borderTop: `1px solid ${CORES.borda}` }}>
-                <div style={{ fontSize: 14, color: CORES.verdeSeguro, fontWeight: 700, textShadow: '0 0 6px rgba(0,204,68,0.3)' }}>✅ ACESSO LIBERADO</div>
+                <button 
+                  onClick={() => { setAbaAtiva('pagamento'); setCategoria('todas'); }} 
+                  style={{ padding: '12px 14px', borderRadius: 12, border: abaAtiva === 'pagamento' ? `1px solid ${CORES.dourado}` : '1px solid transparent', cursor: 'pointer', textAlign: 'left', fontSize: 13, fontWeight: abaAtiva === 'pagamento' ? 700 : 500, backgroundColor: abaAtiva === 'pagamento' ? 'rgba(184, 134, 11, 0.12)' : 'transparent', color: abaAtiva === 'pagamento' ? CORES.dourado : CORES.cinzaClaro, transition: 'all  0.25s' }}
+                  onMouseOver={(e) => { if (abaAtiva !== 'pagamento') { e.currentTarget.style.backgroundColor = 'rgba(184, 134, 11, 0.06)'; e.currentTarget.style.borderColor = '#886000'; }}}
+                  onMouseOut={(e) => { if (abaAtiva !== 'pagamento') { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}}
+                >
+                  💳 COMPRAR PREMIUM
+                </button>
+
+                <button 
+                  onClick={() => { setAbaAtiva('premium'); setCategoria('todas'); }} 
+                  style={{ padding: '12px 14px', borderRadius: 12, border: abaAtiva === 'premium' ? `1px solid ${CORES.dourado}` : '1px solid transparent', cursor: 'pointer', textAlign: 'left', fontSize: 13, fontWeight: abaAtiva === 'premium' ? 700 : 500, backgroundColor: abaAtiva === 'premium' ? 'rgba(184, 134, 11, 0.12)' : 'transparent', color: abaAtiva === 'premium' ? CORES.dourado : CORES.cinzaClaro, transition: 'all 0.25s' }}
+                  onMouseOver={(e) => { if (abaAtiva !== 'premium') { e.currentTarget.style.backgroundColor = 'rgba(184, 134, 11, 0.06)'; e.currentTarget.style.borderColor = '#886000'; }}}
+                  onMouseOut={(e) => { if (abaAtiva !== 'premium') { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}}
+                >
+                  ⭐ PREMIUM {premiumLiberado ? <span style={{ float: 'right', color: CORES.verdeSeguro }}>✓</span> : <span style={{ float: 'right' }}>🔒</span>}
+                </button>
               </div>
-            )}
-          </>)}</div>
+
+              {abaAtiva !== 'pagamento' && abaAtiva !== 'premium' && (
+                <div style={{ marginBottom: 12, borderTop: `1px solid ${CORES.borda}`, paddingTop: 14 }}>
+                  <div style={{ fontSize: 10, color: CORES.vermelhoClaro, marginBottom: 8, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', opacity: 0.8 }}>Categorias</div>
+                  {[
+                    { k: 'todas', n: '📋 Todas' },
+                    { k: 'sistema', n: '⚙️ Sistema' },
+                    { k: 'cpu', n: '🖥️ CPU' },
+                    { k: 'memoria', n: '🧠 Memória' },
+                    { k: 'gpu', n: '🎮 GPU' },
+                    { k: 'rede', n: '🌐 Rede' },
+                    { k: 'disco', n: '💿 Disco' },
+                    { k: 'jogos', n: '🎮 Jogos' },
+                    { k: 'visual', n: '🎨 Visual' },
+                    { k: 'energia', n: '⚡ Energia' },
+                  ].map(cat => (
+                    <button 
+                      key={cat.k} 
+                      onClick={() => setCategoria(cat.k)} 
+                      style={{ padding: '8px 12px', borderRadius: 8, border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: 12, width: '100%', backgroundColor: categoria === cat.k ? CORES.alertaFundo : 'transparent', color: categoria === cat.k ? CORES.vermelhoClaro : CORES.cinzaClaro, marginBottom: 3, transition: 'all 0.15s' }}
+                      onMouseOver={(e) => { if (categoria !== cat.k) e.currentTarget.style.backgroundColor = 'rgba(228, 2, 0, 0.04)'; }}
+                      onMouseOut={(e) => { if (categoria !== cat.k) e.currentTarget.style.backgroundColor = 'transparent'; }}
+                    >
+                      {cat.n}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {abaAtiva === 'premium' && !premiumLiberado && (
+                <div style={{ marginTop: 'auto', borderTop: `1px solid ${CORES.borda}`, paddingTop: 14 }}>
+                  <div style={{ fontSize: 11, color: CORES.cinzaMedio, marginBottom: 8 }}>🔑 Digite a senha de acesso:</div>
+                  <input 
+                    type="password" 
+                    value={senha} 
+                    onChange={(e) => setSenha(e.target.value)} 
+                    placeholder="Senha..." 
+                    style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: `1px solid ${CORES.vermelhoEscuro}`, backgroundColor: 'rgba(0,0,0,0.5)', color: CORES.branco, fontSize: 12, marginBottom: 8, outline: 'none', transition: 'border 0.2s' }}
+                    onFocus={(e) => { e.currentTarget.style.borderColor = CORES.vermelho; e.currentTarget.style.boxShadow = '0 0 6px rgba(228,2,0,0.3)'; }}
+                    onBlur={(e) => { e.currentTarget.style.borderColor = CORES.vermelhoEscuro; e.currentTarget.style.boxShadow = 'none'; }}
+                  />
+                  <button 
+                    onClick={verificarSenha} 
+                    style={{ width: '100%', padding: '10px', borderRadius: 10, border: 'none', backgroundColor: CORES.vermelho, color: CORES.branco, fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: `0 0 8px rgba(228,2,0,0.3)`, transition: 'all 0.2s' }}
+                    onMouseOver={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelhoClaro; e.currentTarget.style.boxShadow = `0 0 14px rgba(228,2,0,0.5)`; }}
+                    onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelho; e.currentTarget.style.boxShadow = `0 0 8px rgba(228,2,0,0.3)`; }}
+                  >
+                    🔓 DESBLOQUEAR
+                  </button>
+                  {aviso && <div style={{ fontSize: 11, marginTop: 8, color: aviso.startsWith('✅') ? CORES.verdeSeguro : CORES.vermelho, textAlign: 'center' }}>{aviso}</div>}
+                </div>
+              )}
+
+              {premiumLiberado && (
+                <div style={{ marginTop: 'auto', textAlign: 'center', paddingTop: 14, borderTop: `1px solid ${CORES.borda}` }}>
+                  <div style={{ fontSize: 14, color: CORES.verdeSeguro, fontWeight: 700, textShadow: '0 0 6px rgba(0,204,68,0.3)' }}>✅ ACESSO LIBERADO</div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </aside>
 
       <main style={{ flex: 1, padding: '30px 40px', overflowY: 'auto', position: 'relative', zIndex: 1 }}>
@@ -271,9 +314,12 @@ export default function App() {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {listaAtual.map(item => (
-                <div key={item.id} style={{ padding: '14px 18px', backgroundColor: CORES.fundoCard, borderRadius: 14, borderLeft: `4px solid ${corNivel(item.risco)}`, borderTop: '1px solid rgba(228,2,0,0.08)', borderRight: '1px solid rgba(228,2,0,0.08)', borderBottom: '1px solid rgba(228,2,0,0.08)', transition: 'all 0.2s' }}
+                <div 
+                  key={item.id} 
+                  style={{ padding: '14px 18px', backgroundColor: CORES.fundoCard, borderRadius: 14, borderLeft: `4px solid ${corNivel(item.risco)}`, borderTop: '1px solid rgba(228,2,0,0.08)', borderRight: '1px solid rgba(228,2,0,0.08)', borderBottom: '1px solid rgba(228,2,0,0.08)', transition: 'all 0.2s' }}
                   onMouseOver={(e) => { e.currentTarget.style.backgroundColor = CORES.fundoCardHover; e.currentTarget.style.boxShadow = CORES.sombraVermelha; }}
-                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.fundoCard; e.currentTarget.style.boxShadow = 'none'; }}>
+                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.fundoCard; e.currentTarget.style.boxShadow = 'none'; }}
+                >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                     <span style={{ fontSize: 14, fontWeight: 600, color: CORES.branco }}>
                       <strong style={{ color: CORES.vermelho, opacity: 0.8 }}>{String(item.id).padStart(2,'0')}.</strong> {item.nome}
@@ -282,9 +328,14 @@ export default function App() {
                   </div>
                   <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                     <code style={{ flex: 1, padding: '10px 14px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 8, fontSize: 11, color: CORES.verdeSeguro, overflowX: 'auto', whiteSpace: 'nowrap', border: '1px solid #1a331a', fontFamily: 'Consolas, Menlo, monospace', letterSpacing: 0.3 }}>{item.cmd}</code>
-                    <button onClick={() => copiar(item.cmd)} style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: CORES.vermelho, color: CORES.branco, fontSize: 11, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
+                    <button 
+                      onClick={() => copiar(item.cmd)} 
+                      style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: CORES.vermelho, color: CORES.branco, fontSize: 11, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
                       onMouseOver={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelhoClaro; }}
-                      onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelho; }}>📋 Copiar</button>
+                      onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.vermelho; }}
+                    >
+                      📋 Copiar
+                    </button>
                   </div>
                 </div>
               ))}
@@ -298,7 +349,6 @@ export default function App() {
             <div style={{ fontSize: 13, color: CORES.cinzaClaro, marginBottom: 28 }}>Pague com o QR Code ou chave abaixo</div>
 
             <div style={{ backgroundColor: CORES.fundoCard, borderRadius: 18, border: `2px solid ${CORES.vermelhoEscuro}`, padding: 30, boxShadow: CORES.sombraVermelha }}>
-              {/* QR Code Placeholder */}
               <div style={{ margin: '0 auto 20px auto', width: 240, height: 240, backgroundColor: '#FFFFFF', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ width: '80%', height: '80%', display: 'grid', gridTemplateColumns: `repeat(${qrDados[0].length}, 1fr)`, gap: 0 }}>
                   {qrDados.flatMap((linha, y) => linha.map((p, x) => (
@@ -311,16 +361,25 @@ export default function App() {
                 +5511947138400
               </div>
 
-              <button onClick={() => copiar(CHAVE_PIX)} style={{ width: '100%', padding: '13px', backgroundColor: CORES.dourado, color: '#000', border: 'none', borderRadius: 10, fontSize: 15, fontWeight: 800, cursor: 'pointer', marginBottom: 20, transition: 'all 0.2s' }}
+              <button 
+                onClick={() => copiar(CHAVE_PIX)} 
+                style={{ width: '100%', padding: '13px', backgroundColor: CORES.dourado, color: '#000', border: 'none', borderRadius: 10, fontSize: 15, fontWeight: 800, cursor: 'pointer', marginBottom: 20, transition: 'all 0.2s' }}
                 onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#d4a000'; }}
-                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.dourado; }}>📋 Copiar Chave PIX</button>
+                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.dourado; }}
+              >
+                📋 Copiar Chave PIX
+              </button>
 
-              {/* A SENHA SÓ APARECE QUANDO O PAGAMENTO FOR CONFIRMADO */}
               {!pagamentoConfirmado ? (
                 <div>
-                  <button onClick={() => setPagamentoConfirmado(true)} style={{ width: '100%', padding: '12px', backgroundColor: 'transparent', color: CORES.verdeSeguro, border: `1px solid ${CORES.verdeSeguro}`, borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
+                  <button 
+                    onClick={() => setPagamentoConfirmado(true)} 
+                    style={{ width: '100%', padding: '12px', backgroundColor: 'transparent', color: CORES.verdeSeguro, border: `1px solid ${CORES.verdeSeguro}`, borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
                     onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,204,68,0.05)'; }}
-                    onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}>✅ Já realizei o pagamento</button>
+                    onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+                  >
+                    ✅ Já realizei o pagamento
+                  </button>
                 </div>
               ) : (
                 <div style={{ padding: '16px', backgroundColor: 'rgba(0,204,68,0.08)', border: `1px solid ${CORES.verdeSeguro}`, borderRadius: 10 }}>
@@ -338,30 +397,45 @@ export default function App() {
             <div style={{ fontSize: 72, marginBottom: 16, filter: 'drop-shadow(0 0 10px rgba(228,2,0,0.3))' }}>🔒</div>
             <div style={{ fontSize: 22, color: CORES.dourado, fontWeight: 800, marginBottom: 10 }}>ÁREA PREMIUM PROTEGIDA</div>
             <div style={{ fontSize: 14, color: CORES.cinzaClaro, marginBottom: 28 }}>Desbloqueie <strong style={{ color: CORES.dourado }}>+400 otimizações</strong> por apenas R$ {VALOR_PREMIUM}</div>
-            <button onClick={() => setAbaAtiva('pagamento')} style={{ padding: '14px 36px', backgroundColor: CORES.dourado, color: '#000', border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 800, cursor: 'pointer', transition: 'all 0.25s' }}
-              onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#d4a000'; }}
-              onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.dourado; }}>💳 Desbloquear Agora</button>
+            <button 
+              onClick={() => setAbaAtiva('pagamento')} 
+              style={{ padding: '14px 36px', backgroundColor: CORES.dourado, color: '#000', border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 800, cursor: 'pointer', transition: 'all 0.25s' }}
+              onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#d4a000'; e.currentTarget.style.boxShadow = '0 0 20px rgba(184,134,11,0.2)'; }}
+              onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.dourado; e.currentTarget.style.boxShadow = 'none'; }}
+            >
+              💳 DESBLOQUEAR AGORA
+            </button>
           </div>
         ) : abaAtiva === 'premium' && premiumLiberado ? (
           <div style={{ marginTop: 20 }}>
             <div style={{ marginBottom: 24, paddingBottom: 12, borderBottom: `1px solid ${CORES.borda}` }}>
-              <h1 style={{ fontSize: 26, margin: 0, color: CORES.dourado, fontWeight: 800, letterSpacing: 1 }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
+              <h1 style={{ fontSize: 26, margin: 0, color: CORES.dourado, fontWeight: 800, letterSpacing: 1, textShadow: `0 0 10px rgba(184,134,11,0.25)` }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
               <p style={{ fontSize: 13, color: CORES.cinzaMedio, marginTop: 6 }}>{listaAtual.length} comandos exclusivos para desempenho máximo</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {listaAtual.map(item => (
-                <div key={item.id} style={{ padding: '14px 18px', backgroundColor: CORES.fundoCard, borderRadius: 14, borderLeft: `4px solid ${corNivel(item.risco)}`, borderTop: '1px solid rgba(184,134,11,0.15)', borderRight: '1px solid rgba(184,134,11,0.15)', borderBottom: '1px solid rgba(184,134,11,0.15)', transition: 'all 0.2s' }}
-                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(40,30,10,0.8)'; }}
-                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.fundoCard; }}>
+                <div 
+                  key={item.id} 
+                  style={{ padding: '14px 18px', backgroundColor: CORES.fundoCard, borderRadius: 14, borderLeft: `4px solid ${corNivel(item.risco)}`, borderTop: '1px solid rgba(184,134,11,0.15)', borderRight: '1px solid rgba(184,134,11,0.15)', borderBottom: '1px solid rgba(184,134,11,0.15)', transition: 'all 0.2s' }}
+                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(40,30,10,0.8)'; e.currentTarget.style.boxShadow = '0 0 15px rgba(184,134,11,0.2)'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.fundoCard; e.currentTarget.style.boxShadow = 'none'; }}
+                >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                     <span style={{ fontSize: 14, fontWeight: 600, color: CORES.branco }}>
-                      <strong style={{ color: CORES.dourado }}>{String(item.id).padStart(2,'0')}.</strong> {item.nome}
+                      <strong style={{ color: CORES.dourado, opacity: 0.9 }}>{String(item.id).padStart(2,'0')}.</strong> {item.nome}
                     </span>
-                    <span style={{ fontSize: 10, padding: '3px 8px', borderRadius: 10, backgroundColor: corNivel(item.risco), color: '#000', fontWeight: 700, textTransform: 'uppercase' }}>{item.risco}</span>
+                    <span style={{ fontSize: 10, padding: '3px 8px', borderRadius: 10, backgroundColor: corNivel(item.risco), color: '#000', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>{item.risco}</span>
                   </div>
                   <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <code style={{ flex: 1, padding: '10px 14px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 8, fontSize: 11, color: CORES.dourado, overflowX: 'auto', whiteSpace: 'nowrap', border: '1px solid #332a0f', fontFamily: 'Consolas, monospace' }}>{item.cmd}</code>
-                    <button onClick={() => copiar(item.cmd)} style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: CORES.dourado, color: '#000', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>📋 Copiar</button>
+                    <code style={{ flex: 1, padding: '10px 14px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 8, fontSize: 11, color: CORES.dourado, overflowX: 'auto', whiteSpace: 'nowrap', border: '1px solid #332a0f', fontFamily: 'Consolas, Menlo, monospace', letterSpacing: 0.3 }}>{item.cmd}</code>
+                    <button 
+                      onClick={() => copiar(item.cmd)} 
+                      style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: CORES.dourado, color: '#000', fontSize: 11, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
+                      onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#d4a000'; }}
+                      onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.dourado; }}
+                    >
+                      📋 Copiar
+                    </button>
                   </div>
                 </div>
               ))}
