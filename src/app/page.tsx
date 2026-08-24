@@ -25,7 +25,15 @@ const CORES = {
   sombraVermelha: '0 0 15px rgba(228, 2, 0, 0.25)',
 };
 
-const otmFree = [
+interface Otimizacao {
+  id: number;
+  cat: string;
+  nome: string;
+  cmd: string;
+  risco: string;
+}
+
+const otmFree: Otimizacao[] = [
   { id: 1, cat: 'sistema', nome: 'Desativar inicialização rápida', cmd: 'powercfg /hibernate off', risco: 'baixo' },
   { id: 2, cat: 'sistema', nome: 'Otimizar agendador de CPU', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 38 /f', risco: 'medio' },
   { id: 3, cat: 'sistema', nome: 'Desativar serviços desnecessários', cmd: 'sc config "SysMain" start= disabled', risco: 'medio' },
@@ -68,8 +76,8 @@ const otmFree = [
   { id: 40, cat: 'sistema', nome: 'Desativar atualizações em segundo plano', cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU" /v "AUOptions" /t REG_DWORD /d 2 /f', risco: 'medio' },
 ];
 
-const gerarPremium = () => {
-  const itens = [];
+const gerarPremium = (): Otimizacao[] => {
+  const itens: Otimizacao[] = [];
   let id = 1;
   const riscos = ['baixo', 'medio', 'alto'];
   for (let i = 0; i < 100; i++) {
@@ -84,12 +92,12 @@ const gerarPremium = () => {
   return itens;
 };
 
-const otmPremium = gerarPremium();
+const otmPremium: Otimizacao[] = gerarPremium();
 
 export default function App() {
   const [carregando, setCarregando] = useState(true);
-  const [abaAtiva, setAbaAtiva] = useState('free');
-  const [categoria, setCategoria] = useState('todas');
+  const [abaAtiva, setAbaAtiva] = useState<string>('free');
+  const [categoria, setCategoria] = useState<string>('todas');
   const [premiumLiberado, setPremiumLiberado] = useState(false);
   const [pagamentoConfirmado, setPagamentoConfirmado] = useState(false);
   const [senha, setSenha] = useState('');
@@ -151,7 +159,7 @@ export default function App() {
   };
   const qrDados = gerarQR(CHAVE_PIX);
 
-  const filtrar = (lista: typeof otmFree) => {
+  const filtrar = (lista: Otimizacao[]) => {
     return categoria === 'todas' ? lista : lista.filter((x) => x.cat === categoria);
   };
 
@@ -220,7 +228,7 @@ export default function App() {
 
                 <button 
                   onClick={() => { setAbaAtiva('pagamento'); setCategoria('todas'); }} 
-                  style={{ padding: '12px 14px', borderRadius: 12, border: abaAtiva === 'pagamento' ? `1px solid ${CORES.dourado}` : '1px solid transparent', cursor: 'pointer', textAlign: 'left', fontSize: 13, fontWeight: abaAtiva === 'pagamento' ? 700 : 500, backgroundColor: abaAtiva === 'pagamento' ? 'rgba(184, 134, 11, 0.12)' : 'transparent', color: abaAtiva === 'pagamento' ? CORES.dourado : CORES.cinzaClaro, transition: 'all  0.25s' }}
+                  style={{ padding: '12px 14px', borderRadius: 12, border: abaAtiva === 'pagamento' ? `1px solid ${CORES.dourado}` : '1px solid transparent', cursor: 'pointer', textAlign: 'left', fontSize: 13, fontWeight: abaAtiva === 'pagamento' ? 700 : 500, backgroundColor: abaAtiva === 'pagamento' ? 'rgba(184, 134, 11, 0.12)' : 'transparent', color: abaAtiva === 'pagamento' ? CORES.dourado : CORES.cinzaClaro, transition: 'all 0.25s' }}
                   onMouseOver={(e) => { if (abaAtiva !== 'pagamento') { e.currentTarget.style.backgroundColor = 'rgba(184, 134, 11, 0.06)'; e.currentTarget.style.borderColor = '#886000'; }}}
                   onMouseOut={(e) => { if (abaAtiva !== 'pagamento') { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}}
                 >
@@ -409,7 +417,7 @@ export default function App() {
         ) : abaAtiva === 'premium' && premiumLiberado ? (
           <div style={{ marginTop: 20 }}>
             <div style={{ marginBottom: 24, paddingBottom: 12, borderBottom: `1px solid ${CORES.borda}` }}>
-              <h1 style={{ fontSize: 26, margin: 0, color: CORES.dourado, fontWeight: 800, letterSpacing: 1, textShadow: `0 0 10px rgba(184,134,11,0.25)` }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
+              <h1 style={{ fontSize: 26, margin: 0, color: CORES.dourado, fontWeight: 800, letterSpacing: 1 }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
               <p style={{ fontSize: 13, color: CORES.cinzaMedio, marginTop: 6 }}>{listaAtual.length} comandos exclusivos para desempenho máximo</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -417,22 +425,20 @@ export default function App() {
                 <div 
                   key={item.id} 
                   style={{ padding: '14px 18px', backgroundColor: CORES.fundoCard, borderRadius: 14, borderLeft: `4px solid ${corNivel(item.risco)}`, borderTop: '1px solid rgba(184,134,11,0.15)', borderRight: '1px solid rgba(184,134,11,0.15)', borderBottom: '1px solid rgba(184,134,11,0.15)', transition: 'all 0.2s' }}
-                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(40,30,10,0.8)'; e.currentTarget.style.boxShadow = '0 0 15px rgba(184,134,11,0.2)'; }}
-                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.fundoCard; e.currentTarget.style.boxShadow = 'none'; }}
+                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(40,30,10,0.8)'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.fundoCard; }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                     <span style={{ fontSize: 14, fontWeight: 600, color: CORES.branco }}>
-                      <strong style={{ color: CORES.dourado, opacity: 0.9 }}>{String(item.id).padStart(2,'0')}.</strong> {item.nome}
+                      <strong style={{ color: CORES.dourado }}>{String(item.id).padStart(2,'0')}.</strong> {item.nome}
                     </span>
-                    <span style={{ fontSize: 10, padding: '3px 8px', borderRadius: 10, backgroundColor: corNivel(item.risco), color: '#000', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>{item.risco}</span>
+                    <span style={{ fontSize: 10, padding: '3px 8px', borderRadius: 10, backgroundColor: corNivel(item.risco), color: '#000', fontWeight: 700, textTransform: 'uppercase' }}>{item.risco}</span>
                   </div>
                   <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <code style={{ flex: 1, padding: '10px 14px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 8, fontSize: 11, color: CORES.dourado, overflowX: 'auto', whiteSpace: 'nowrap', border: '1px solid #332a0f', fontFamily: 'Consolas, Menlo, monospace', letterSpacing: 0.3 }}>{item.cmd}</code>
+                    <code style={{ flex: 1, padding: '10px 14px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 8, fontSize: 11, color: CORES.dourado, overflowX: 'auto', whiteSpace: 'nowrap', border: '1px solid #332a0f', fontFamily: 'Consolas, monospace' }}>{item.cmd}</code>
                     <button 
                       onClick={() => copiar(item.cmd)} 
-                      style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: CORES.dourado, color: '#000', fontSize: 11, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
-                      onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#d4a000'; }}
-                      onMouseOut={(e) => { e.currentTarget.style.backgroundColor = CORES.dourado; }}
+                      style={{ padding: '9px 14px', borderRadius: 8, border: 'none', backgroundColor: CORES.dourado, color: '#000', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
                     >
                       📋 Copiar
                     </button>
