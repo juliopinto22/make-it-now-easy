@@ -29,7 +29,15 @@ const CORES = {
   alertaFundo: 'rgba(228, 2, 0, 0.2)',
 };
 
-const otmFree = [
+interface ItemOtimizacao {
+  id: number;
+  cat: string;
+  nome: string;
+  cmd: string;
+  risco: string;
+}
+
+const otmFree: ItemOtimizacao[] = [
   { id: 1, cat: 'sistema', nome: 'Desativar inicialização rápida', cmd: 'powercfg /hibernate off', risco: 'baixo' },
   { id: 2, cat: 'sistema', nome: 'Otimizar agendador de CPU', cmd: 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 38 /f', risco: 'medio' },
   { id: 3, cat: 'sistema', nome: 'Desativar serviços desnecessários', cmd: 'sc config "SysMain" start= disabled', risco: 'medio' },
@@ -60,8 +68,8 @@ const otmFree = [
   { id: 28, cat: 'energia', nome: 'Desativar suspensão automática', cmd: 'powercfg /change standby-timeout-ac 0', risco: 'baixo' },
 ];
 
-const gerarPremium = () => {
-  const itens = [];
+const gerarPremium = (): ItemOtimizacao[] => {
+  const itens: ItemOtimizacao[] = [];
   let id = 1;
   const riscos = ['baixo', 'medio', 'alto'];
   const categorias = ['cpu', 'gpu', 'memoria', 'rede', 'sistema', 'jogos'];
@@ -110,9 +118,11 @@ export default function Page() {
   };
 
   const copiar = (texto: string) => {
-    navigator.clipboard.writeText(texto);
-    setMensagem('✅ Copiado para a área de transferência!');
-    setTimeout(() => setMensagem(''), 2500);
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(texto);
+      setMensagem('✅ Copiado para a área de transferência!');
+      setTimeout(() => setMensagem(''), 2500);
+    }
   };
 
   const corNivel = (nivel: string) => {
@@ -122,7 +132,7 @@ export default function Page() {
     return CORES.cinzaMedio;
   };
 
-  const filtrar = (lista: typeof otmFree) => {
+  const filtrar = (lista: ItemOtimizacao[]) => {
     return lista.filter((item) => {
       const bateCategoria = categoria === 'todas' || item.cat === categoria;
       const bateBusca = item.nome.toLowerCase().includes(busca.toLowerCase()) || item.cmd.toLowerCase().includes(busca.toLowerCase());
@@ -145,13 +155,12 @@ export default function Page() {
           INICIALIZANDO SISTEMA DE OTIMIZAÇÃO...
         </div>
         <div style={{ width: 280, height: 6, backgroundColor: '#1a0000', borderRadius: 10, border: '1px solid ' + CORES.vermelhoEscuro, overflow: 'hidden' }}>
-          <div style={{ width: '100%', height: '100%', backgroundColor: CORES.vermelho, borderRadius: 10, animation: 'pulse 1.5s infinite' }} />
+          <div style={{ width: '100%', height: '100%', backgroundColor: CORES.vermelho, borderRadius: 10 }} />
         </div>
       </div>
     );
   }
 
-  // VISTA 1: LANDING PAGE
   if (!modoApp) {
     return (
       <div style={{ backgroundColor: CORES.fundo, color: CORES.branco, fontFamily: 'sans-serif', minHeight: '100vh', overflowX: 'hidden' }}>
@@ -207,15 +216,12 @@ export default function Page() {
           </div>
         </section>
 
-        {/* SEÇÃO PLANOS */}
         <section id="planos" style={{ padding: '80px 8%', borderTop: '1px solid ' + CORES.borda, background: 'rgba(10,0,0,0.6)' }}>
           <div style={{ textAlign: 'center', marginBottom: 50 }}>
             <h2 style={{ fontSize: 36, fontWeight: 900, marginBottom: 12 }}>Escolha o seu Plano</h2>
             <p style={{ color: CORES.cinzaMedio, fontSize: 16 }}>Desbloqueie o máximo potencial do seu sistema com as opções abaixo.</p>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 30, flexWrap: 'wrap', alignItems: 'stretch' }}>
-            
-            {/* CARD FREE */}
             <div style={{ flex: '1 1 320px', maxWidth: 380, background: CORES.fundoCard, border: '1px solid ' + CORES.borda, borderRadius: 12, padding: 32, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
                 <div style={{ fontSize: 14, color: CORES.cinzaMedio, fontWeight: 'bold', marginBottom: 8 }}>GRÁTIS</div>
@@ -233,7 +239,6 @@ export default function Page() {
               </button>
             </div>
 
-            {/* CARD PREMIUM */}
             <div style={{ flex: '1 1 320px', maxWidth: 380, background: CORES.fundoCard, border: '1px solid ' + CORES.vermelho, borderRadius: 12, padding: 32, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 0 30px ' + CORES.vermelhoGlow, position: 'relative' }}>
               <div style={{ position: 'absolute', top: -12, right: 20, background: CORES.vermelho, color: '#FFF', fontSize: 11, fontWeight: 'bold', padding: '4px 12px', borderRadius: 12, letterSpacing: 1 }}>
                 MAIS POPULAR
@@ -254,20 +259,17 @@ export default function Page() {
                 Assinar Premium Agora
               </button>
             </div>
-
           </div>
         </section>
       </div>
     );
   }
 
-  // VISTA 2: APP DASHBOARD POR DENTRO
   const listaExibida = abaAtiva === 'free' ? filtrar(otmFree) : abaAtiva === 'premium' ? filtrar(otmPremium) : [];
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundImage: `linear-gradient(rgba(5, 5, 5, 0.88), rgba(5, 5, 5, 0.88)), url(${IMG_FUNDO_PRINCIPAL})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed', color: CORES.branco, fontFamily: 'sans-serif' }}>
       
-      {/* MENU LATERAL */}
       <aside style={{ width: lateralAberta ? 260 : 70, backgroundColor: 'rgba(10, 0, 0, 0.92)', borderRight: '2px solid ' + CORES.vermelhoEscuro, transition: 'width 0.3s ease', display: 'flex', flexDirection: 'column', padding: '16px 10px', backdropFilter: 'blur(5px)' }}>
         <button onClick={() => setLateralAberta(!lateralAberta)} style={{ alignSelf: lateralAberta ? 'flex-end' : 'center', background: 'transparent', border: '1px solid ' + CORES.vermelhoEscuro, color: CORES.vermelho, width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', marginBottom: 12 }}>
           {lateralAberta ? '◀' : '▶'}
@@ -298,7 +300,6 @@ export default function Page() {
           </button>
         </div>
 
-        {/* CATEGORIAS */}
         {lateralAberta && (abaAtiva === 'free' || (abaAtiva === 'premium' && premiumLiberado)) && (
           <div style={{ marginTop: 20, borderTop: '1px solid ' + CORES.borda, paddingTop: 12, overflowY: 'auto', maxHeight: '50vh' }}>
             <div style={{ fontSize: 11, color: CORES.vermelhoClaro, marginBottom: 8, fontWeight: 'bold' }}>CATEGORIAS</div>
@@ -321,7 +322,6 @@ export default function Page() {
         )}
       </aside>
 
-      {/* CONTEÚDO PRINCIPAL */}
       <main style={{ flex: 1, padding: '24px 30px', overflowY: 'auto' }}>
         {mensagem && (
           <div style={{ position: 'fixed', top: 20, right: 20, padding: '10px 20px', background: 'rgba(0,204,68,0.2)', border: '1px solid ' + CORES.verdeSeguro, borderRadius: 8, color: CORES.verdeSeguro, zIndex: 1000, fontWeight: 'bold', backdropFilter: 'blur(10px)' }}>
@@ -329,14 +329,12 @@ export default function Page() {
           </div>
         )}
 
-        {/* BARRA DE PESQUISA */}
         {(abaAtiva === 'free' || (abaAtiva === 'premium' && premiumLiberado)) && (
           <div style={{ marginBottom: 20 }}>
             <input type="text" placeholder="🔍 Buscar otimização ou comando..." value={busca} onChange={(e) => setBusca(e.target.value)} style={{ width: '100%', padding: '12px 16px', background: CORES.fundoCard, border: '1px solid ' + CORES.borda, borderRadius: 8, color: CORES.branco, fontSize: 14, outline: 'none', boxSizing: 'border-box', backdropFilter: 'blur(5px)' }} />
           </div>
         )}
 
-        {/* ABA: GRATUITA */}
         {abaAtiva === 'free' && (
           <div>
             <h1 style={{ color: CORES.vermelho, marginTop: 0, textShadow: '0 0 10px rgba(228,2,0,0.5)' }}>🔥 OTIMIZAÇÕES GRATUITAS</h1>
@@ -356,7 +354,6 @@ export default function Page() {
           </div>
         )}
 
-        {/* ABA: PAGAMENTO */}
         {abaAtiva === 'pagamento' && (
           <div style={{ maxWidth: 450, margin: '20px auto', textAlign: 'center' }}>
             <h2 style={{ color: CORES.dourado, fontSize: 32, margin: '0 0 10px 0', textShadow: '0 0 10px rgba(184,134,11,0.5)' }}>R$ {VALOR_PREMIUM}</h2>
@@ -384,7 +381,6 @@ export default function Page() {
           </div>
         )}
 
-        {/* ABA: PREMIUM (BLOQUEADA) */}
         {abaAtiva === 'premium' && !premiumLiberado && (
           <div style={{ textAlign: 'center', paddingTop: 60 }}>
             <div style={{ fontSize: 60, marginBottom: 10 }}>🔒</div>
@@ -393,7 +389,6 @@ export default function Page() {
           </div>
         )}
 
-        {/* ABA: PREMIUM (LIBERADA) */}
         {abaAtiva === 'premium' && premiumLiberado && (
           <div>
             <h1 style={{ color: CORES.dourado, marginTop: 0, textShadow: '0 0 10px rgba(184,134,11,0.5)' }}>⭐ OTIMIZAÇÕES PREMIUM</h1>
